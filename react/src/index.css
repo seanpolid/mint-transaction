@@ -33,3 +33,7 @@ main > div {
     grid-template-columns: 1fr 2fr;
     min-height: 100vh;
 }
+
+input {
+    padding: 4px 5px;
+}

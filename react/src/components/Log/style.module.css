@@ -1,3 +1,54 @@
 .container {
-    border: 1px solid black;
+    border-right: 1px solid #121212;
+}
+
+.container form, .container .scrollpane {
+    box-sizing: border-box;
+}
+
+.container form {
+    height: 3em;
+    margin: auto;
+    padding: 0em 1em;
+    border-bottom: 1px solid black;
+    display: grid;
+    grid-template-columns: 1fr 2em 2em;
+    gap: 0.5em;
+    align-content: center;
+}
+
+.container form > a:last-child {
+    margin-top: 2px;
+}
+
+.searchBar {
+    position: relative;
+}
+
+.searchBar input{
+    box-sizing: border-box;
+    padding-left: 2em;
+    width: 100%;
+}
+
+.searchBar > div {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+}
+
+.scrollpane {
+    height: calc(100vh - 3em);
+    overflow-y: scroll;
+}
+
+.scrollpane ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.scrollpane li {
+    height: 4em;
+    border-bottom: 1px solid black;
 }
