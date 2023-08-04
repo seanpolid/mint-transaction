@@ -22,7 +22,7 @@ const VerticalNavBar = ({handleTabSelection}) => {
                         </a>
                     </li>
                 ))}
-            </ul>
+            </ul> 
             <a href="#" onClick={handleClick} data-type={tabs[tabs.length - 1]}>
                 <Icon type={tabs[tabs.length - 1]} />
             </a>

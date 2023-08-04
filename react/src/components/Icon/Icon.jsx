@@ -48,7 +48,14 @@ const DashboardIcon = () => {
 const GoalIcon = () => {
     return (
         <div className={`${style.container} ${style.goalIcon}`}>
-
+            <div className={style.ring}>
+                <div className={style.ring}>
+                    <div className={style.ring}></div>
+                </div>
+            </div>
+            <div className={style.arrow}></div>
+            <div className={style.leftTail}></div>
+            <div className={style.rightTail}></div>
         </div>
     )
 }

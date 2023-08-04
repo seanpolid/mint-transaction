@@ -65,6 +65,70 @@
     left: -0.25em;
 }
 
+.goalIcon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ring {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100%;
+    aspect-ratio: 1;
+}
+
+.goalIcon > div {
+    width: 90%;
+}
+
+.goalIcon > div > div {
+    width: 70%;
+}
+
+.goalIcon > div > div > div {
+    width: 50%;
+}
+
+.goalIcon div:nth-child(3) {
+    height: 50%;
+}
+
+.goalIcon .arrow {
+    position: absolute;
+    transform: rotate(-45deg);
+    width: 60%;
+    top: 1em;
+    right: 0;
+}
+
+.goalIcon .leftTail {
+    position: absolute;
+    top: -1.09em;
+    right: 0.799em;
+    width: 0;
+    height: 0;
+    border-top: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 8px solid black;
+    transform: rotate(-45deg);
+}
+
+.goalIcon .rightTail {
+    position: absolute;
+    top: 0.35em;
+    right: 0em;
+    width: 0;
+    height: 0;
+    border-top: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 8px solid black;
+    transform: rotate(135deg);
+}
+
 .profileIcon {
     border-radius: 100%;
     border: 1px solid black;

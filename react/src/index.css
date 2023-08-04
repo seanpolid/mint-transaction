@@ -10,7 +10,15 @@ body, header, nav, main, footer, div {
 }
 
 main {
+    width: 100%;
+}
+
+main > nav {
     height: 100vh;
-    display: grid;
-    grid-template-columns: 4.75em 1fr;
+    width: 4.5em;
+    position: fixed;
+}
+
+main > div {
+    margin-left: 4.5em;
 }
