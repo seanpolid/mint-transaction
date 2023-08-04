@@ -1,0 +1,86 @@
+.container {
+    width: 3.5em;
+    aspect-ratio: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.container div {
+    border: 1px solid black;
+}
+
+.transactionIcon {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 5px;
+    width: 90%;
+    height: 100%;
+    margin: auto;
+    border-radius: 0.5em;
+}
+
+.logLabel {
+    position: absolute;
+    z-index: 5;
+    background: white;
+    color: black;
+    top: 45%;
+    left: 0;
+    padding: 2px 5px;
+    border-radius: 0.1em;
+}
+
+.container .bars {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    height: 100%;
+    border: 0;
+}
+
+.bars > div {
+    width: 25%;
+    border-radius: 0.4em;
+}
+
+.bars > div:nth-child(1) {
+    height: 25%;
+}
+
+.bars  > div:nth-child(2) {
+    height: 55%;
+}
+
+.bars  > div:nth-child(3) {
+    height: 84%;
+}
+
+.container .line {
+    transform: rotate(-35deg);
+    border: 1px dashed black;
+    width: 110%;
+    position: absolute;
+    top: 1.1em;
+    left: -0.25em;
+}
+
+.profileIcon {
+    border-radius: 100%;
+    border: 1px solid black;
+}
+
+.head {
+    border-radius: 100%;
+    width: 50%;
+    aspect-ratio: 1;
+    margin: auto;
+    margin-top: 0.5em;
+}
+
+.body {
+    width: 80%;
+    border-radius: 80%;
+    aspect-ratio: 0.8;
+    margin: auto;
+}

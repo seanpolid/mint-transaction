@@ -1,0 +1,23 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    padding-bottom: 1em;
+    border-right: 1px solid black;
+}
+
+.container a {
+    color: black;
+}
+
+.container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4em;
+    margin-top: 5em;
+}

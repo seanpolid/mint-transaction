@@ -1,0 +1,16 @@
+#root {
+    padding: 0;
+    max-width: 100%;
+}
+
+body, header, nav, main, footer, div {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+main {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 4.75em 1fr;
+}
