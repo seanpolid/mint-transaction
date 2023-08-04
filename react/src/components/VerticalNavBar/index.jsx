@@ -1,10 +1,18 @@
 /* eslint-disable react/prop-types */
-import Icon from "../Icon/Icon";
+import Icon from "../Icon";
+import iconType from "../../enums/iconType";
 import style from "./style.module.css";
-import { tabType } from "../../enums/tabType";
+import tabType from "../../enums/tabType";
+
+const tabIconMapping = {
+    [tabType.TRANSACTIONS]: iconType.LOG,
+    [tabType.DASHBOARD]: iconType.GRAPH,
+    [tabType.GOALS]: iconType.TARGET,
+    [tabType.PROFILE]: iconType.USER
+}
 
 const VerticalNavBar = ({handleTabSelection}) => {
-    const tabs = Object.values(tabType);
+    const tabs = Object.values(tabType).filter(type => type !== tabType.PROFILE);
     
     const handleClick = (event) => {
         event.preventDefault();
@@ -15,16 +23,16 @@ const VerticalNavBar = ({handleTabSelection}) => {
     return (
         <nav className={style.container}>
             <ul>
-                {tabs.slice(0, -1).map(tab => (
+                {tabs.map(tab => (
                     <li key={tab}>
                         <a href="#" onClick={handleClick} data-type={tab}>
-                            <Icon type={tab} />
+                            <Icon type={tabIconMapping[tab]} />
                         </a>
                     </li>
                 ))}
             </ul> 
-            <a href="#" onClick={handleClick} data-type={tabs[tabs.length - 1]}>
-                <Icon type={tabs[tabs.length - 1]} />
+            <a href="#" onClick={handleClick} data-type={tabType.PROFILE}>
+                <Icon type={tabIconMapping[tabType.PROFILE]} />
             </a>
         </nav>
     )

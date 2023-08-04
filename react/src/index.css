@@ -1,6 +1,14 @@
-#root {
+:root {
     padding: 0;
     max-width: 100%;
+    --primary-color: rgb(242, 243, 245);
+    --secondary-color: rgb(208, 208, 208);
+    --accent-color: rgb(242, 243, 245);
+    --nav-width: 4.75em;
+}
+
+body {
+    background: var(--primary-color);
 }
 
 body, header, nav, main, footer, div {
@@ -15,10 +23,13 @@ main {
 
 main > nav {
     height: 100vh;
-    width: 4.5em;
+    width: var(--nav-width);
     position: fixed;
 }
 
 main > div {
-    margin-left: 4.5em;
+    margin-left: var(--nav-width);
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    min-height: 100vh;
 }

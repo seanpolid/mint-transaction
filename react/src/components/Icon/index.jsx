@@ -1,21 +1,22 @@
 /* eslint-disable react/prop-types */
-import { tabType } from "../../enums/tabType"
+import iconType from '../../enums/iconType'
 import style from './style.module.css'
 
 const Icon = ({type}) => {
+    console.log(type);
     switch (type) {
-        case tabType.TRANSACTIONS:
-            return <TransactionIcon />
-        case tabType.DASHBOARD:
-            return <DashboardIcon />
-        case tabType.GOALS:
-            return <GoalIcon />
-        case tabType.PROFILE:
-            return <ProfileIcon />
+        case iconType.LOG:
+            return <Log />
+        case iconType.GRAPH:
+            return <Graph />
+        case iconType.TARGET:
+            return <Target />
+        case iconType.USER:
+            return <User /> 
     }
 }
 
-const TransactionIcon = () => {
+const Log = () => {
     return (
         <div className={style.container}>
             <div className={style.transactionIcon}>
@@ -32,7 +33,7 @@ const TransactionIcon = () => {
     )
 }
 
-const DashboardIcon = () => {
+const Graph = () => {
     return (
         <div className={`${style.container} ${style.dashboardIcon}`}>
             <div className={style.bars}>
@@ -45,7 +46,7 @@ const DashboardIcon = () => {
     )
 }
 
-const GoalIcon = () => {
+const Target = () => {
     return (
         <div className={`${style.container} ${style.goalIcon}`}>
             <div className={style.ring}>
@@ -60,7 +61,7 @@ const GoalIcon = () => {
     )
 }
 
-const ProfileIcon = () => {
+const User = () => {
     return (
         <div className={`${style.container} ${style.profileIcon}`}>
             <div className={style.head}></div>
