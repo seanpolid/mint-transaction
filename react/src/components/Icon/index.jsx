@@ -13,13 +13,19 @@ const Icon = ({type}) => {
             return <Target />
         case iconType.USER:
             return <User /> 
+        case iconType.FILTER:
+            return <Filter />
+        case iconType.SORT:
+            return <Sort />
+        case iconType.SEARCH:
+            return <Search />
     }
 }
 
 const Log = () => {
     return (
         <div className={style.container}>
-            <div className={style.transactionIcon}>
+            <div className={style.log}>
                 <div></div>
                 <div></div>
                 <div></div>
@@ -35,7 +41,7 @@ const Log = () => {
 
 const Graph = () => {
     return (
-        <div className={`${style.container} ${style.dashboardIcon}`}>
+        <div className={style.container}>
             <div className={style.bars}>
                 <div></div>
                 <div></div>
@@ -48,7 +54,7 @@ const Graph = () => {
 
 const Target = () => {
     return (
-        <div className={`${style.container} ${style.goalIcon}`}>
+        <div className={`${style.container} ${style.target}`}>
             <div className={style.ring}>
                 <div className={style.ring}>
                     <div className={style.ring}></div>
@@ -63,9 +69,39 @@ const Target = () => {
 
 const User = () => {
     return (
-        <div className={`${style.container} ${style.profileIcon}`}>
+        <div className={`${style.container} ${style.user}`}>
             <div className={style.head}></div>
             <div className={style.body}></div>
+        </div>
+    )
+}
+
+const Filter = () => {
+    return (
+        <div className={style.filter}>
+            <div></div>
+        </div>
+    )
+}
+
+const Sort = () => {
+    return (
+        <div className={style.sort}>
+            <div className={style.bars}>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div className={style.arrow}></div>
+            <div className={style.arrowHead}></div>
+        </div>
+    )
+}
+
+const Search = () => {
+    return (
+        <div className={style.search}>
+            <div className={style.handle}></div>
         </div>
     )
 }

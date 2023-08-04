@@ -1,6 +1,6 @@
 
 .container {
-    width: 3.5em;
+    width: 3em;
     aspect-ratio: 1;
     position: relative;
     overflow: hidden;
@@ -10,7 +10,7 @@
     border: 1px solid var(--secondary-color);
 }
 
-.transactionIcon {
+.log {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -30,6 +30,7 @@
     left: 0;
     padding: 2px 5px;
     border-radius: 0.1em;
+    font-size: 12px;
 }
 
 .container .bars {
@@ -50,11 +51,11 @@
     height: 25%;
 }
 
-.bars  > div:nth-child(2) {
+.bars > div:nth-child(2) {
     height: 55%;
 }
 
-.bars  > div:nth-child(3) {
+.bars > div:nth-child(3) {
     height: 84%;
 }
 
@@ -67,7 +68,7 @@
     left: -0.25em;
 }
 
-.goalIcon {
+.target {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -81,34 +82,34 @@
     aspect-ratio: 1;
 }
 
-.goalIcon > div {
+.target > div {
     width: 90%;
 }
 
-.goalIcon > div > div {
+.target > div > div {
     width: 70%;
 }
 
-.goalIcon > div > div > div {
+.target > div > div > div {
     width: 50%;
 }
 
-.goalIcon div:nth-child(3) {
+.target div:nth-child(3) {
     height: 50%;
 }
 
-.goalIcon .arrow {
+.target .arrow {
     position: absolute;
     transform: rotate(-45deg);
     width: 60%;
-    top: 1em;
+    top: 0.9em;
     right: 0;
 }
 
-.goalIcon .leftTail {
+.target .leftTail {
     position: absolute;
-    top: -1.09em;
-    right: 0.799em;
+    top: -0.86em;
+    right: 0.65em;
     width: 0;
     height: 0;
     border-top: 0;
@@ -118,7 +119,7 @@
     transform: rotate(-45deg);
 }
 
-.goalIcon .rightTail {
+.target .rightTail {
     position: absolute;
     top: 0.35em;
     right: 0em;
@@ -131,7 +132,7 @@
     transform: rotate(135deg);
 }
 
-.profileIcon {
+.user {
     border-radius: 100%;
     border: 1px solid var(--secondary-color);
 }
@@ -149,4 +150,82 @@
     border-radius: 80%;
     aspect-ratio: 0.8;
     margin: auto;
+}
+
+.filter {
+    border: 1px solid black;
+    width: 0;
+    height: 0;
+    border-top: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 20px solid #121212;
+    transform: rotate(180deg);
+    position: relative;
+}
+
+.filter > div {
+    position: absolute;
+    background: black;
+    width: 5px;
+    height: 10px;
+    left: -0.16em;
+    bottom: -0.25em;
+    aspect-ratio: 1;
+}
+
+.sort {
+    position: relative;
+}
+
+.sort .bars {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    align-items: end;
+    height: 100%;
+}
+
+.sort .bars > div {
+    border: 1px solid black;
+    width: 80%;
+    height: 0;
+}
+
+.sort .arrow {
+    position: absolute;
+    top: 0.6em;
+    left: -0.5em;
+    width: 70%;
+    border: 1px solid black;
+    transform: rotate(90deg);
+}
+
+.sort .arrowHead {
+    width: 0;
+    height: 0;
+    border-top: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 8px solid #121212;
+    transform: rotate(180deg);
+    top: 1em;
+    left: -0.05em;
+    position: absolute;
+}
+
+.search {
+    border: 1px solid black;
+    width: 12px;
+    aspect-ratio: 1;
+    border-radius: 100%;
+}
+
+.handle {
+    width: 0.5em;
+    border: 1px solid black;
+    position: absolute;
+    top: 0.7em;
+    left: 0.5em;
+    transform: rotate(45deg);   
 }
