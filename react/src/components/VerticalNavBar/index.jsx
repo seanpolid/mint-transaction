@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 const VerticalNavBar = ({currentTab, handleTabSelection}) => {
     const tabs = Object.values(tabType);
     const [icons, setIcons] = useState([]);
+    const [net, setNet] = useState(14000);
 
     useEffect(() => {
         setIcons(tabs.map(tab => (
@@ -34,13 +35,16 @@ const VerticalNavBar = ({currentTab, handleTabSelection}) => {
     }
 
     return (
-        <nav className={style.container}>
-            <ul>
-                {icons.filter(icon => icon.props["data-type"] !== tabType.PROFILE)}
-            </ul> 
-
-            {icons.filter(icon => icon.props["data-type"] === tabType.PROFILE)}
-        </nav>
+        <>
+            <nav className={style.container}>
+                <ul>
+                    {icons.filter(icon => icon.props["data-type"] !== tabType.PROFILE)}
+                    {icons.filter(icon => icon.props["data-type"] === tabType.PROFILE)}
+                </ul> 
+            </nav>
+            <p className={getNetStyling(net)}>{net > 0 ? "+" : ""}{net}</p>
+        </>
+        
     )
 }
 
@@ -56,6 +60,18 @@ const iconTabMapping = {
     [iconType.GRAPH]: tabType.DASHBOARD,
     [iconType.TARGET]: tabType.GOALS,
     [iconType.USER]: tabType.PROFILE
+}
+
+const getNetStyling = (net) => {
+    let netStyling = "";
+    if (net > 0) {
+        netStyling = `${style.net} ${style.positive}`;
+    } else if (net < 0) {
+        netStyling = `${style.net} ${style.negative}`;
+    } else {
+        netStyling = `${style.net} ${style.zero}`;
+    }
+    return netStyling;
 }
 
 export default VerticalNavBar;
