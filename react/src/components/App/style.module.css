@@ -1,3 +1,7 @@
+.secondaryNav {
+    height: 3em;
+}
+
 .secondaryNav ul {
     display: flex;
     justify-content: center;

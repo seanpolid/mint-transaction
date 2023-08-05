@@ -15,10 +15,10 @@ const App = () => {
     const [pages, setPages] = useState([]);
     const [currentTab, setCurrentTab] = useState(tabTypes[0]);
     const [currentPages, pageDispatch] = useReducer(pageReducer, defaultCurrentPages);
-    const tabsWithNav = [tabType.TRANSACTIONS, tabType.GOALS];
+    const tabsWithPages = [tabType.TRANSACTIONS, tabType.GOALS];
 
     useEffect(() => {
-        if (tabsWithNav.includes(currentTab)) {
+        if (tabsWithPages.includes(currentTab)) {
             setPages(Object.values(pageType).map(type => {
                 const pageStyling = type === currentPages[currentTab] ? style.active : '';
                 return (
@@ -58,17 +58,18 @@ const App = () => {
             <div>
                 <Tab currentTab={currentTab} />
                 
-                {tabsWithNav.includes(currentTab) ? (
-                    <nav className={style.secondaryNav}>
-                        <ul>
-                            {pages}
-                        </ul>
-                    </nav>
+                {tabsWithPages.includes(currentTab) ? (
+                    <div>
+                        <nav className={style.secondaryNav}>
+                            <ul>
+                                {pages}
+                            </ul>
+                        </nav>
+                        {isLogType(currentTab) && isWideEnough() ? getPage(currentTab, currentPages) : null}
+                    </div>
                 ) : (
                     null
                 )}
-
-                {isLogType(currentTab) && isWideEnough() ? getPage(currentTab, currentPages) : null}
             </div>
         </main> 
     )
