@@ -1,20 +1,51 @@
 /* eslint-disable react/prop-types */
+import { asTitleCase } from '../../utils/functions'
 import Dashboard from '../Dashboard'
 import Log from '../Log'
+import pageType from '../../enums/pageType'
 import Profile from '../Profile'
 import style from './style.module.css'
 import tabType from '../../enums/tabType' 
 import VerticalNavBar from '../VerticalNavBar'
 import ViewPane from '../ViewPane'
-import { useState } from 'react'
+import { useEffect, useState, useReducer } from 'react'
 
 const App = () => {
     const tabTypes = Object.values(tabType);
+    const [pages, setPages] = useState([]);
     const [currentTab, setCurrentTab] = useState(tabTypes[0]);
+    const [currentPages, pageDispatch] = useReducer(pageReducer, defaultCurrentPages);
     const tabsWithNav = [tabType.TRANSACTIONS, tabType.GOALS];
+
+    useEffect(() => {
+        if (tabsWithNav.includes(currentTab)) {
+            setPages(Object.values(pageType).map(type => {
+                const pageStyling = type === currentPages[currentTab] ? style.active : '';
+                return (
+                    <li key={type}>
+                        <a 
+                            href="#" 
+                            className={pageStyling} 
+                            onClick={handlePageSwitch}
+                            data-type={type}>
+                                {asTitleCase(type)}
+                        </a>
+                    </li>
+                )
+            }))
+        }
+    }, [currentPages, currentTab]);
 
     const handleTabSelection = (selectedTab) => {
         setCurrentTab(selectedTab);
+    }
+
+    const handlePageSwitch = (event) => {
+        const target = event.target;
+        const dataType = target.getAttribute("data-type")
+        if (dataType === null) {return;}
+
+        pageDispatch( {tab: currentTab, type: dataType} );
     }
     
     return (
@@ -30,8 +61,7 @@ const App = () => {
                 {tabsWithNav.includes(currentTab) ? (
                     <nav className={style.secondaryNav}>
                         <ul>
-                            <li>View</li>
-                            <li>Add</li>
+                            {pages}
                         </ul>
                     </nav>
                 ) : (
@@ -42,6 +72,20 @@ const App = () => {
             </div>
         </main> 
     )
+}
+
+const defaultCurrentPages = {
+    [tabType.TRANSACTIONS]: pageType.ADD,
+    [tabType.GOALS]: pageType.ADD
+}
+
+const pageReducer = (state, action) => {
+    const actionType = action.type;
+    const newState = {
+        ...state,
+        [action.tab]: actionType
+    }
+    return newState;
 }
 
 const isLogType = (type) => {
