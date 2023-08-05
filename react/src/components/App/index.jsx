@@ -1,20 +1,51 @@
 /* eslint-disable react/prop-types */
+import { asTitleCase } from '../../utils/functions'
 import Dashboard from '../Dashboard'
 import Log from '../Log'
+import pageType from '../../enums/pageType'
+import { pageReducer, isLogType, isWideEnough, getPage } from './functions'
 import Profile from '../Profile'
 import style from './style.module.css'
 import tabType from '../../enums/tabType' 
 import VerticalNavBar from '../VerticalNavBar'
-import ViewPane from '../ViewPane'
-import { useState } from 'react'
+import { useEffect, useState, useReducer } from 'react'
 
 const App = () => {
     const tabTypes = Object.values(tabType);
+    const [pages, setPages] = useState([]);
     const [currentTab, setCurrentTab] = useState(tabTypes[0]);
+    const [currentPages, pageDispatch] = useReducer(pageReducer, defaultCurrentPages);
     const tabsWithNav = [tabType.TRANSACTIONS, tabType.GOALS];
+
+    useEffect(() => {
+        if (tabsWithNav.includes(currentTab)) {
+            setPages(Object.values(pageType).map(type => {
+                const pageStyling = type === currentPages[currentTab] ? style.active : '';
+                return (
+                    <li key={type}>
+                        <a 
+                            href="#" 
+                            className={pageStyling} 
+                            onClick={handlePageSwitch}
+                            data-type={type}>
+                                {asTitleCase(type)}
+                        </a>
+                    </li>
+                )
+            }))
+        }
+    }, [currentPages, currentTab]);
 
     const handleTabSelection = (selectedTab) => {
         setCurrentTab(selectedTab);
+    }
+
+    const handlePageSwitch = (event) => {
+        const target = event.target;
+        const dataType = target.getAttribute("data-type")
+        if (dataType === null) {return;}
+
+        pageDispatch( {tab: currentTab, type: dataType} );
     }
     
     return (
@@ -30,29 +61,22 @@ const App = () => {
                 {tabsWithNav.includes(currentTab) ? (
                     <nav className={style.secondaryNav}>
                         <ul>
-                            <li>View</li>
-                            <li>Add</li>
+                            {pages}
                         </ul>
                     </nav>
                 ) : (
                     null
                 )}
 
-                {isLogType(currentTab) && isWideEnough() ? <ViewPane /> : null}
+                {isLogType(currentTab) && isWideEnough() ? getPage(currentTab, currentPages) : null}
             </div>
         </main> 
     )
 }
 
-const isLogType = (type) => {
-    if ([tabType.TRANSACTIONS, tabType.GOALS].includes(type)) {
-        return true;
-    }
-    return false;
-}
-
-const isWideEnough = () => {
-    return true;
+const defaultCurrentPages = {
+    [tabType.TRANSACTIONS]: pageType.ADD,
+    [tabType.GOALS]: pageType.ADD
 }
 
 const Tab = ({currentTab}) => {

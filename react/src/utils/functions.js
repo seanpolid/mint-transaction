@@ -21,4 +21,12 @@ const findParent = (element, options = {}) => {
     return currentElement !== elementLimit ? currentElement : null;
 };
 
-export { findParent }
+const asTitleCase = (string) => {
+    if (string[0] >= 'a' && string[0] <= 'z') {
+        string = string[0].toUpperCase() + string.substring(1);
+    }
+    
+    return string;
+}
+
+export { findParent, asTitleCase }

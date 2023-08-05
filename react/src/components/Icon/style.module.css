@@ -182,14 +182,14 @@
     border-top: 0;
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
-    border-bottom: 20px solid #121212;
+    border-bottom: 20px solid #303030;
     transform: rotate(180deg);
     position: relative;
 }
 
 .filter > div {
     position: absolute;
-    background: black;
+    background: #303030;
     width: 5px;
     height: 10px;
     left: -0.16em;
@@ -210,7 +210,7 @@
 }
 
 .sort .bars > div {
-    border: 1px solid black;
+    border: 1px solid #303030;
     width: 80%;
     height: 0;
 }
@@ -220,7 +220,7 @@
     top: 0.6em;
     left: -0.5em;
     width: 70%;
-    border: 1px solid black;
+    border: 1px solid #303030;
     transform: rotate(90deg);
 }
 
@@ -230,7 +230,7 @@
     border-top: 0;
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-bottom: 8px solid #121212;
+    border-bottom: 8px solid #303030;
     transform: rotate(180deg);
     top: 1em;
     left: -0.05em;

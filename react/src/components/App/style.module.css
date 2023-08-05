@@ -13,8 +13,17 @@
     border-radius: 10px;
 }
 
-.secondaryNav ul li:hover {
-    background: rgb(232, 229, 229);
+.secondaryNav ul a {
+    text-decoration: none;
+    color: black;
     padding: 5px 10px;
     border-radius: 10px;
+}
+
+.secondaryNav ul a:hover {
+    background: rgb(232, 229, 229);
+}
+
+.secondaryNav .active {
+    background: rgb(232, 229, 229);
 }
