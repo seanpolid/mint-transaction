@@ -1,15 +1,20 @@
+
 .container {
-    width: 3.5em;
+    width: 3em;
     aspect-ratio: 1;
     position: relative;
     overflow: hidden;
 }
 
 .container div {
-    border: 1px solid black;
+    border: 1px solid var(--secondary-color);
 }
 
-.transactionIcon {
+.active div {
+    border: 1px solid rgb(153, 238, 255);
+}
+
+.log {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -23,51 +28,136 @@
 .logLabel {
     position: absolute;
     z-index: 5;
-    background: white;
+    background: rgb(239, 239, 239);
     color: black;
     top: 45%;
     left: 0;
     padding: 2px 5px;
     border-radius: 0.1em;
+    font-size: 12px;
+}
+
+.active .logLabel {
+    background: rgb(153, 238, 255);
 }
 
 .container .bars {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: end;
     height: 100%;
     border: 0;
+    gap: 0.25em;
 }
 
 .bars > div {
     width: 25%;
     border-radius: 0.4em;
+    border: 1px solid inherit;
 }
 
 .bars > div:nth-child(1) {
     height: 25%;
 }
 
-.bars  > div:nth-child(2) {
+.bars > div:nth-child(2) {
     height: 55%;
 }
 
-.bars  > div:nth-child(3) {
+.bars > div:nth-child(3) {
     height: 84%;
 }
 
 .container .line {
     transform: rotate(-35deg);
-    border: 1px dashed black;
+    border: 1px dashed var(--secondary-color);
     width: 110%;
     position: absolute;
     top: 1.1em;
     left: -0.25em;
 }
 
-.profileIcon {
+.active .line {
+    border: 1px dashed rgb(153, 238, 255);
+}
+
+.target {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ring {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border-radius: 100%;
-    border: 1px solid black;
+    aspect-ratio: 1;
+}
+
+.target > div {
+    width: 90%;
+}
+
+.target > div > div {
+    width: 70%;
+}
+
+.target > div > div > div {
+    width: 50%;
+}
+
+.target div:nth-child(3) {
+    height: 50%;
+}
+
+.target .arrow {
+    position: absolute;
+    transform: rotate(-45deg);
+    width: 60%;
+    top: 0.9em;
+    right: 0;
+}
+
+.target .leftTail {
+    position: absolute;
+    top: -0.86em;
+    right: 0.65em;
+    width: 0;
+    height: 0;
+    border-top: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 8px solid var(--secondary-color);
+    transform: rotate(-45deg);
+}
+
+.active .leftTail {
+    border-bottom: 8px solid rgb(153, 238, 255);
+}
+
+.target .rightTail {
+    position: absolute;
+    top: 0.35em;
+    right: 0em;
+    width: 0;
+    height: 0;
+    border-top: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 8px solid var(--secondary-color);
+    transform: rotate(135deg);
+}
+
+.active .rightTail {
+    border-bottom: 8px solid rgb(153, 238, 255);
+}
+
+.frame {
+    border-radius: 100%;
+    border: 1px solid var(--secondary-color);
+    height: 100%;
+    overflow: hidden;
 }
 
 .head {
@@ -83,4 +173,82 @@
     border-radius: 80%;
     aspect-ratio: 0.8;
     margin: auto;
+}
+
+.filter {
+    border: 1px solid black;
+    width: 0;
+    height: 0;
+    border-top: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 20px solid #121212;
+    transform: rotate(180deg);
+    position: relative;
+}
+
+.filter > div {
+    position: absolute;
+    background: black;
+    width: 5px;
+    height: 10px;
+    left: -0.16em;
+    bottom: -0.25em;
+    aspect-ratio: 1;
+}
+
+.sort {
+    position: relative;
+}
+
+.sort .bars {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    align-items: end;
+    height: 100%;
+}
+
+.sort .bars > div {
+    border: 1px solid black;
+    width: 80%;
+    height: 0;
+}
+
+.sort .arrow {
+    position: absolute;
+    top: 0.6em;
+    left: -0.5em;
+    width: 70%;
+    border: 1px solid black;
+    transform: rotate(90deg);
+}
+
+.sort .arrowHead {
+    width: 0;
+    height: 0;
+    border-top: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 8px solid #121212;
+    transform: rotate(180deg);
+    top: 1em;
+    left: -0.05em;
+    position: absolute;
+}
+
+.search {
+    border: 1px solid black;
+    width: 12px;
+    aspect-ratio: 1;
+    border-radius: 100%;
+}
+
+.handle {
+    width: 0.5em;
+    border: 1px solid black;
+    position: absolute;
+    top: 0.7em;
+    left: 0.5em;
+    transform: rotate(45deg);   
 }

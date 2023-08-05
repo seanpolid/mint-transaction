@@ -5,4 +5,4 @@ const tabType = {
     PROFILE: "profile"
 };
 
-export { tabType }
+export default tabType
