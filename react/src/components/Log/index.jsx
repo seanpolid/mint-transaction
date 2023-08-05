@@ -14,7 +14,7 @@ const Log = ({type}) => {
 
     let logs = [];
     for (let i = 0; i < 100; i++) {
-        logs.push(<li></li>);
+        logs.push(<li key={i}></li>);
     }
 
     return (

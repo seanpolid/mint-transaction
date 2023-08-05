@@ -3,7 +3,7 @@ import './App.css'
 import Dashboard from './components/Dashboard'
 import Log from './components/Log'
 import Profile from './components/Profile'
-import { tabType } from './enums/tabType'
+import tabType from './enums/tabType' 
 import VerticalNavBar from './components/VerticalNavBar'
 import ViewPane from './components/ViewPane'
 import { useState } from 'react'
@@ -11,6 +11,7 @@ import { useState } from 'react'
 const App = () => {
     const tabTypes = Object.values(tabType);
     const [currentTab, setCurrentTab] = useState(tabTypes[0]);
+
     const handleTabSelection = (selectedTab) => {
         setCurrentTab(selectedTab);
     }
@@ -18,6 +19,7 @@ const App = () => {
     return (
         <main>
             <VerticalNavBar 
+                currentTab={currentTab}
                 handleTabSelection={handleTabSelection}
             />
             <div>

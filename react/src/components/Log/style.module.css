@@ -1,5 +1,5 @@
 .container {
-    border-right: 1px solid #121212;
+    border-right: 1px solid gray;
 }
 
 .container form, .container .scrollpane {
@@ -10,7 +10,7 @@
     height: 3em;
     margin: auto;
     padding: 0em 1em;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid gray;
     display: grid;
     grid-template-columns: 1fr 2em 2em;
     gap: 0.5em;
@@ -50,5 +50,5 @@
 
 .scrollpane li {
     height: 4em;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid gray;
 }
