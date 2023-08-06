@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
 import Icon from "../Icon";
 import iconType from "../../enums/iconType";
-import tabType from "../../enums/tabType"
-import style from './style.module.css'
+import tabType from "../../enums/tabType";
+import Scrollpane from "../Scrollpane";
+import style from './style.module.css';
 
 const Log = ({type}) => {
     switch (type) {
@@ -13,7 +14,7 @@ const Log = ({type}) => {
     }
 
     let logs = [];
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 5; i++) {
         logs.push(<li key={i}></li>);
     }
 
@@ -28,7 +29,7 @@ const Log = ({type}) => {
                     <Icon type={iconType.SORT} />
                 </a>
             </form>
-            <Scrollpane>
+            <Scrollpane className={style.log}>
                 <ul>
                     {logs}
                 </ul>
@@ -44,14 +45,6 @@ const SearchBar = () => {
             <Icon type={iconType.SEARCH} />
         </div>
         
-    )
-}
-
-const Scrollpane = ({children}) => {
-    return (
-        <div className={style.scrollpane}>
-            {children}
-        </div>
     )
 }
 
