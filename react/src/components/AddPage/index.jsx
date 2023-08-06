@@ -1,10 +1,11 @@
 /* eslint-disable react/prop-types */
+import InputWithLabel from '../InputWithLabel';
+import RadioButtonWithLabel from '../RadioButtonWithLabel';
 import Scrollpane from '../Scrollpane';
 import style from './style.module.css'
 import tabType from "../../enums/tabType"
 
 const AddPage = ({type}) => {
-    console.log("Add page: ", type);
     const page = {
         [tabType.TRANSACTIONS]: <TransactionPage />,
         [tabType.GOALS]: <GoalPage />
@@ -20,9 +21,6 @@ const TransactionPage = () => {
                 <ul>
                     <li>
                         <TransactionForm n={1}/>
-                    </li>
-                    <li>
-                        <TransactionForm n={2}/>
                     </li>
                 </ul>
                 <button>Save</button>
@@ -40,11 +38,16 @@ const TransactionForm = ({n}) => {
                     <label>Transaction Type:</label>
                     
                     <div>
-                        <input type="radio" name={`type${n}`} value="income" id="income"/>
-                        <label htmlFor="income">Income</label>
-
-                        <input type="radio" name={`type${n}`} value="expense" id="expense" checked/>
-                        <label htmlFor="expense">Expense</label>
+                        <RadioButtonWithLabel 
+                            value='income'
+                            text='Income'
+                        />
+                        
+                        <RadioButtonWithLabel
+                            value='expense'
+                            text='Expense'
+                            checked
+                        />
                     </div>
 
                     <label htmlFor={`category${n}`}>Category:</label>
@@ -56,18 +59,29 @@ const TransactionForm = ({n}) => {
 
                     <label htmlFor={`recurs${n}`}>Recurs:</label>
                     <div>
-                        <input type="radio" name={`recurs${n}`} value="yes" id="yes"/>
-                        <label htmlFor="yes">Yes</label>
+                        <RadioButtonWithLabel
+                            value='yes'
+                            text='Yes'
+                        />
 
-                        <input type="radio" name={`recurs${n}`} value="no" id="no" checked/>
-                        <label htmlFor="no">No</label>
+                        <RadioButtonWithLabel
+                            value='no'
+                            text='No'
+                            checked
+                        />
                     </div>
 
-                    <label htmlFor={`date${n}`}>Date:</label>
-                    <input type='date' />
+                    <InputWithLabel 
+                        id={`date${n}`}
+                        type='date'
+                        text='Date:'
+                    />
 
-                    <label htmlFor={`amount${n}`}>Amount:</label>
-                    <input type='number'/>
+                    <InputWithLabel
+                        id={`amount${n}`}
+                        type='number'
+                        text='Amount:'
+                    />
                 </div>
                 
                 <div className={style.secondColumn}>
