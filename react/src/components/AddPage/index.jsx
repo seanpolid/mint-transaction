@@ -3,8 +3,8 @@ import InputWithLabel from '../InputWithLabel';
 import RadioButtonWithLabel from '../RadioButtonWithLabel';
 import Scrollpane from '../Scrollpane';
 import style from './style.module.css'
-import { tabType, actionType } from "../../enums"
-import { useState, useEffect, useCallback } from 'react';
+import { tabType } from "../../enums"
+import { useState, useEffect } from 'react';
 
 const AddPage = ({type}) => {
     const page = {
@@ -22,15 +22,17 @@ const TransactionPage = () => {
         setForms([createTransactionForm(1, handleDelete)]);
     }, []);
 
-    const handleDelete = useCallback((event) => {
+    const handleDelete = (event) => {
         event.preventDefault();
         const formNum = event.target.getAttribute("data-form");
-        console.log(forms.length);
-        if (forms.length > 1) {
-            console.log("removing: ", formNum);
-            setForms(prevForms => prevForms.filter(form => form.key !== formNum));
-        }
-    }, [forms]);
+        setForms(prevForms => {
+            console.log(prevForms.length);
+            if (prevForms.length > 1) {
+                return prevForms.filter(form => form.key !== formNum)
+            }
+            return prevForms;
+        });
+    };
 
     const handleAdd = (event) => {
         event.preventDefault();

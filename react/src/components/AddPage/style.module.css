@@ -1,6 +1,6 @@
 @media screen {
     .transactionContainer {
-        padding: 0 2em 0.5em 3em;
+        padding: 0 1.5em 2em 3em;
         display: flex;
         flex-direction: column;
         justify-content: start;
