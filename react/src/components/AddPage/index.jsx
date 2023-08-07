@@ -3,7 +3,8 @@ import InputWithLabel from '../InputWithLabel';
 import RadioButtonWithLabel from '../RadioButtonWithLabel';
 import Scrollpane from '../Scrollpane';
 import style from './style.module.css'
-import tabType from "../../enums/tabType"
+import { tabType, actionType } from "../../enums"
+import { useState, useEffect, useCallback } from 'react';
 
 const AddPage = ({type}) => {
     const page = {
@@ -15,24 +16,55 @@ const AddPage = ({type}) => {
 }
 
 const TransactionPage = () => {
+    const [forms, setForms] = useState([]);
+
+    useEffect(() => {
+        setForms([createTransactionForm(1, handleDelete)]);
+    }, []);
+
+    const handleDelete = useCallback((event) => {
+        event.preventDefault();
+        const formNum = event.target.getAttribute("data-form");
+        console.log(forms.length);
+        if (forms.length > 1) {
+            console.log("removing: ", formNum);
+            setForms(prevForms => prevForms.filter(form => form.key !== formNum));
+        }
+    }, [forms]);
+
+    const handleAdd = (event) => {
+        event.preventDefault();
+        setForms(prevForms => prevForms.concat([createTransactionForm(forms.length + 1, handleDelete)]));
+    }
+
     return (
         <section>
             <Scrollpane className={style.transactionContainer}>
                 <ul>
-                    <li>
-                        <TransactionForm n={1}/>
-                    </li>
+                    {forms}
                 </ul>
-                <button>Save</button>
+
+                <div className={style.options}>
+                    <button onClick={handleAdd}>Add</button>
+                    <button>Save</button>
+                </div>
             </Scrollpane>
         </section>
     )
 }
 
-const TransactionForm = ({n}) => {
+const createTransactionForm = (formNum, onButtonClick) => {
+    return (
+        <li key={formNum}>
+            <TransactionForm formNum={formNum} onButtonClick={onButtonClick} />
+        </li>
+    )
+} 
+
+const TransactionForm = ({formNum, onButtonClick}) => {
     return (
         <>
-            <p>Transaction {n}</p>
+            <p>Transaction {formNum}</p>
             <form className={style.transactionForm}>
                 <div className={style.firstColumn}>
                     <label>Transaction Type:</label>
@@ -50,14 +82,15 @@ const TransactionForm = ({n}) => {
                         />
                     </div>
 
-                    <label htmlFor={`category${n}`}>Category:</label>
-                    <select id={`category${n}`}>
+                    
+                    <label htmlFor={`category${formNum}`}>Category:</label>
+                    <select id={`category${formNum}`}>
                         <option>Gas</option>
                         <option>Groceries</option>
                         <options>Rent</options>
                     </select>
 
-                    <label htmlFor={`recurs${n}`}>Recurs:</label>
+                    <label htmlFor={`recurs${formNum}`}>Recurs:</label>
                     <div>
                         <RadioButtonWithLabel
                             value='yes'
@@ -72,25 +105,29 @@ const TransactionForm = ({n}) => {
                     </div>
 
                     <InputWithLabel 
-                        id={`date${n}`}
+                        id={`date${formNum}`}
                         type='date'
                         text='Date:'
                     />
 
                     <InputWithLabel
-                        id={`amount${n}`}
+                        id={`amount${formNum}`}
                         type='number'
                         text='Amount:'
                     />
                 </div>
                 
                 <div className={style.secondColumn}>
-                    <label htmlFor={`notes${n}`}>Notes:</label>
-                    <textarea id={`notes${n}`} className={style.textarea}/>
+                    <label htmlFor={`notes${formNum}`}>Notes:</label>
+                    <textarea id={`notes${formNum}`} className={style.textarea}/>
                 </div>
 
-                <button className={style.add}>+</button>
-                <button className={style.delete}>-</button>
+                <button 
+                    className={style.delete} 
+                    onClick={onButtonClick}
+                    data-form={formNum}>
+                        -
+                </button>
             </form>
         </>
     )

@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import Icon from "../Icon";
-import iconType from "../../enums/iconType";
-import tabType from "../../enums/tabType";
+import { iconType, tabType } from "../../enums";
 import Scrollpane from "../Scrollpane";
 import style from './style.module.css';
 

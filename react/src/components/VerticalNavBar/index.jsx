@@ -1,9 +1,8 @@
 /* eslint-disable react/prop-types */
 import { findParent } from "../../utils/functions";
 import Icon from "../Icon";
-import iconType from "../../enums/iconType";
+import { iconType, tabType } from "../../enums";
 import style from "./style.module.css";
-import tabType from "../../enums/tabType";
 import { useEffect, useState } from "react";
 
 const VerticalNavBar = ({currentTab, handleTabSelection}) => {

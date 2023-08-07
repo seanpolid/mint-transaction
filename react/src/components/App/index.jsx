@@ -2,11 +2,10 @@
 import { asTitleCase } from '../../utils/functions'
 import Dashboard from '../Dashboard'
 import Log from '../Log'
-import pageType from '../../enums/pageType'
 import { pageReducer, isLogType, isWideEnough, getPage } from './functions'
 import Profile from '../Profile'
 import style from './style.module.css'
-import tabType from '../../enums/tabType' 
+import { tabType, pageType } from '../../enums' 
 import VerticalNavBar from '../VerticalNavBar'
 import { useEffect, useState, useReducer } from 'react'
 
