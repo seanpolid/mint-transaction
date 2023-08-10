@@ -1,5 +1,6 @@
 <h1>Overview</h1>
 Transaction Tracker is an app that I've been wanting to make for a while. Here are the high level goals:
+
 <ol>
   <li>Provide users an intuitive interface so they can easily log their transactions.</li>
   <li>Provide a basic dashboard that summarizes the user's transaction history over various time periods.</li>
