@@ -10,13 +10,13 @@ Transaction Tracker is an app that I've been wanting to make for a while. Here a
 
 <h3>Home & Login</h3>
 
-![home & login](https://github.com/seanpolid/transaction-tracker-images/home_login.png?raw=true)
+![home & login](https://github.com/seanpolid/transaction-tracker-images/blob/main/home_login.png?raw=true)
 
 <h3>Main Application (desktop)</h3>
 
-![main app desktop](https://github.com/seanpolid/transaction-tracker-images/main_application.png?raw=true)
+![main app desktop](https://github.com/seanpolid/transaction-tracker-images/blob/images/main_application.png?raw=true)
 
 <h3>Main Application (mobile)</h3>
 ** This was one of the first mocks so the division of widgets may not match the mocks above
 
-![main app mobile](https://github.com/seanpolid/transaction-tracker-images/main_application_mobile.png?raw=true)
+![main app mobile](https://github.com/seanpolid/transaction-tracker-images/blob/images/main_application_mobile.png?raw=true)
