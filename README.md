@@ -8,4 +8,4 @@ Transaction Tracker is an app that I've been wanting to make for a while. Here a
 
 <h2>Stack Details and Mocks</h2>
 
-[details](https://github.com/seanpolid/transaction-tracker-images/blob/main/details.png?raw=true)
+[details](https://github.com/seanpolid/transaction-tracker-images/blob/main/app_details.png?raw=true)
