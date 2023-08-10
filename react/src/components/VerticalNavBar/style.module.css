@@ -20,4 +20,29 @@
     flex-direction: column;
     gap: 4em;
     margin-top: 5em;
+    height: 100%;
+}
+
+.container ul li:last-child {
+    position: absolute;
+    bottom: 1em;
+}
+
+.net {
+    position: absolute;
+    bottom: 3.5em;
+    width: var(--nav-width);
+    text-align: center;
+}
+
+.positive {
+    color: rgb(89, 255, 89);
+}
+
+.negative {
+    color: rgb(255, 56, 56);
+}
+
+.zero {
+    color: white;
 }

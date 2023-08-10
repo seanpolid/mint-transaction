@@ -6,12 +6,20 @@
     overflow: hidden;
 }
 
-.container div {
-    border: 1px solid var(--secondary-color);
+.container {
+    --color: var(--secondary-color);
 }
 
-.active div {
-    border: 1px solid rgb(153, 238, 255);
+.container:hover {
+    --color: rgb(153, 238, 255);
+}
+
+.active {
+    --color: rgb(153, 238, 255);
+}
+
+.container div {
+    border: 1px solid var(--color);
 }
 
 .log {
@@ -28,17 +36,13 @@
 .logLabel {
     position: absolute;
     z-index: 5;
-    background: rgb(239, 239, 239);
+    background: var(--color);
     color: black;
     top: 45%;
     left: 0;
     padding: 2px 5px;
     border-radius: 0.1em;
     font-size: 12px;
-}
-
-.active .logLabel {
-    background: rgb(153, 238, 255);
 }
 
 .container .bars {
@@ -70,7 +74,7 @@
 
 .container .line {
     transform: rotate(-35deg);
-    border: 1px dashed var(--secondary-color);
+    border: 1px dashed var(--color);
     width: 110%;
     position: absolute;
     top: 1.1em;
@@ -78,7 +82,7 @@
 }
 
 .active .line {
-    border: 1px dashed rgb(153, 238, 255);
+    border: 1px dashed var(--color);
 }
 
 .target {
@@ -128,12 +132,12 @@
     border-top: 0;
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
-    border-bottom: 8px solid var(--secondary-color);
+    border-bottom: 8px solid var(--color);
     transform: rotate(-45deg);
 }
 
 .active .leftTail {
-    border-bottom: 8px solid rgb(153, 238, 255);
+    border-bottom: 8px solid var(--color);
 }
 
 .target .rightTail {
@@ -145,7 +149,7 @@
     border-top: 0;
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
-    border-bottom: 8px solid var(--secondary-color);
+    border-bottom: 8px solid var(--color);
     transform: rotate(135deg);
 }
 
@@ -182,14 +186,14 @@
     border-top: 0;
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
-    border-bottom: 20px solid #121212;
+    border-bottom: 20px solid #303030;
     transform: rotate(180deg);
     position: relative;
 }
 
 .filter > div {
     position: absolute;
-    background: black;
+    background: #303030;
     width: 5px;
     height: 10px;
     left: -0.16em;
@@ -210,7 +214,7 @@
 }
 
 .sort .bars > div {
-    border: 1px solid black;
+    border: 1px solid #303030;
     width: 80%;
     height: 0;
 }
@@ -220,7 +224,7 @@
     top: 0.6em;
     left: -0.5em;
     width: 70%;
-    border: 1px solid black;
+    border: 1px solid #303030;
     transform: rotate(90deg);
 }
 
@@ -230,7 +234,7 @@
     border-top: 0;
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-bottom: 8px solid #121212;
+    border-bottom: 8px solid #303030;
     transform: rotate(180deg);
     top: 1em;
     left: -0.05em;

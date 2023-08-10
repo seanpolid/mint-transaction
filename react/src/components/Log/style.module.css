@@ -37,18 +37,13 @@
     left: 5px;
 }
 
-.scrollpane {
-    height: calc(100vh - 3em);
-    overflow-y: scroll;
-}
-
-.scrollpane ul {
+.log ul {
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-.scrollpane li {
+.log li {
     height: 4em;
     border-bottom: 1px solid gray;
 }

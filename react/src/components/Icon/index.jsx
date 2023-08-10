@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import iconType from '../../enums/iconType'
+import { iconType } from '../../enums';
 import style from './style.module.css'
 
 const Icon = ({type, active}) => {

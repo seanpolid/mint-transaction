@@ -1,0 +1,114 @@
+@media screen {
+    .transactionContainer {
+        padding: 0 2em 0.5em 3em;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+        gap: 2em;
+    }
+    
+    .transactionContainer ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2.5em;
+    }
+    
+    .transactionContainer ul p {
+        margin-bottom: 0.5em;
+    }
+
+    .transactionContainer .options {
+        display: flex;
+        gap: 2em;
+    }
+
+    .transactionContainer .options button {
+        padding: 10px 35px;
+        border: 0;
+        border-radius: 5px;
+        font-size: 18px;
+        color: black;
+        cursor: pointer;
+        background: rgb(232, 229, 229);
+    }
+
+    .transactionContainer .options button:hover {
+        background: rgba(143, 143, 143, 0.205);
+    }
+    
+    .transactionForm {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        padding: 1.5em 2.5em;
+        border-radius: 1em;
+        /*background: rgba(228, 230, 232, 0.556);*/
+        background: #8894a849;
+        gap: 2em;
+        align-items: start;
+        justify-content: space-between;
+        position: relative;
+        box-sizing: border-box;
+        width: 52vw;
+    }
+
+    .transactionForm label {
+        font-size: 16px;
+    }
+
+    .transactionForm .firstColumn {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1em;
+    }
+
+    .transactionForm .firstColumn > div {
+        display: flex;
+        flex-direction: row;
+        justify-content: end;
+        align-items: center;
+        gap: 1em;
+    }
+    
+    .transactionForm .secondColumn {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .transactionForm .textarea {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .transactionForm button {
+        position: absolute;
+        bottom: -1.75em;
+        left: -2em;
+        cursor: pointer;
+        text-align: center;
+        font-size: 16px;
+        border-radius: 100%;
+        border: 0;
+        background: transparent;
+        width: 1.5em;
+        aspect-ratio: 1;
+        box-sizing: border-box;
+        padding-bottom: 5px;
+    }
+
+    .transactionForm .delete {
+        bottom: 1em;
+        border: 1px solid red;
+        color: red;
+    }
+}
+
+@media screen and (max-width: 1190px) {
+    .transactionForm {
+        grid-template-columns: 1fr;
+        gap: 1em;
+    }
+}

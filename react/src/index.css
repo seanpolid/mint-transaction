@@ -38,6 +38,9 @@ h1 {
     text-align: center;
 }
 
-input {
-    padding: 4px 5px;
+input, select, textarea {
+    padding: 5px 8px;
+    background: white;
+    border-radius: 2px;
+    border: 0px;
 }
