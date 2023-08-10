@@ -6,6 +6,6 @@ Transaction Tracker is an app that I've been wanting to make for a while. Here a
   <li>Give users the opportunity to create goals. Use this information to create a daily notification service that tells the user the total amount of money they can spend each day to reach their goal.</li>
 </ol>
 
-<h2>Stack Details and Mocks</h2>
+<h2>Details and Mocks</h2>
 
-[details](https://github.com/seanpolid/transaction-tracker-images/blob/main/app_details.png?raw=true)
+![app_details](https://github.com/seanpolid/transaction-tracker-images/app_details.png?raw=true
