@@ -6,6 +6,21 @@ Transaction Tracker is an app that I've been wanting to make for a while. Here a
   <li>Give users the opportunity to create goals. Use this information to create a daily notification service that tells the user the total amount of money they can spend each day to reach their goal.</li>
 </ol>
 
+<h1>Target Technologies</h1>
+<ol>
+  <li>React</li>
+  <li>Selenium</li>
+  <li>Spring Boot</li>
+  <li>JUnit</li>
+  <li>Hibernate</li>
+  <li>MySQL</li>
+  <li>Test containers (for database testing)</li>
+  <li>Vault (or some other library for storing secrets)</li>
+  <li>Docker</li>
+  <li>Github actions</li>
+  <li>AWS or Azure</li>
+</ol>
+
 <h1>Mocks</h1>
 
 <h2>Home & Login</h2>
