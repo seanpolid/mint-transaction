@@ -5,6 +5,7 @@ import Scrollpane from '../Scrollpane';
 import style from './style.module.css'
 import { tabType } from "../../enums"
 import { useState, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 const AddPage = ({type}) => {
     const page = {
@@ -24,11 +25,12 @@ const TransactionPage = () => {
 
     const handleDelete = (event) => {
         event.preventDefault();
-        const formNum = event.target.getAttribute("data-form");
+        const key = event.target.parentNode.parentNode.getAttribute("data-key");
+        
         setForms(prevForms => {
-            console.log(prevForms.length);
             if (prevForms.length > 1) {
-                return prevForms.filter(form => form.key !== formNum)
+                return prevForms.filter(form => form.key !== key)
+                                .map((form, index) => updateTransactionForm(form, index));
             }
             return prevForms;
         });
@@ -56,12 +58,27 @@ const TransactionPage = () => {
 }
 
 const createTransactionForm = (formNum, onButtonClick) => {
+    const id = uuidv4();
+
     return (
-        <li key={formNum}>
+        <li key={id} data-key={id}>
             <TransactionForm formNum={formNum} onButtonClick={onButtonClick} />
         </li>
     )
 } 
+
+const updateTransactionForm = (form, index) => {
+    const newIndex = index + 1;
+
+    return (
+        <li key={form.key} data-key={form.key}>
+            <TransactionForm 
+                formNum={newIndex}
+                onButtonClick={form.props.children.props.onButtonClick}
+            />
+        </li>
+    )
+}
 
 const TransactionForm = ({formNum, onButtonClick}) => {
     return (
@@ -126,8 +143,7 @@ const TransactionForm = ({formNum, onButtonClick}) => {
 
                 <button 
                     className={style.delete} 
-                    onClick={onButtonClick}
-                    data-form={formNum}>
+                    onClick={onButtonClick}>
                         -
                 </button>
             </form>
