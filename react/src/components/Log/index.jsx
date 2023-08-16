@@ -14,7 +14,7 @@ const Log = ({type}) => {
 
     let logs = [];
     for (let i = 0; i < 5; i++) {
-        logs.push(<li key={i}></li>);
+        logs.push(<Transaction key={i}/>);
     }
 
     return (
@@ -28,12 +28,26 @@ const Log = ({type}) => {
                     <Icon type={iconType.SORT} />
                 </a>
             </form>
+
             <Scrollpane className={style.log}>
-                <ul>
+                <table>
                     {logs}
-                </ul>
+                </table>
             </Scrollpane>
         </section>
+    )
+}
+
+const Transaction = ({}) => {
+    return (
+        <tr className={style.transaction}>
+            <td>
+                <span className={style.type}>Income</span>
+                <span className={style.category}>Job</span>
+                <span className={style.date}>08/15/2023</span>
+            </td>
+            <td className={style.amount}>$1000</td>
+        </tr>
     )
 }
 
