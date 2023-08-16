@@ -1,6 +1,6 @@
 @media screen {
     .transactionContainer {
-        padding: 0 1.5em 2em 3em;
+        padding: 2em 1.5em 2em 3em;
         display: flex;
         flex-direction: column;
         justify-content: start;
@@ -37,26 +37,28 @@
     }
 
     .transactionContainer .options button:hover {
-        background: rgba(143, 143, 143, 0.205);
+        background: rgb(217, 214, 214);
+        transition: 0.5s;
     }
     
     .transactionForm {
         display: grid;
         grid-template-columns: 1.5fr 1fr;
         padding: 1.5em 2.5em;
-        border-radius: 1em;
-        /*background: rgba(228, 230, 232, 0.556);*/
-        background: #8894a849;
         gap: 2em;
         align-items: start;
         justify-content: space-between;
         position: relative;
         box-sizing: border-box;
         width: 52vw;
+        border-radius: 1em;
+        background: #9c9fa220;
+        border: 1px solid rgb(198, 197, 197);
+        box-shadow: 3px 3px 1px rgba(12, 12, 12, 0.265);
     }
 
     .transactionForm label {
-        font-size: 16px;
+        font-size: 18px;
     }
 
     .transactionForm .firstColumn {
