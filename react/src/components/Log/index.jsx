@@ -31,7 +31,9 @@ const Log = ({type}) => {
 
             <Scrollpane className={style.log}>
                 <table>
-                    {logs}
+                    <tbody>
+                        {logs}
+                    </tbody>
                 </table>
             </Scrollpane>
         </section>
