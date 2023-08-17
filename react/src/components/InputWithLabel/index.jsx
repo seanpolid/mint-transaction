@@ -1,17 +1,28 @@
 /* eslint-disable react/prop-types */
 
-const InputWithLabel = ({id, type, text, wrapped=false}) => {
+const InputWithLabel = ({id, type, text, value, onChange, wrapped=false}) => {
+    value = value === undefined ? '' : value;
     return (
         <>
             {wrapped ? (
                 <label>
                     {text}
-                    <input type={type} />
+                    <input 
+                        id={id}
+                        type={type} 
+                        value={value}
+                        onChange={onChange}
+                    />
                 </label>
             ) : (
                 <>
                     <label htmlFor={id}>{text}</label> 
-                    <input type={type} id={id} />
+                    <input 
+                        id={id}
+                        type={type}
+                        value={value}
+                        onChange={onChange} 
+                    />
                 </>
             )}
         </>
