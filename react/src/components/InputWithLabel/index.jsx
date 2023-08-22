@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 
-const InputWithLabel = ({id, type, text, value, onChange, wrapped=false}) => {
+const InputWithLabel = ({id, name, type, text, value, onChange, wrapped=false}) => {
     value = value === undefined ? '' : value;
     return (
         <>
@@ -9,6 +9,7 @@ const InputWithLabel = ({id, type, text, value, onChange, wrapped=false}) => {
                     {text}
                     <input 
                         id={id}
+                        name={name}
                         type={type} 
                         value={value}
                         onChange={onChange}
@@ -19,6 +20,7 @@ const InputWithLabel = ({id, type, text, value, onChange, wrapped=false}) => {
                     <label htmlFor={id}>{text}</label> 
                     <input 
                         id={id}
+                        name={name}
                         type={type}
                         value={value}
                         onChange={onChange} 

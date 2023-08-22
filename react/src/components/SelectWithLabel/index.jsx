@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import SelectWithItems from "../SelectWithItems";
 
-const SelectWithLabel = ({id, name, text, items, value, onChange, wrapped=true}) => {
+const SelectWithLabel = ({id, name, text, items, value, onChange, wrapped=false}) => {
     return (
         <>
             {wrapped ? (

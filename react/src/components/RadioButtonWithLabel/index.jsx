@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 
-const RadioButtonWithLabel = ({id, name, text, value, onChange, wrapped=true, checked=false}) => {
+const RadioButtonWithLabel = ({id, name, text, value, onChange, wrapped=false, checked=false}) => {
     return (
         <>
             {wrapped ? (
