@@ -1,29 +1,29 @@
 /* eslint-disable react/prop-types */
+import SelectWithItems from "../SelectWithItems";
 
-const InputWithLabel = ({id, name, type, text, value, onChange, wrapped=false}) => {
-    value = value === undefined ? '' : value;
+const SelectWithLabel = ({id, name, text, items, value, onChange, wrapped=false}) => {
     return (
         <>
             {wrapped ? (
                 <label>
                     {text}
-                    <input 
-                        id={id}
-                        name={name}
-                        type={type} 
+                    <SelectWithItems 
+                        id={id} 
+                        name={name} 
+                        items={items}
                         value={value}
-                        onChange={onChange}
+                        onChange={onChange} 
                     />
                 </label>
             ) : (
                 <>
                     <label htmlFor={id}>{text}</label> 
-                    <input 
+                    <SelectWithItems 
                         id={id}
                         name={name}
-                        type={type}
+                        items={items}
                         value={value}
-                        onChange={onChange} 
+                        onChange={onChange}
                     />
                 </>
             )}
@@ -31,4 +31,4 @@ const InputWithLabel = ({id, name, type, text, value, onChange, wrapped=false}) 
     )
 }
 
-export default InputWithLabel
+export default SelectWithLabel;
