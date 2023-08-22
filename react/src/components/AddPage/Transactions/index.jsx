@@ -4,19 +4,22 @@ import RadioButtonWithLabel from '../../RadioButtonWithLabel';
 import Scrollpane from '../../Scrollpane';
 import SelectWithLabel from '../../SelectWithLabel';
 import style from './style.module.css'
-import Transaction from '../../../models/Transaction';
-import { transactionType, decision } from '../../../enums';
+import { Transaction, Category } from '../../../models';
+import { transactionType } from '../../../enums';
 import { useState, useEffect } from 'react';
+import { useList, useObject } from '../../../utils/hooks';
 import { v4 as uuidv4 } from 'uuid';
 
 const TransactionPage = () => {
     const [forms, setForms] = useState([]);
-    const [transactions, setTransactions] = useState([]);
+    const [transactions, setTransactions, updateTransaction] = useList([]);
 
     useEffect(() => {
         const transaction = new Transaction();
-        const transactionForm = createTransactionForm(handleDelete, transaction);
+        const transactionForm = createTransactionForm(transaction, handleDelete, handleTransactionChange);
         transaction.key = transactionForm.key;
+        transaction.type = transactionType.EXPENSE;
+        transaction.recurs = false
         
         setForms([transactionForm]);
         setTransactions([transaction]);
@@ -31,7 +34,6 @@ const TransactionPage = () => {
         const key = event.target.parentNode.parentNode.getAttribute("data-key");
         
         setForms(prevForms => {
-            console.log("prevForms: ", prevForms);
             if (prevForms.length > 1) {
                 return prevForms.filter(form => form.key !== key);
             }
@@ -51,12 +53,16 @@ const TransactionPage = () => {
         const transaction = new Transaction();
 
         setForms(prevForms => {
-            const form = createTransactionForm(handleDelete, transaction);
+            const form = createTransactionForm(transaction, handleDelete, handleTransactionChange);
             transaction.key = form.key;
             return prevForms.concat([form]);
         });
 
         setTransactions(prevTransactions => prevTransactions.concat([transaction]));
+    }
+
+    const handleTransactionChange = (attributeName, value, key) => {
+        updateTransaction(attributeName, value, key);
     }
 
     return (
@@ -75,140 +81,86 @@ const TransactionPage = () => {
     )
 }
 
-const createTransactionForm = (onButtonClick, transaction) => {
+const createTransactionForm = (transaction, onButtonClick, handleTransactionChange) => {
     const id = uuidv4();
 
     return (
         <li key={id} data-key={id}>
             <TransactionForm 
                 id={id}
+                initialTransaction={transaction} 
                 onButtonClick={onButtonClick}
-                transaction={transaction} 
+                handleTransactionChange={handleTransactionChange}
             />
         </li>
     )
 } 
 
-const TransactionForm = ({id, onButtonClick, transaction}) => {
+
+
+const TransactionForm = ({id, initialTransaction, onButtonClick, handleTransactionChange}) => {
+    const [transaction, setTransaction, updateTransaction] = useObject(initialTransaction);
     const names = {
-        ['startDate']: `startDate-${id}`,
-        ['endDate']: `endDate-${id}`,
-        ['type']: `type-${id}`,
-        ['category']: `category-${id}`,
-        ['recurs']: `recurs-${id}`,
-        ['amount']: `amount-${id}`,
-        ['notes']: `notes-${id}`
+        ['startDate']: `startDate_${id}`,
+        ['endDate']: `endDate_${id}`,
+        ['type']: `type_${id}`,
+        ['category']: `category_${id}`,
+        ['recurs']: `recurs_${id}`,
+        ['amount']: `amount_${id}`,
+        ['notes']: `notes_${id}`
     }
 
-    const handleTypeChange = (event) => {
-        console.log(event.target);
-    }
+    const handleChange = (event) => {
+        const target = event.target;
+        const [attributeName, key] = target.name.split('_');
+        let value = target.value;
+        
+        const pattern = /^[0-9]+$/;
+        if (pattern.test(value)) {
+            value = Number.parseInt(value);
+        }
 
-    const handleCategoryChange = (event) => {
-        console.log(event);
-    }
+        if (value === "true" || value === "false") {
+            value = value === "true";
+        }
 
-    const handleRecursChange = (event) => {
-        console.log(event.target);
-    }
-
-    const handleDateChange = (event) => {
-        console.log(event.target);
-    }
-
-    const handleAmountChange = (event) => {
-        console.log(event.target);
-    }
-
-    const handleNotesChange = (event) => {
-        console.log(event.target);
+        updateTransaction(attributeName, value);
+        handleTransactionChange(attributeName, value, key);
     }
 
     return (
         <>
             <form className={style.transactionForm}>
                 <div className={style.firstColumn}>
-                    <label htmlFor={names['type']}>Type:</label>
-                    <div>
-                        <RadioButtonWithLabel 
-                            name={names['type']}
-                            value={transactionType.INCOME}
-                            text='Income'
-                            onChange={handleTypeChange}
-                            checked={transaction.type === transactionType.INCOME}
-                        />
-                        
-                        <RadioButtonWithLabel
-                            name={names['type']}
-                            value={transactionType.EXPENSE}
-                            text='Expense'
-                            onChange={handleTypeChange}
-                            checked={transaction.type === transactionType.EXPENSE}
-                        />
-                    </div>
+                    <TypeSelection
+                        name={names['type']}
+                        transaction={transaction}
+                        onChange={handleChange}
+                    />
 
                     <SelectWithLabel 
                         id={names['category']}
                         name={names['category']}
                         text='Category:'
-                        items={[]}
+                        items={[new Category(1, "Testing")]}
                         value={transaction.category}
-                        onChange={handleCategoryChange}
+                        onChange={handleChange}
                         wrapped={false}
                     />
 
-                    <label htmlFor={names['recur']}>Recurs:</label>
-                    <div>
-                        <RadioButtonWithLabel
-                            name={names['recurs']}
-                            value={true}
-                            text='Yes'
-                            onChange={handleRecursChange}
-                            checked={transaction.recurs}
-                        />
-
-                        <RadioButtonWithLabel
-                            name={names['recurs']}
-                            value={false}
-                            text='No'
-                            onChange={handleRecursChange}
-                            checked={!transaction.recurs}
-                        />
-                    </div>
-
-                    {transaction.recurs ? (
-                        <>
-                            <InputWithLabel 
-                                id={names['startDate']}
-                                type='startDate'
-                                text='Start Date:'
-                                value={transaction.startDate}
-                                onChange={handleDateChange}
-                            />
-                            <InputWithLabel 
-                                id={names['endDate']}
-                                type='endDate'
-                                text='End Date:'
-                                value={transaction.endDate}
-                                onChange={handleDateChange}
-                            />
-                        </>
-                    ) : (
-                        <InputWithLabel 
-                            id={names['startDate']}
-                            type='date'
-                            text='Date:'
-                            value={transaction.startDate}
-                            onChange={handleDateChange}
-                        />
-                    )}
+                    <RecursSelection 
+                        names={names}
+                        transaction={transaction}
+                        onChange={handleChange}
+                    />
 
                     <InputWithLabel
                         id={names['amount']}
+                        name={names['amount']}
                         type='number'
                         text='Amount:'
                         value={transaction.amount}
-                        onChange={handleAmountChange}
+                        onChange={handleChange}
                     />
                 </div>
                 
@@ -216,9 +168,10 @@ const TransactionForm = ({id, onButtonClick, transaction}) => {
                     <label htmlFor={names['notes']}>Notes:</label>
                     <textarea 
                         id={names['notes']} 
+                        name={names['notes']}
                         className={style.textarea}
                         value={transaction.notes}
-                        onChange={handleNotesChange}
+                        onChange={handleChange}
                     />
                 </div>
 
@@ -228,6 +181,90 @@ const TransactionForm = ({id, onButtonClick, transaction}) => {
                         -
                 </button>
             </form>
+        </>
+    )
+}
+
+const TypeSelection = ({name, transaction, onChange}) => {
+    return (
+        <>
+            <label htmlFor={name}>Type:</label>
+            <div>
+                <RadioButtonWithLabel 
+                    name={name}
+                    value={transactionType.INCOME}
+                    text='Income'
+                    onChange={onChange}
+                    checked={transaction.type === transactionType.INCOME}
+                    wrapped
+                />
+                
+                <RadioButtonWithLabel
+                    name={name}
+                    value={transactionType.EXPENSE}
+                    text='Expense'
+                    onChange={onChange}
+                    checked={transaction.type !== transactionType.INCOME}
+                    wrapped
+                />
+            </div>
+        </>
+    )
+}
+
+const RecursSelection = ({names, transaction, onChange}) => {
+    return (
+        <>
+            <label htmlFor={names['recur']}>Recurs:</label>
+            <div>
+                <RadioButtonWithLabel
+                    name={names['recurs']}
+                    value={true}
+                    text='Yes'
+                    onChange={onChange}
+                    checked={transaction.recurs}
+                    wrapped
+                />
+
+                <RadioButtonWithLabel
+                    name={names['recurs']}
+                    value={false}
+                    text='No'
+                    onChange={onChange}
+                    checked={!transaction.recurs}
+                    wrapped
+                />
+            </div>
+
+            {transaction.recurs ? (
+                <>
+                    <InputWithLabel 
+                        id={names['startDate']}
+                        name={names['startDate']}
+                        type='date'
+                        text='Start Date:'
+                        value={transaction.startDate}
+                        onChange={onChange}
+                    />
+                    <InputWithLabel 
+                        id={names['endDate']}
+                        name={names['endDate']}
+                        type='date'
+                        text='End Date:'
+                        value={transaction.endDate}
+                        onChange={onChange}
+                    />
+                </>
+            ) : (
+                <InputWithLabel 
+                    id={names['startDate']}
+                    name={names['startDate']}
+                    type='date'
+                    text='Date:'
+                    value={transaction.startDate}
+                    onChange={onChange}
+                />
+            )}
         </>
     )
 }
