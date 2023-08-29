@@ -48,7 +48,7 @@ const App = () => {
     }
     
     return (
-        <main>
+        <>
             <VerticalNavBar 
                 currentTab={currentTab}
                 handleTabSelection={handleTabSelection}
@@ -70,7 +70,7 @@ const App = () => {
                     null
                 )}
             </div>
-        </main> 
+        </> 
     )
 }
 
