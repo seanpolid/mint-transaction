@@ -27,6 +27,8 @@ public class Goal {
 	
 	private LocalDate endDate;
 	
+	private String notes;
+	
 	@ManyToOne
 	@JoinColumn(name="user_id")
 	private User user;
@@ -71,6 +73,14 @@ public class Goal {
 		this.endDate = endDate;
 	}
 
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
 	public User getUser() {
 		return user;
 	}
@@ -78,4 +88,5 @@ public class Goal {
 	public void setUser(User user) {
 		this.user = user;
 	}
+	
 }
