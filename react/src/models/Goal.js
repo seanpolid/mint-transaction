@@ -1,4 +1,5 @@
 class Goal {
+    id;
     name;
     amount;
     startDate;

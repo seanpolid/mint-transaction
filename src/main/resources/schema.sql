@@ -18,6 +18,7 @@ create table if not exists goal (
     amount int not null,
     start_date date not null,
     end_date date not null,
+    notes varchar(100) not null,
     user_id int not null,
     foreign key (user_id) references user (id)
 );
