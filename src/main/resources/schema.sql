@@ -5,6 +5,7 @@ use transaction_tracker;
 create table if not exists user (
 	id int auto_increment not null primary key,
     email varchar(50) not null,
+    username varchar(50) not null,
     first_name varchar(15) not null,
     password varchar(25) not null,
     date_created date not null,
