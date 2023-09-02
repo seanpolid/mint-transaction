@@ -12,11 +12,11 @@ Transaction Tracker is an app that I've been wanting to make for a while. Here a
   <li>React</li>
   <li>Selenium</li>
   <li>Spring Boot</li>
+  <li>Spring Data JPA</li>
+  <li>Spring Security</li>
   <li>JUnit</li>
-  <li>Hibernate</li>
   <li>MySQL</li>
   <li>Test containers (for database testing)</li>
-  <li>Vault (or some other library for storing secrets)</li>
   <li>Docker</li>
   <li>Github actions</li>
   <li>AWS or Azure</li>
