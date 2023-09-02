@@ -4,32 +4,34 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import application.entities.Transaction;
-import application.repositories.ITransactionRepository;
+import application.dtos.TransactionDTO;
+import application.services.ITransactionService;
 
 @RestController
-@RequestMapping("api/transactions")
+@RequestMapping(path="api/{userId}/transactions")
+@CrossOrigin(origins={"http://localhost:5173/"})
 public class TransactionController {
 
-	private final ITransactionRepository transactionRepository;
+	private final ITransactionService transactionService;
 	
-	public TransactionController(ITransactionRepository transactionRepository) {
-		this.transactionRepository = transactionRepository;
+	public TransactionController(ITransactionService transactionService) {
+		this.transactionService = transactionService;
 	}
 	
-	@PostMapping
-	public ResponseEntity saveTransactions(@RequestParam String userId, @RequestBody List<Transaction> transactions) {
+	@PostMapping()
+	public ResponseEntity saveTransactions(@PathVariable int userId, @RequestBody List<TransactionDTO> transactionDTOs) {
 		ResponseEntity response = null;
-		
+		System.out.println(transactionDTOs);
 		try {
-			transactionRepository.saveAll(transactions);
+			transactionService.saveTransactions(transactionDTOs);
 			return new ResponseEntity("Transactions saved successfully.", HttpStatus.OK);
 		} catch (Exception ex) {
 			return new ResponseEntity("Could not save transactions.", HttpStatus.BAD_REQUEST);
@@ -37,11 +39,11 @@ public class TransactionController {
 	}
 	
 	@GetMapping
-	public ResponseEntity getTransactions(@RequestParam int userId) {
+	public ResponseEntity getTransactions(@PathVariable int userId) {
 		ResponseEntity response = null;
 		
 		try {
-			List<Transaction> transactions = transactionRepository.findAllByUserId(userId);
+			List<TransactionDTO> transactions = transactionService.getTransactions(userId);
 			return new ResponseEntity(transactions, HttpStatus.OK);
 		} catch (Exception ex) {
 			return new ResponseEntity("Could not retrieve transactions for user: " + userId, HttpStatus.BAD_REQUEST);

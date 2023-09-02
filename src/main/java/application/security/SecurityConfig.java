@@ -38,6 +38,8 @@ public class SecurityConfig {
 			customizer.anyRequest().permitAll();
 		}).csrf((customizer) -> {
 			customizer.disable();
+		}).cors((customizer) -> {
+			customizer.disable();
 		}).build();
 	}
 }
