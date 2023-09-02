@@ -5,6 +5,7 @@ use transaction_tracker;
 create table if not exists user (
 	id int auto_increment not null primary key,
     email varchar(50) not null,
+    username varchar(50) not null,
     first_name varchar(15) not null,
     password varchar(25) not null,
     date_created date not null,
@@ -17,6 +18,7 @@ create table if not exists goal (
     amount int not null,
     start_date date not null,
     end_date date not null,
+    notes varchar(100) not null,
     user_id int not null,
     foreign key (user_id) references user (id)
 );

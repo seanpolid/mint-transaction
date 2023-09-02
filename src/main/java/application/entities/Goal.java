@@ -6,6 +6,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -24,6 +27,10 @@ public class Goal {
 	
 	private LocalDate endDate;
 	
+	private String notes;
+	
+	@ManyToOne
+	@JoinColumn(name="user_id")
 	private User user;
 
 	public int getId() {
@@ -66,6 +73,14 @@ public class Goal {
 		this.endDate = endDate;
 	}
 
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
 	public User getUser() {
 		return user;
 	}
@@ -73,4 +88,5 @@ public class Goal {
 	public void setUser(User user) {
 		this.user = user;
 	}
+	
 }

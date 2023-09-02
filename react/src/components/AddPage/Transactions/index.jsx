@@ -5,8 +5,9 @@ import Scrollpane from '../../Scrollpane';
 import SelectWithLabel from '../../SelectWithLabel';
 import style from './style.module.css'
 import { Transaction, Category } from '../../../models';
+import { TransactionDTO } from '../../../dtos';
 import { transactionType } from '../../../enums';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useList, useObject } from '../../../utils/hooks';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -61,6 +62,27 @@ const TransactionPage = () => {
         setTransactions(prevTransactions => prevTransactions.concat([transaction]));
     }
 
+    const handleSave = useCallback((event) => {
+        event.preventDefault();
+
+        const transactionDTOS = transactions.map(transaction => new TransactionDTO(transaction));
+        const uri = `http://localhost:8080/api/1/transactions`;
+        fetch(uri, {
+            method: 'POST', 
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(transactionDTOS)
+        })
+        .then(response => {
+            response.text().then(text => console.log(text));
+        })
+        .catch(error => {
+            console.log("error:", error);
+        })
+    }, [transactions]);
+
     const handleTransactionChange = (attributeName, value, key) => {
         updateTransaction(attributeName, value, key);
     }
@@ -74,7 +96,7 @@ const TransactionPage = () => {
 
                 <div className={style.options}>
                     <button onClick={handleAdd}>Add</button>
-                    <button>Save</button>
+                    <button onClick={handleSave}>Save</button>
                 </div>
             </Scrollpane>
         </section>

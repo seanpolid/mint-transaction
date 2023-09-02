@@ -1,9 +1,10 @@
 class User {
-    firstName;
-    lastName;
-    phoneNumber;
+    id;
     email;
+    username;
+    firstName;
     dateCreated;
+    phone;
 }
 
 export default User
