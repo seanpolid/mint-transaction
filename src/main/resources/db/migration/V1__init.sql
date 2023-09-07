@@ -1,8 +1,4 @@
-create database transaction_tracker;
-
-use transaction_tracker;
-
-create table if not exists user (
+create table user (
 	id int auto_increment not null primary key,
     email varchar(50) not null,
     username varchar(50) not null,
@@ -12,7 +8,7 @@ create table if not exists user (
     phone int null
 );
 
-create table if not exists goal (
+create table goal (
 	id int auto_increment not null primary key,
     name varchar(25) not null,
     amount int not null,
@@ -23,19 +19,19 @@ create table if not exists goal (
     foreign key (user_id) references user (id)
 );
 
-create table if not exists type (
+create table type (
 	id int auto_increment not null primary key,
     name varchar(15) not null
 );
 
-create table if not exists category (
+create table category (
 	id int auto_increment not null primary key,
     name varchar(15) not null,
     type_id int not null,
     foreign key (type_id) references type (id)
 );
 
-create table if not exists transaction (
+create table transaction (
 	id int auto_increment not null primary key,
     amount int not null,
     start_date date not null,
@@ -46,3 +42,5 @@ create table if not exists transaction (
     foreign key (category_id) references category (id),
     foreign key (user_id) references user (id)
 );
+
+insert into type (name) values ('income'), ('expense');
