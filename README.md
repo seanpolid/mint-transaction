@@ -16,10 +16,10 @@ Transaction Tracker is an app that I've been wanting to make for a while. Here a
   <li>Spring Security</li>
   <li>JUnit</li>
   <li>MySQL</li>
+  <li>Flyway (for database migrations)</li>
   <li>Test containers (for database testing)</li>
   <li>Docker</li>
-  <li>Github actions</li>
-  <li>AWS or Azure</li>
+  <li>Jenkins</li>
 </ol>
 
 <h1>Mocks</h1>
