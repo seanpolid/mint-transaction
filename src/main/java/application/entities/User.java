@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -42,6 +43,27 @@ public class User implements UserDetails {
 	
 	@OneToMany(mappedBy="user", cascade=CascadeType.ALL)
 	private List<Goal> goals;
+	
+	public User() {
+	}
+	
+	public User(int id, String username) {
+		super();
+		this.id = id;
+		this.username = username;
+	}
+
+	public User(int id, String email, String username, String firstName, String password, LocalDate dateCreated,
+			long phone) {
+		super();
+		this.id = id;
+		this.email = email;
+		this.username = username;
+		this.firstName = firstName;
+		this.password = password;
+		this.dateCreated = dateCreated;
+		this.phone = phone;
+	}
 
 	public int getId() {
 		return id;
@@ -139,5 +161,25 @@ public class User implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(dateCreated, email, firstName, id, password, phone, username);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		return Objects.equals(dateCreated, other.dateCreated) && Objects.equals(email, other.email)
+				&& Objects.equals(firstName, other.firstName) && id == other.id
+				&& Objects.equals(password, other.password) && phone == other.phone
+				&& Objects.equals(username, other.username);
 	}
 }
