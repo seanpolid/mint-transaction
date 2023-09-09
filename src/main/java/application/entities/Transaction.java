@@ -27,16 +27,24 @@ public class Transaction {
 	private String notes;
 	
 	@ManyToOne
-	@JoinColumn(name="type_id")
-	private Type type;
-	
-	@ManyToOne
 	@JoinColumn(name="category_id")
 	private Category category;
 	
 	@ManyToOne
 	@JoinColumn(name="user_id")
 	private User user;
+	
+	public Transaction() {
+	}
+
+	public Transaction(int id, int amount, LocalDate startDate, LocalDate endDate, String notes) {
+		super();
+		this.id = id;
+		this.amount = amount;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.notes = notes;
+	}
 
 	public int getId() {
 		return id;
@@ -77,15 +85,7 @@ public class Transaction {
 	public void setNotes(String notes) {
 		this.notes = notes;
 	}
-
-	public Type getType() {
-		return type;
-	}
-
-	public void setType(Type type) {
-		this.type = type;
-	}
-
+	
 	public Category getCategory() {
 		return category;
 	}

@@ -20,9 +20,6 @@ public class Type {
 	
 	public String name;
 	
-	@OneToMany(mappedBy="type", cascade=CascadeType.ALL)
-	List<Transaction> transactions;
-
 	public int getId() {
 		return id;
 	}
