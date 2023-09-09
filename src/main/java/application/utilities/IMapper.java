@@ -15,5 +15,5 @@ public interface IMapper {
 	TypeDTO map(Type type);
 	
 	CategoryDTO map(Category category);
-	
+
 }
