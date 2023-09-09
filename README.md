@@ -22,7 +22,7 @@ Transaction Tracker is an app that I've been wanting to make for a while. Here a
   <li>Jenkins</li>
 </ol>
 
-<h1>Current FrontendStatus</h1>
+<h1>Current Frontend Status</h1>
 <h2>Transaction Page</h2>
 
 ![transaction-page](https://github.com/seanpolid/transaction-tracker-images/blob/main/09092023-status.png?raw=true)
