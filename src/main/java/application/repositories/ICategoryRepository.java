@@ -6,4 +6,6 @@ import application.entities.Category;
 
 public interface ICategoryRepository extends ListCrudRepository<Category, Integer> {
 
+	Category findByNameIgnoreCase(String name);
+	
 }
