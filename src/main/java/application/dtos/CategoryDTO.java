@@ -8,6 +8,9 @@ public class CategoryDTO {
 	private String name;
 	private String type;
 	
+	public CategoryDTO() {
+	}
+	
 	public CategoryDTO(int id, String name, String type) {
 		this.id = id;
 		this.name = name;

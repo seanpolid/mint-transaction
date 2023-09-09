@@ -7,6 +7,9 @@ public class TypeDTO {
 	private int id;
 	private String name;
 	
+	public TypeDTO() {
+	}
+	
 	public TypeDTO(int id, String name) {
 		super();
 		this.id = id;
