@@ -24,7 +24,11 @@ Transaction Tracker is an app that I've been wanting to make for a while. Here a
 <h1>Current Frontend Status (09/09/2023)</h1>
 <h2>Transaction Page</h2>
 
-![transaction-page](https://github.com/seanpolid/transaction-tracker-images/blob/main/09092023-status.png?raw=true)
+![transaction page](https://github.com/seanpolid/transaction-tracker-images/blob/main/09092023-status.png?raw=true)
+
+<h1>Data Model</h1>
+
+![data model](https://github.com/seanpolid/transaction-tracker-images/blob/main/data-model.png?raw=true)
 
 <h1>Mocks</h1>
 
