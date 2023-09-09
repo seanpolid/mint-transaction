@@ -9,11 +9,9 @@ import application.entities.Type;
 
 public interface IMapper {
 	
-	Transaction map(TransactionDTO transactionDTO);
-	TransactionDTO map(Transaction transaction);
-	
-	TypeDTO map(Type type);
-	
-	CategoryDTO map(Category category);
+	public Transaction map(TransactionDTO transactionDTO);
+	public TransactionDTO map(Transaction transaction);
+	public TypeDTO map(Type type);
+	public CategoryDTO map(Category category);
 
 }

@@ -14,6 +14,10 @@ public class TransactionDTO {
 	
 	public TransactionDTO() {
 	}
+	
+	public TransactionDTO(int id) {
+		this.id = id;
+	}
 
 	public TransactionDTO(int id, int amount, LocalDate startDate, LocalDate endDate, String notes, String category) {
 		super();
