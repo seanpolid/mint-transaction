@@ -1,6 +1,7 @@
 package application.entities;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -44,6 +45,18 @@ public class Transaction {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.notes = notes;
+	}
+
+	public Transaction(int id, int amount, LocalDate startDate, LocalDate endDate, String notes, Category category,
+			User user) {
+		super();
+		this.id = id;
+		this.amount = amount;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.notes = notes;
+		this.category = category;
+		this.user = user;
 	}
 
 	public int getId() {
@@ -101,4 +114,25 @@ public class Transaction {
 	public void setUser(User user) {
 		this.user = user;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(amount, category, endDate, id, notes, startDate, user);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Transaction other = (Transaction) obj;
+		return amount == other.amount && Objects.equals(category, other.category)
+				&& Objects.equals(endDate, other.endDate) && id == other.id && Objects.equals(notes, other.notes)
+				&& Objects.equals(startDate, other.startDate) && Objects.equals(user, other.user);
+	}
+	
+	
 }

@@ -1,6 +1,7 @@
 package application.dtos;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class TransactionDTO {
 
@@ -10,6 +11,13 @@ public class TransactionDTO {
 	private LocalDate endDate;
 	private String notes;
 	public String category;
+	
+	public TransactionDTO() {
+	}
+	
+	public TransactionDTO(int id) {
+		this.id = id;
+	}
 
 	public TransactionDTO(int id, int amount, LocalDate startDate, LocalDate endDate, String notes, String category) {
 		super();
@@ -67,5 +75,24 @@ public class TransactionDTO {
 
 	public void setCategory(String category) {
 		this.category = category;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(amount, category, endDate, id, notes, startDate);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TransactionDTO other = (TransactionDTO) obj;
+		return amount == other.amount && Objects.equals(category, other.category)
+				&& Objects.equals(endDate, other.endDate) && id == other.id && Objects.equals(notes, other.notes)
+				&& Objects.equals(startDate, other.startDate);
 	}
 }

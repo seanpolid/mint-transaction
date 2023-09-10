@@ -13,7 +13,6 @@ import application.repositories.ICategoryRepository;
 import application.repositories.ITransactionRepository;
 import application.services.interfaces.ITransactionService;
 import application.utilities.IMapper;
-import application.utilities.Mapper;
 
 @Service
 public class TransactionService implements ITransactionService {
@@ -31,7 +30,7 @@ public class TransactionService implements ITransactionService {
 	}
 
 	@Override
-	public void saveTransactions(List<TransactionDTO> transactionDTOs) throws Exception {
+	public List<TransactionDTO> saveTransactions(List<TransactionDTO> transactionDTOs) throws Exception {
 		List<Transaction> transactions = new ArrayList<>();
 		
 		for (TransactionDTO transactionDTO : transactionDTOs) {
@@ -45,7 +44,14 @@ public class TransactionService implements ITransactionService {
 			transactions.add(transaction);
 		}
 		
-		transactionRepository.saveAll(transactions);
+		List<Transaction> savedTransactions = transactionRepository.saveAll(transactions);
+		List<TransactionDTO> savedTransactionDTOs = new ArrayList<>();
+		for (Transaction savedTransaction : savedTransactions) {
+			TransactionDTO savedTransactionDTO = mapper.map(savedTransaction);
+			savedTransactionDTOs.add(savedTransactionDTO);
+		}
+		
+		return savedTransactionDTOs;
 	}
 
 	@Override
@@ -55,6 +61,7 @@ public class TransactionService implements ITransactionService {
 		List<Transaction> transactions = transactionRepository.findAllByUserId(userId);
 		for (Transaction transaction : transactions) {
 			TransactionDTO transactionDTO = mapper.map(transaction);
+			transactionDTOs.add(transactionDTO);
 		}
 		
 		return transactionDTOs;
