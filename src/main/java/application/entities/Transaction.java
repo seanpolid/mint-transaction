@@ -19,6 +19,8 @@ public class Transaction {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
+	private String identifier;
+	
 	private int amount;
 	
 	private LocalDate startDate;
@@ -38,25 +40,29 @@ public class Transaction {
 	public Transaction() {
 	}
 
-	public Transaction(int id, int amount, LocalDate startDate, LocalDate endDate, String notes) {
+	public Transaction(int id, String identifier, int amount, LocalDate startDate, LocalDate endDate, String notes) {
 		super();
 		this.id = id;
+		this.identifier = identifier;
 		this.amount = amount;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.notes = notes;
 	}
 
-	public Transaction(int id, int amount, LocalDate startDate, LocalDate endDate, String notes, Category category,
-			User user) {
+	public Transaction(int id, String identifier, int amount, LocalDate startDate, LocalDate endDate, String notes, 
+			Category category, User user) {
 		super();
 		this.id = id;
+		this.identifier = identifier;
 		this.amount = amount;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.notes = notes;
 		this.category = category;
 		this.user = user;
+		this.category.addTransaction(this);
+		this.user.addTransaction(this);
 	}
 
 	public int getId() {
@@ -65,6 +71,14 @@ public class Transaction {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
 	}
 
 	public int getAmount() {
@@ -105,6 +119,7 @@ public class Transaction {
 
 	public void setCategory(Category category) {
 		this.category = category;
+		category.addTransaction(this);
 	}
 
 	public User getUser() {
@@ -113,6 +128,7 @@ public class Transaction {
 
 	public void setUser(User user) {
 		this.user = user;
+		user.addTransaction(this);
 	}
 
 	@Override

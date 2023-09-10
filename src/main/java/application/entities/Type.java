@@ -1,5 +1,6 @@
 package application.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,7 +23,7 @@ public class Type {
 	public String name;
 	
 	@OneToMany(mappedBy="type", cascade=CascadeType.ALL)
-	public List<Category> categories;
+	public List<Category> categories = new ArrayList<>();
 	
 	public Type() {
 	}

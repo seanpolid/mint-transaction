@@ -6,6 +6,7 @@ import java.util.Objects;
 public class TransactionDTO {
 
 	private int id;
+	private String identifier;
 	private int amount;
 	private LocalDate startDate;
 	private LocalDate endDate;
@@ -19,9 +20,11 @@ public class TransactionDTO {
 		this.id = id;
 	}
 
-	public TransactionDTO(int id, int amount, LocalDate startDate, LocalDate endDate, String notes, String category) {
+	public TransactionDTO(int id, String identifier, int amount, LocalDate startDate, LocalDate endDate, 
+			String notes, String category) {
 		super();
 		this.id = id;
+		this.identifier = identifier;
 		this.amount = amount;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -35,6 +38,14 @@ public class TransactionDTO {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
 	}
 
 	public int getAmount() {

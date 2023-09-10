@@ -6,6 +6,6 @@ import application.dtos.TypeDTO;
 
 public interface ITypeService {
 
-	public List<TypeDTO> getTypes();
+	public List<TypeDTO> getTypes() throws Exception;
 	
 }
