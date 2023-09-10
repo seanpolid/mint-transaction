@@ -1,6 +1,5 @@
 package application.services;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -24,15 +23,11 @@ public class TypeService implements ITypeService {
 	
 	@Override
 	public List<TypeDTO> getTypes() {
-		List<TypeDTO> typeDTOs = new ArrayList<>();
-		
 		List<Type> types = typeRepository.findAll();
-		for (Type type : types) {
-			TypeDTO typeDTO = mapper.map(type);
-			typeDTOs.add(typeDTO);
-		}
 		
-		return typeDTOs;
+		return types.stream()
+				.map(type -> mapper.map(type))
+				.toList();
 	}
 
 }

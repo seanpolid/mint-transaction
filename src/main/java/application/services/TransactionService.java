@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import application.dtos.TransactionDTO;
 import application.entities.Category;
 import application.entities.Transaction;
+import application.entities.User;
 import application.exceptions.CategoryNotFoundException;
 import application.repositories.ICategoryRepository;
 import application.repositories.ITransactionRepository;
@@ -30,41 +32,47 @@ public class TransactionService implements ITransactionService {
 	}
 
 	@Override
-	public List<TransactionDTO> saveTransactions(List<TransactionDTO> transactionDTOs) throws Exception {
+	@Transactional
+	public List<TransactionDTO> saveTransactions(List<TransactionDTO> transactionDTOs, User user) throws Exception {
 		List<Transaction> transactions = new ArrayList<>();
-		
 		for (TransactionDTO transactionDTO : transactionDTOs) {
-			Category category = categoryRepository.findByNameIgnoreCase(transactionDTO.getCategory());
-			if (category == null) {
-				throw new CategoryNotFoundException(transactionDTO.getCategory());
-			}
-			
-			Transaction transaction = mapper.map(transactionDTO);
-			transaction.setCategory(category);
+			Transaction transaction = mapToTransaction(transactionDTO, user);
 			transactions.add(transaction);
 		}
 		
 		List<Transaction> savedTransactions = transactionRepository.saveAll(transactions);
-		List<TransactionDTO> savedTransactionDTOs = new ArrayList<>();
-		for (Transaction savedTransaction : savedTransactions) {
-			TransactionDTO savedTransactionDTO = mapper.map(savedTransaction);
-			savedTransactionDTOs.add(savedTransactionDTO);
+		
+		return mapAllToTransactionDTO(savedTransactions);
+	}
+	
+	private Transaction mapToTransaction(TransactionDTO transactionDTO, User user) throws CategoryNotFoundException {
+		Category category = categoryRepository.findByNameIgnoreCase(transactionDTO.getCategory());
+		if (category == null) {
+			throw new CategoryNotFoundException(transactionDTO.getCategory());
 		}
 		
-		return savedTransactionDTOs;
+		// Initialize collections
+		category.getTransactions();
+		user.getTransactions();		
+		
+		Transaction transaction = mapper.map(transactionDTO);
+		transaction.setCategory(category);
+		transaction.setUser(user);
+		
+		return transaction;
+	}
+	
+	private List<TransactionDTO> mapAllToTransactionDTO(List<Transaction> transactions) {
+		return transactions.stream()
+				.map(transaction -> mapper.map(transaction))
+				.toList();
 	}
 
 	@Override
 	public List<TransactionDTO> getTransactions(int userId) {
-		List<TransactionDTO> transactionDTOs = new ArrayList<>();
-		
 		List<Transaction> transactions = transactionRepository.findAllByUserId(userId);
-		for (Transaction transaction : transactions) {
-			TransactionDTO transactionDTO = mapper.map(transaction);
-			transactionDTOs.add(transactionDTO);
-		}
 		
-		return transactionDTOs;
+		return mapAllToTransactionDTO(transactions);
 	}
 	
 }

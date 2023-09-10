@@ -20,6 +20,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import application.dtos.TransactionDTO;
 import application.entities.Category;
 import application.entities.Transaction;
+import application.entities.User;
 import application.exceptions.CategoryNotFoundException;
 import application.repositories.ICategoryRepository;
 import application.repositories.ITransactionRepository;
@@ -62,7 +63,7 @@ public class TransactionServiceTests {
 		when(mockMapper.map(any(Transaction.class))).thenReturn(new TransactionDTO(1));
 		
 		// Act
-		List<TransactionDTO> savedTransactionDTOs = transactionService.saveTransactions(transactionDTOs);
+		List<TransactionDTO> savedTransactionDTOs = transactionService.saveTransactions(transactionDTOs, new User());
 		
 		// Assert
 		assertEquals(savedTransactionDTOs.size(), transactions.size());
@@ -78,7 +79,7 @@ public class TransactionServiceTests {
 		when(mockCategoryRepository.findByNameIgnoreCase(anyString())).thenReturn(null);
 		
 		// Act and Assert
-		assertThrows(CategoryNotFoundException.class, () -> transactionService.saveTransactions(transactionDTOs));
+		assertThrows(CategoryNotFoundException.class, () -> transactionService.saveTransactions(transactionDTOs, new User()));
 	}
 	
 	@Test
