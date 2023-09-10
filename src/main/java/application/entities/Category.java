@@ -1,5 +1,6 @@
 package application.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,7 +29,7 @@ public class Category {
 	public Type type;
 	
 	@OneToMany(mappedBy="category", cascade=CascadeType.ALL)
-	public List<Transaction> transactions;
+	public List<Transaction> transactions = new ArrayList<>();
 	
 	public Category() {
 	}
@@ -37,6 +38,7 @@ public class Category {
 		this.id = id;
 		this.name = name;
 		this.type = type;
+		this.type.addCategory(this);
 	}
 
 	public int getId() {
@@ -61,6 +63,18 @@ public class Category {
 
 	public void setType(Type type) {
 		this.type = type;
+	}
+
+	public List<Transaction> getTransactions() {
+		return transactions;
+	}
+
+	public void setTransactions(List<Transaction> transactions) {
+		this.transactions = transactions;
+	}
+	
+	public void addTransaction(Transaction transaction) {
+		transactions.add(transaction);
 	}
 
 	@Override

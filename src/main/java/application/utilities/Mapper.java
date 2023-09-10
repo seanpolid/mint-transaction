@@ -15,6 +15,7 @@ public class Mapper implements IMapper {
 	public Transaction map(TransactionDTO transactionDTO) {
 		return new Transaction(
 				transactionDTO.getId(),
+				transactionDTO.getIdentifier(),
 				transactionDTO.getAmount(),
 				transactionDTO.getStartDate(),
 				transactionDTO.getEndDate(),
@@ -25,6 +26,7 @@ public class Mapper implements IMapper {
 		String categoryName = transaction.getCategory() == null ? null : transaction.getCategory().getName();
 		return new TransactionDTO(
 				transaction.getId(),
+				transaction.getIdentifier(),
 				transaction.getAmount(),
 				transaction.getStartDate(),
 				transaction.getEndDate(),

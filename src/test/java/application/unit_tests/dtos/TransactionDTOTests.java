@@ -23,8 +23,8 @@ public class TransactionDTOTests {
 	@Test
 	public void hashCode_sameFields_sameHash() {
 		// Arrange
-		TransactionDTO transactionDTO1 = new TransactionDTO(1, 100, date, date, "notes", "category");
-		TransactionDTO transactionDTO2 = new TransactionDTO(1, 100, date, date, "notes", "category");
+		TransactionDTO transactionDTO1 = new TransactionDTO(1, "identifier", 100, date, date, "notes", "category");
+		TransactionDTO transactionDTO2 = new TransactionDTO(1, "identifier", 100, date, date, "notes", "category");
 		
 		// Act
 		int transactionDTO1Hash = transactionDTO1.hashCode();
@@ -37,8 +37,8 @@ public class TransactionDTOTests {
 	@Test
 	public void hashCode_differentFields_differentHash() {
 		// Arrange
-		TransactionDTO transactionDTO1 = new TransactionDTO(1, 100, date, date, "notes", "category");
-		TransactionDTO transactionDTO2 = new TransactionDTO(2, 100, date, date, "notes", "category");
+		TransactionDTO transactionDTO1 = new TransactionDTO(1, "identifier", 100, date, date, "notes", "category");
+		TransactionDTO transactionDTO2 = new TransactionDTO(2, "identifier", 100, date, date, "notes", "category");
 		
 		// Act
 		int transactionDTO1Hash = transactionDTO1.hashCode();
@@ -51,8 +51,8 @@ public class TransactionDTOTests {
 	@Test
 	public void equals_sameFields_true() {
 		// Arrange
-		TransactionDTO transactionDTO1 = new TransactionDTO(1, 100, date, date, "notes", "category");
-		TransactionDTO transactionDTO2 = new TransactionDTO(1, 100, date, date, "notes", "category");
+		TransactionDTO transactionDTO1 = new TransactionDTO(1, "identifier", 100, date, date, "notes", "category");
+		TransactionDTO transactionDTO2 = new TransactionDTO(1, "identifier", 100, date, date, "notes", "category");
 		
 		// Act and Assert
 		assertTrue(transactionDTO1.equals(transactionDTO2));
@@ -61,8 +61,8 @@ public class TransactionDTOTests {
 	@Test
 	public void equals_differentFields_false() {
 		// Arrange
-		TransactionDTO transactionDTO1 = new TransactionDTO(1, 100, date, date, "notes", "category");
-		TransactionDTO transactionDTO2 = new TransactionDTO(2, 100, date, date, "notes", "category");
+		TransactionDTO transactionDTO1 = new TransactionDTO(1, "identifier", 100, date, date, "notes", "category");
+		TransactionDTO transactionDTO2 = new TransactionDTO(2, "identifier", 100, date, date, "notes", "category");
 		
 		// Act and Assert
 		assertFalse(transactionDTO1.equals(transactionDTO2));

@@ -1,6 +1,7 @@
 package application.entities;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -39,10 +40,10 @@ public class User implements UserDetails {
 	private long phone;
 	
 	@OneToMany(mappedBy="user", cascade=CascadeType.ALL)
-	private List<Transaction> transactions;
+	private List<Transaction> transactions = new ArrayList<>();
 	
 	@OneToMany(mappedBy="user", cascade=CascadeType.ALL)
-	private List<Goal> goals;
+	private List<Goal> goals = new ArrayList<>();
 	
 	public User() {
 	}
@@ -124,6 +125,10 @@ public class User implements UserDetails {
 	public void setTransactions(List<Transaction> transactions) {
 		this.transactions = transactions;
 	}
+	
+	public void addTransaction(Transaction transaction) {
+		transactions.add(transaction);
+	}
 
 	public List<Goal> getGoals() {
 		return goals;
@@ -131,6 +136,10 @@ public class User implements UserDetails {
 
 	public void setGoals(List<Goal> goals) {
 		this.goals = goals;
+	}
+	
+	public void addGoal(Goal goal) {
+		goals.add(goal);
 	}
 
 	@Override
