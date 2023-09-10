@@ -6,6 +6,6 @@ import application.dtos.CategoryDTO;
 
 public interface ICategoryService {
 
-	public List<CategoryDTO> getCategories();
+	public List<CategoryDTO> getCategories() throws Exception;
 	
 }
