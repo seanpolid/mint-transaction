@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import application.dtos.TypeDTO;
-import application.entities.Type;
-import application.repositories.ITypeRepository;
 import application.services.interfaces.ITypeService;
 
 @RestController
