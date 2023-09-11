@@ -34,7 +34,7 @@ public class TypeController {
 			return new ResponseEntity<Object>(types, HttpStatus.OK);
 		} catch (Exception ex) {
 			logger.error("An exception occurred while retrieving types: " + ex);
-			return new ResponseEntity<Object>("Could not retrieve types", HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<Object>("Could not retrieve types.", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }
