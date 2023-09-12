@@ -20,7 +20,7 @@ public class TransactionDTO {
 	@Size(min=36, max=36)
 	private String identifier;
 	
-	@Min(0)
+	@Min(value = 0)
 	private BigDecimal amount;
 	
 	@NotNull

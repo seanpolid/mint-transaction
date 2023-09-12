@@ -2,6 +2,7 @@ package application.unit_tests.dtos;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -11,23 +12,30 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import application.dtos.TransactionDTO;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 
 public class TransactionDTOTests {
 
 	private static LocalDate date;
+	private static String identifier;
 	private static BigDecimal bigDecimal;
+	private static Validator validator;
 	
 	@BeforeAll
 	public static void setup() {
 		date = LocalDate.now();
+		identifier = java.util.UUID.randomUUID().toString();
 		bigDecimal = new BigDecimal("10.00");
+		validator = Validation.buildDefaultValidatorFactory().getValidator();
 	}
 	
 	@Test
 	public void hashCode_sameFields_sameHash() {
 		// Arrange
-		TransactionDTO transactionDTO1 = new TransactionDTO(1, "identifier", bigDecimal, date, date, "notes", 1);
-		TransactionDTO transactionDTO2 = new TransactionDTO(1, "identifier", bigDecimal, date, date, "notes", 1);
+		TransactionDTO transactionDTO1 = new TransactionDTO(1, identifier, bigDecimal, date, date, "notes", 1);
+		TransactionDTO transactionDTO2 = new TransactionDTO(1, identifier, bigDecimal, date, date, "notes", 1);
 		
 		// Act
 		int transactionDTO1Hash = transactionDTO1.hashCode();
@@ -40,8 +48,8 @@ public class TransactionDTOTests {
 	@Test
 	public void hashCode_differentFields_differentHash() {
 		// Arrange
-		TransactionDTO transactionDTO1 = new TransactionDTO(1, "identifier", bigDecimal, date, date, "notes", 1);
-		TransactionDTO transactionDTO2 = new TransactionDTO(2, "identifier", bigDecimal, date, date, "notes", 1);
+		TransactionDTO transactionDTO1 = new TransactionDTO(1, identifier, bigDecimal, date, date, "notes", 1);
+		TransactionDTO transactionDTO2 = new TransactionDTO(2, identifier, bigDecimal, date, date, "notes", 1);
 		
 		// Act
 		int transactionDTO1Hash = transactionDTO1.hashCode();
@@ -54,8 +62,8 @@ public class TransactionDTOTests {
 	@Test
 	public void equals_sameFields_true() {
 		// Arrange
-		TransactionDTO transactionDTO1 = new TransactionDTO(1, "identifier", bigDecimal, date, date, "notes", 1);
-		TransactionDTO transactionDTO2 = new TransactionDTO(1, "identifier", bigDecimal, date, date, "notes", 1);
+		TransactionDTO transactionDTO1 = new TransactionDTO(1, identifier, bigDecimal, date, date, "notes", 1);
+		TransactionDTO transactionDTO2 = new TransactionDTO(1, identifier, bigDecimal, date, date, "notes", 1);
 		
 		// Act and Assert
 		assertTrue(transactionDTO1.equals(transactionDTO2));
@@ -64,10 +72,70 @@ public class TransactionDTOTests {
 	@Test
 	public void equals_differentFields_false() {
 		// Arrange
-		TransactionDTO transactionDTO1 = new TransactionDTO(1, "identifier", bigDecimal, date, date, "notes", 1);
-		TransactionDTO transactionDTO2 = new TransactionDTO(2, "identifier", bigDecimal, date, date, "notes", 1);
+		TransactionDTO transactionDTO1 = new TransactionDTO(1, identifier, bigDecimal, date, date, "notes", 1);
+		TransactionDTO transactionDTO2 = new TransactionDTO(2, identifier, bigDecimal, date, date, "notes", 1);
 		
 		// Act and Assert
 		assertFalse(transactionDTO1.equals(transactionDTO2));
+	}
+	
+	@Test
+	public void id_negative_violationRaised() {
+		// Arrange
+		TransactionDTO transactionDTO = new TransactionDTO(-1, identifier, bigDecimal, date, date, "notes", 1);
+	
+		// Act
+		Set<ConstraintViolation<TransactionDTO>> violations = validator.validate(transactionDTO);
+		
+		// Assert
+		assertEquals(1, violations.size());
+	}
+	
+	@Test
+	public void identifier_wrongSize_violationRaised() {
+		// Arrange
+		TransactionDTO transactionDTO = new TransactionDTO(1, "identifier", bigDecimal, date, date, "notes", 1);
+	
+		// Act
+		Set<ConstraintViolation<TransactionDTO>> violations = validator.validate(transactionDTO);
+		
+		// Assert
+		assertEquals(1, violations.size());
+	}
+	
+	@Test
+	public void amount_negative_violationRaised() {
+		// Arrange
+		TransactionDTO transactionDTO = new TransactionDTO(1, identifier, new BigDecimal("-100.00"), date, date, "notes", 1);
+	
+		// Act
+		Set<ConstraintViolation<TransactionDTO>> violations = validator.validate(transactionDTO);
+		
+		// Assert
+		assertEquals(1, violations.size());
+	}
+	
+	@Test
+	public void startDate_null_violationRaised() {
+		// Arrange
+		TransactionDTO transactionDTO = new TransactionDTO(1, identifier, bigDecimal, null, date, "notes", 1);
+	
+		// Act
+		Set<ConstraintViolation<TransactionDTO>> violations = validator.validate(transactionDTO);
+		
+		// Assert
+		assertEquals(1, violations.size());
+	}
+	
+	@Test
+	public void category_lessThan1_violationRaised() {
+		// Arrange
+		TransactionDTO transactionDTO = new TransactionDTO(1, identifier, bigDecimal, date, date, "notes", 0);
+	
+		// Act
+		Set<ConstraintViolation<TransactionDTO>> violations = validator.validate(transactionDTO);
+		
+		// Assert
+		assertEquals(1, violations.size());
 	}
 }
