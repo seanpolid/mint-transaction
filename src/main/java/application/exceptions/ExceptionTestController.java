@@ -22,7 +22,7 @@ public class ExceptionTestController {
 	
 	@GetMapping("category")
 	public void throwsCategoryNotFoundException() throws CategoryNotFoundException {
-		throw new CategoryNotFoundException("");
+		throw new CategoryNotFoundException(0);
 	}
 	
 }

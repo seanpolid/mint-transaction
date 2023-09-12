@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,7 +49,7 @@ public class TransactionServiceTests {
 	public void saveTransactions_categoryFound_success() throws Exception {
 		// Arrange
 		TransactionDTO transactionDTO = new TransactionDTO();
-		transactionDTO.setCategory("name");
+		transactionDTO.setCategory(1);
 		List<TransactionDTO> transactionDTOs = List.of(
 				transactionDTO,
 				transactionDTO
@@ -57,7 +58,7 @@ public class TransactionServiceTests {
 				new Transaction(),
 				new Transaction()
 		);
-		when(mockCategoryRepository.findByNameIgnoreCase(anyString())).thenReturn(new Category());
+		when(mockCategoryRepository.findById(anyInt())).thenReturn(Optional.of(new Category()));
 		when(mockMapper.map(any(TransactionDTO.class))).thenReturn(new Transaction());
 		when(mockTransactionRepository.saveAll(any())).thenReturn(transactions);
 		when(mockMapper.map(any(Transaction.class))).thenReturn(new TransactionDTO(1));
@@ -76,7 +77,7 @@ public class TransactionServiceTests {
 	public void saveTransactions_categoryNotFound_failure() {
 		// Arrange
 		List<TransactionDTO> transactionDTOs = List.of(new TransactionDTO());
-		when(mockCategoryRepository.findByNameIgnoreCase(anyString())).thenReturn(null);
+		when(mockCategoryRepository.findById(anyInt())).thenReturn(Optional.empty());
 		
 		// Act and Assert
 		assertThrows(CategoryNotFoundException.class, () -> transactionService.saveTransactions(transactionDTOs, new User()));

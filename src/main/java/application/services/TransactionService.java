@@ -2,6 +2,7 @@ package application.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,10 +47,12 @@ public class TransactionService implements ITransactionService {
 	}
 	
 	private Transaction mapToTransaction(TransactionDTO transactionDTO, User user) throws CategoryNotFoundException {
-		Category category = categoryRepository.findByNameIgnoreCase(transactionDTO.getCategory());
-		if (category == null) {
+		Optional<Category> optionalCategory = categoryRepository.findById(transactionDTO.getCategory());
+		
+		if (optionalCategory.isEmpty()) {
 			throw new CategoryNotFoundException(transactionDTO.getCategory());
 		}
+		Category category = optionalCategory.get();
 		
 		// Initialize collections
 		category.getTransactions();

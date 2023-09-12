@@ -34,7 +34,7 @@ create table category (
 create table transaction (
 	id int auto_increment not null primary key,
 	identifier char(36) not null,
-    amount int not null,
+    amount decimal(10, 2) not null,
     start_date date not null,
     end_date date null,
     notes varchar(100) null,

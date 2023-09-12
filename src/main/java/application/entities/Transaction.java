@@ -1,5 +1,6 @@
 package application.entities;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -21,7 +22,7 @@ public class Transaction {
 	
 	private String identifier;
 	
-	private int amount;
+	private BigDecimal amount;
 	
 	private LocalDate startDate;
 	
@@ -40,7 +41,7 @@ public class Transaction {
 	public Transaction() {
 	}
 
-	public Transaction(int id, String identifier, int amount, LocalDate startDate, LocalDate endDate, String notes) {
+	public Transaction(int id, String identifier, BigDecimal amount, LocalDate startDate, LocalDate endDate, String notes) {
 		super();
 		this.id = id;
 		this.identifier = identifier;
@@ -50,7 +51,7 @@ public class Transaction {
 		this.notes = notes;
 	}
 
-	public Transaction(int id, String identifier, int amount, LocalDate startDate, LocalDate endDate, String notes, 
+	public Transaction(int id, String identifier, BigDecimal amount, LocalDate startDate, LocalDate endDate, String notes, 
 			Category category, User user) {
 		super();
 		this.id = id;
@@ -81,11 +82,11 @@ public class Transaction {
 		this.identifier = identifier;
 	}
 
-	public int getAmount() {
+	public BigDecimal getAmount() {
 		return amount;
 	}
 
-	public void setAmount(int amount) {
+	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
 
@@ -133,7 +134,7 @@ public class Transaction {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(amount, category, endDate, id, notes, startDate, user);
+		return Objects.hash(amount, category, endDate, id, identifier, notes, startDate, user);
 	}
 
 	@Override
@@ -145,10 +146,10 @@ public class Transaction {
 		if (getClass() != obj.getClass())
 			return false;
 		Transaction other = (Transaction) obj;
-		return amount == other.amount && Objects.equals(category, other.category)
-				&& Objects.equals(endDate, other.endDate) && id == other.id && Objects.equals(notes, other.notes)
+		return Objects.equals(amount, other.amount) && Objects.equals(category, other.category)
+				&& Objects.equals(endDate, other.endDate) && id == other.id
+				&& Objects.equals(identifier, other.identifier) && Objects.equals(notes, other.notes)
 				&& Objects.equals(startDate, other.startDate) && Objects.equals(user, other.user);
 	}
-	
 	
 }

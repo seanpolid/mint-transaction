@@ -1,5 +1,6 @@
 package application.integration_tests.services;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +55,7 @@ public class TransactionServiceTests {
 	private LocalDate date = LocalDate.now();
 	private String uuid1 = java.util.UUID.randomUUID().toString();
 	private String uuid2 = java.util.UUID.randomUUID().toString();
+	private BigDecimal bigDecimal = new BigDecimal("100.00");
 	
 	@BeforeEach
 	public void setup() {
@@ -82,8 +84,8 @@ public class TransactionServiceTests {
 	public void saveTransactions_twoNewTransactions_success() throws Exception {
 		// Arrange
 		List<TransactionDTO> transactionDTOs = List.of(
-				new TransactionDTO(0, uuid1, 100, date, date, "notes", category.getName()),
-				new TransactionDTO(0, uuid2, 10, date, date, "notes", category.getName())
+				new TransactionDTO(0, uuid1, bigDecimal, date, date, "notes", category.getId()),
+				new TransactionDTO(0, uuid2, bigDecimal, date, date, "notes", category.getId())
 		);
 		
 		// Act
@@ -101,8 +103,8 @@ public class TransactionServiceTests {
 	public void getTransactions_twoTransactionsSaved_success() {
 		// Arrange
 		List<Transaction> transactions = List.of(
-				new Transaction(0, uuid1, 100, date, date, "notes", category, user),
-				new Transaction(0, uuid2, 10, date, date, "notes", category, user)
+				new Transaction(0, uuid1, bigDecimal, date, date, "notes", category, user),
+				new Transaction(0, uuid2, bigDecimal, date, date, "notes", category, user)
 		);
 		transactions = transactionRepository.saveAll(transactions);
 		Map<Integer, Transaction> transactionMap = transactions.stream().collect(Collectors.toMap(Transaction::getId, t -> t));
