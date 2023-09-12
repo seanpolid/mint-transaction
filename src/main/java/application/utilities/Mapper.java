@@ -23,7 +23,6 @@ public class Mapper implements IMapper {
 	}
 	
 	public TransactionDTO map(Transaction transaction) {
-		String categoryName = transaction.getCategory() == null ? null : transaction.getCategory().getName();
 		return new TransactionDTO(
 				transaction.getId(),
 				transaction.getIdentifier(),
@@ -31,7 +30,7 @@ public class Mapper implements IMapper {
 				transaction.getStartDate(),
 				transaction.getEndDate(),
 				transaction.getNotes(),
-				categoryName);
+				transaction.getCategory().getId());
 	}
 	
 	public TypeDTO map(Type type) {

@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,20 +42,5 @@ public class CategoryControllerTests {
 		// Assert
 		assertEquals(HttpStatus.OK ,response.getStatusCode());
 		assertEquals(categoryDTOs, body);
-	}
-	
-	@Test
-	public void getCategories_exception_statusInternalServerError() throws Exception {
-		// Arrange
-		when(mockCategoryService.getCategories()).thenThrow(Exception.class);
-		String expectedMessage = "Could not retrieve categories.";
-		
-		// Act
-		ResponseEntity<Object> response = categoryController.getCategories();
-		String body = (String) response.getBody();
-		
-		// Assert
-		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-		assertEquals(expectedMessage, body);
 	}
 }

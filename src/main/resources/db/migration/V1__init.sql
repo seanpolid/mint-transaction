@@ -34,7 +34,7 @@ create table category (
 create table transaction (
 	id int auto_increment not null primary key,
 	identifier char(36) not null,
-    amount int not null,
+    amount decimal(10, 2) not null,
     start_date date not null,
     end_date date null,
     notes varchar(100) null,
@@ -45,3 +45,6 @@ create table transaction (
 );
 
 insert into type (name) values ('income'), ('expense');
+
+insert into user (email, username, password, first_name, date_created) 
+values ('test-user@gmail.com', 'testUser', 'password', 'name', "2023-09-11");
