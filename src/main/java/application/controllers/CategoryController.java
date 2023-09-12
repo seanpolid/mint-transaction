@@ -25,16 +25,11 @@ public class CategoryController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<Object> getCategories() {
+	public ResponseEntity<Object> getCategories() throws Exception {
 		logger.info("Retrieving categories");
+		List<CategoryDTO> categories = categoryService.getCategories();
+		logger.info("Successfully retrieved categories");
 		
-		try {
-			List<CategoryDTO> categories = categoryService.getCategories();
-			logger.info("Successfully retrieved categories");
-			return new ResponseEntity<Object>(categories, HttpStatus.OK);
-		} catch (Exception ex) {
-			logger.error("An exception occurred while retrieving categories: " + ex);
-			return new ResponseEntity<Object>("Could not retrieve categories.", HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		return new ResponseEntity<Object>(categories, HttpStatus.OK);
 	}
 }

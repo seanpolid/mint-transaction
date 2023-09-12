@@ -33,7 +33,7 @@ public class TransactionService implements ITransactionService {
 
 	@Override
 	@Transactional
-	public List<TransactionDTO> saveTransactions(List<TransactionDTO> transactionDTOs, User user) throws Exception {
+	public List<TransactionDTO> saveTransactions(List<TransactionDTO> transactionDTOs, User user) throws CategoryNotFoundException {
 		List<Transaction> transactions = new ArrayList<>();
 		for (TransactionDTO transactionDTO : transactionDTOs) {
 			Transaction transaction = mapToTransaction(transactionDTO, user);

@@ -27,14 +27,9 @@ public class TypeController {
 	@GetMapping
 	public ResponseEntity<Object> getTypes() {
 		logger.info("Retrieving types");
+		List<TypeDTO> types = typeService.getTypes();
+		logger.info("Successfully retrieved types");
 		
-		try {
-			List<TypeDTO> types = typeService.getTypes();
-			logger.info("Successfully retrieved types");
-			return new ResponseEntity<Object>(types, HttpStatus.OK);
-		} catch (Exception ex) {
-			logger.error("An exception occurred while retrieving types: " + ex);
-			return new ResponseEntity<Object>("Could not retrieve types.", HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		return new ResponseEntity<Object>(types, HttpStatus.OK);
 	}
 }

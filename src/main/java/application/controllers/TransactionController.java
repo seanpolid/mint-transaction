@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import application.dtos.TransactionDTO;
 import application.entities.User;
+import application.exceptions.CategoryNotFoundException;
 import application.services.interfaces.ITransactionService;
 
 @RestController
@@ -30,32 +31,22 @@ public class TransactionController {
 		this.transactionService = transactionService;
 	}
 	
-	@PostMapping()
+	@PostMapping
 	public ResponseEntity<Object> saveTransactions(@RequestBody List<TransactionDTO> transactionDTOs,
-												   @AuthenticationPrincipal User user) {
+												   @AuthenticationPrincipal User user) throws CategoryNotFoundException {
 		logger.info("Saving transactions for user: " + user.getId());
+		transactionService.saveTransactions(transactionDTOs, user);
+		logger.info("Transactions successfully saved for user: " + user.getId());
 		
-		try {
-			transactionService.saveTransactions(transactionDTOs, user);
-			logger.info("Transactions successfully saved for user: " + user.getId());
-			return new ResponseEntity<Object>("Transactions saved successfully.", HttpStatus.CREATED);
-		} catch (Exception ex) {
-			logger.error("An exception occurred while retrieving transactions: " + ex);
-			return new ResponseEntity<Object>("Could not save transactions.", HttpStatus.BAD_REQUEST);
-		}
+		return new ResponseEntity<Object>("Transactions were successfully saved.", HttpStatus.CREATED);
 	}
 	
 	@GetMapping
 	public ResponseEntity<Object> getTransactions(@AuthenticationPrincipal User user) {
 		logger.info("Retrieving transactions for user: " + user.getId());
+		List<TransactionDTO> transactions = transactionService.getTransactions(user.getId());
+		logger.info("Transactions successfully retrieved for user: " + user.getId());
 		
-		try {
-			List<TransactionDTO> transactions = transactionService.getTransactions(user.getId());
-			logger.info("Transactions successfully retrieved for user: " + user.getId());
-			return new ResponseEntity<Object>(transactions, HttpStatus.OK);
-		} catch (Exception ex) {
-			logger.error("An exception occurred while retrieving transactions for user " + user.getId() + ": " + ex);
-			return new ResponseEntity<Object>("Could not retrieve transactions for user: " + user.getId(), HttpStatus.BAD_REQUEST);
-		}
+		return new ResponseEntity<Object>(transactions, HttpStatus.OK);
 	}
 }
