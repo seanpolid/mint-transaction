@@ -37,7 +37,7 @@ public class User implements UserDetails {
 	
 	private LocalDate dateCreated;
 	
-	private long phone;
+	private Long phone;
 	
 	@OneToMany(mappedBy="user", cascade=CascadeType.ALL)
 	private List<Transaction> transactions = new ArrayList<>();
@@ -55,7 +55,7 @@ public class User implements UserDetails {
 	}
 
 	public User(int id, String email, String username, String firstName, String password, LocalDate dateCreated,
-			long phone) {
+			Long phone) {
 		super();
 		this.id = id;
 		this.email = email;
@@ -110,11 +110,11 @@ public class User implements UserDetails {
 		this.dateCreated = dateCreated;
 	}
 
-	public long getPhone() {
+	public Long getPhone() {
 		return phone;
 	}
 
-	public void setPhone(long phone) {
+	public void setPhone(Long phone) {
 		this.phone = phone;
 	}
 
