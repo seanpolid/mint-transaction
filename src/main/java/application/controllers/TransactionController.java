@@ -20,7 +20,7 @@ import application.exceptions.CategoryNotFoundException;
 import application.services.interfaces.ITransactionService;
 
 @RestController
-@RequestMapping(path="api/transactions")
+@RequestMapping("api/transactions")
 @CrossOrigin(origins={"http://localhost:5173/"})
 public class TransactionController {
 
