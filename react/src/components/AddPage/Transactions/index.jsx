@@ -66,7 +66,7 @@ const TransactionPage = () => {
         event.preventDefault();
 
         const transactionDTOS = transactions.map(transaction => new TransactionDTO(transaction));
-        const uri = `http://localhost:8080/api/1/transactions`;
+        const uri = `http://localhost:8080/api/transactions`;
         fetch(uri, {
             method: 'POST', 
             headers: {
