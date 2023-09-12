@@ -34,6 +34,7 @@ public class TransactionController {
 	@PostMapping
 	public ResponseEntity<Object> saveTransactions(@RequestBody List<TransactionDTO> transactionDTOs,
 												   @AuthenticationPrincipal User user) throws CategoryNotFoundException {
+		user = new User(1, "testUser");
 		logger.info("Saving transactions for user: " + user.getId());
 		transactionService.saveTransactions(transactionDTOs, user);
 		logger.info("Transactions successfully saved for user: " + user.getId());
@@ -43,6 +44,7 @@ public class TransactionController {
 	
 	@GetMapping
 	public ResponseEntity<Object> getTransactions(@AuthenticationPrincipal User user) {
+		user = new User(1, "testUser");
 		logger.info("Retrieving transactions for user: " + user.getId());
 		List<TransactionDTO> transactions = transactionService.getTransactions(user.getId());
 		logger.info("Transactions successfully retrieved for user: " + user.getId());

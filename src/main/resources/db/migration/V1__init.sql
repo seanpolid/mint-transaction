@@ -45,3 +45,6 @@ create table transaction (
 );
 
 insert into type (name) values ('income'), ('expense');
+
+insert into user (email, username, password, first_name, date_created) 
+values ('test-user@gmail.com', 'testUser', 'password', 'name', "2023-09-11");
