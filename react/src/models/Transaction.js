@@ -1,5 +1,6 @@
 class Transaction {
     id;
+    identifier;
     type;
     category;
     recurs;
@@ -12,6 +13,7 @@ class Transaction {
     clone() {
         const transaction = new Transaction();
         transaction.id = this.id;
+        transaction.identifier = this.identifier;
         transaction.type = this.type;
         transaction.category = this.category;
         transaction.recurs = this.recurs;
