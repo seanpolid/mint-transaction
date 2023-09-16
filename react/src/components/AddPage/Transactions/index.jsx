@@ -1,20 +1,22 @@
 /* eslint-disable react/prop-types */
-import { asTitleCase } from '../../../utils/functions';
+import { postData } from '../../../utils/functions';
+import DataContext from '../../App/DataContext';
 import InputWithLabel from '../../InputWithLabel';
 import RadioButtonWithLabel from '../../RadioButtonWithLabel';
 import Scrollpane from '../../Scrollpane';
 import SelectWithLabel from '../../SelectWithLabel';
 import style from './style.module.css'
-import { Transaction, Category } from '../../../models';
-import { useState, useEffect, useCallback } from 'react';
+import { Transaction } from '../../../models';
+import { useState, useEffect, useCallback, useContext } from 'react';
 import { useList, useObject } from '../../../utils/hooks';
 import { v4 as uuidv4 } from 'uuid';
 
 const TransactionPage = () => {
     const [forms, setForms] = useState([]);
     const [transactions, setTransactions, updateTransaction] = useList([]);
-    const [categories, setCategories] = useState([]);
-    const [types, setTypes] = useState([]);
+    const dataContext = useContext(DataContext);
+    const categories = dataContext.categories;
+    const types = dataContext.types;
 
     useEffect(() => {
         const transaction = new Transaction();
@@ -37,31 +39,6 @@ const TransactionPage = () => {
     useEffect(() => {
         console.log(transactions)
     }, [transactions]);
-
-    useEffect(() => {
-        const getTypesAndCategories = async () => {
-            const typesUri = "http://localhost:8080/api/types";
-            let types = await getData(typesUri);
-            for (const type of types) {
-                type.name = asTitleCase(type.name);
-            }
-            setTypes(types);
-            
-            const categoriesUri = "http://localhost:8080/api/categories";
-            let categories = await getData(categoriesUri);
-            for (const category of categories) {
-                category.name = asTitleCase(category.name);
-                category.type = asTitleCase(category.type);
-            }
-
-            categories = categories.map(category =>  {
-                const type = types.filter(type => type.name === category.type)[0];
-                return {...category, type_id: type.id};
-            });
-            setCategories(categories);
-        };
-        getTypesAndCategories();
-    }, []);
 
     const handleDelete = (event) => {
         event.preventDefault();
@@ -103,7 +80,7 @@ const TransactionPage = () => {
         const uri = `http://localhost:8080/api/transactions`;
         const updatedTransactions = await postData(uri, transactions);
         if (!updatedTransactions.length > 0) {
-            setTransactions(updatedTransactions);
+            setTransactions([]);
         }
     }, [transactions]);
 
@@ -144,35 +121,6 @@ const createTransactionForm = (transaction, onButtonClick, handleTransactionChan
     )
 } 
 
-const getData = async (uri) => {
-    try {
-        const response = await fetch(uri);
-        return await response.json();
-    } catch (exception) {
-        console.log("exception : ", exception);
-    }
-}
-
-const postData = async (uri, data) => {
-    console.log("POSTING DATA: ", data);
-    try {
-        const response = await fetch(uri, {
-            method: 'POST', 
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        })
-
-        return await response.json();
-    } catch (exception) {
-        console.log("exception: ", exception);
-        return [];
-    }
-}
-
-
 const TransactionForm = ({id, initialTransaction, onButtonClick, handleTransactionChange, categories, types}) => {
     const [transaction, __, updateTransaction] = useObject(initialTransaction);
     const names = {
@@ -202,7 +150,7 @@ const TransactionForm = ({id, initialTransaction, onButtonClick, handleTransacti
         updateTransaction(attributeName, value);
         handleTransactionChange(attributeName, value, key);
     }
-    console.log(categories);
+
     return (
         <>
             <form className={style.transactionForm}>
