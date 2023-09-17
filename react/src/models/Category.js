@@ -1,12 +1,13 @@
 class Category {
     id;
     name;
-    type;
-    
-    constructor(id, name, type) {
+    typeId;
+    typeName;
+
+    constructor(id, name, typeId) {
         this.id = id;
         this.name = name;
-        this.type = type;
+        this.typeId = typeId;
     }
 }
 
