@@ -1,21 +1,23 @@
 /* eslint-disable react/prop-types */
+import DataContext from "../DataContext";
 import Icon from "../Icon";
 import { iconType, tabType } from "../../enums";
 import Scrollpane from "../Scrollpane";
 import style from './style.module.css';
+import { useContext, useState } from "react";
 
 const Log = ({type}) => {
-    switch (type) {
-        case tabType.TRANSACTIONS:
-            break;
-        case tabType.GOALS:
-            break;
+    const dataContext = useContext(DataContext);
+    const items = {
+        [tabType.TRANSACTIONS]: dataContext.transactions,
+        [tabType.GOALS]: dataContext.goals
+    };
+    const convertToLog = {
+        [tabType.TRANSACTIONS]: (item) => <Transaction transaction={item} />,
+        [tabType.GOALS]: (item) => <Goal goal={item} />
     }
 
-    let logs = [];
-    for (let i = 0; i < 5; i++) {
-        logs.push(<Transaction key={i}/>);
-    }
+    const logs = items[type].map(item => convertToLog[type](item));
 
     return (
         <section className={style.container}>
@@ -40,15 +42,27 @@ const Log = ({type}) => {
     )
 }
 
-const Transaction = ({}) => {
+const Transaction = ({transaction}) => {
+    const [className, setClassName] = useState(`${style.transaction}`);
+
+    const handleMouseEnter = () => {
+        setClassName(`${style.transaction} ${style.active}`);
+    }
+
+    const handleMouseLeave = () => {
+        setClassName(`${style.transaction}`);
+    }
+
     return (
-        <tr className={style.transaction}>
+        <tr key={transaction.identifier} className={className} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
             <td>
-                <span className={style.type}>Income</span>
-                <span className={style.category}>Job</span>
-                <span className={style.date}>08/15/2023</span>
+                <span className={style.type}>{transaction.typeName}</span>
+                <span className={style.category}>{transaction.categoryName}</span>
+                <span className={style.date}>
+                    {transaction.endDate ? transaction.endDate : transaction.startDate}
+                </span>
             </td>
-            <td className={style.amount}>$1000</td>
+            <td className={style.amount}>${transaction.amount}</td>
         </tr>
     )
 }
@@ -60,6 +74,14 @@ const SearchBar = () => {
             <Icon type={iconType.SEARCH} />
         </div>
         
+    )
+}
+
+const Goal = () => {
+    return (
+        <>
+        
+        </>
     )
 }
 

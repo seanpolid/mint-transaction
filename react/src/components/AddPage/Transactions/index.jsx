@@ -1,30 +1,41 @@
 /* eslint-disable react/prop-types */
+import { postData } from '../../../utils/functions';
+import DataContext from '../../DataContext';
 import InputWithLabel from '../../InputWithLabel';
+import mapper from '../../../utils/mapper';
 import RadioButtonWithLabel from '../../RadioButtonWithLabel';
 import Scrollpane from '../../Scrollpane';
 import SelectWithLabel from '../../SelectWithLabel';
 import style from './style.module.css'
-import { Transaction, Category } from '../../../models';
-import { TransactionDTO } from '../../../dtos';
-import { transactionType } from '../../../enums';
-import { useState, useEffect, useCallback } from 'react';
+import { Transaction } from '../../../models';
+import { useState, useEffect, useCallback, useContext } from 'react';
 import { useList, useObject } from '../../../utils/hooks';
 import { v4 as uuidv4 } from 'uuid';
 
 const TransactionPage = () => {
     const [forms, setForms] = useState([]);
     const [transactions, setTransactions, updateTransaction] = useList([]);
+    const dataContext = useContext(DataContext);
+    const categories = dataContext.categories;
+    const types = dataContext.types;
 
     useEffect(() => {
         const transaction = new Transaction();
-        const transactionForm = createTransactionForm(transaction, handleDelete, handleTransactionChange);
+        const transactionForm = createTransactionForm(transaction, handleDelete, handleTransactionChange, categories, types);
         transaction.key = transactionForm.key;
-        transaction.type = transactionType.EXPENSE;
-        transaction.recurs = false
+        transaction.identifier = transactionForm.key;
+        transaction.recurs = false;
+
+        if (types.length > 0) {
+            const defaultType = types.filter(type => type.name.toLowerCase() === "expense")[0];
+            if (defaultType) {
+                transaction.typeId = defaultType.id;
+            }
+        }
         
         setForms([transactionForm]);
         setTransactions([transaction]);
-    }, []);
+    }, [categories, types]);
 
     useEffect(() => {
         console.log(transactions)
@@ -49,38 +60,33 @@ const TransactionPage = () => {
         })
     };
 
-    const handleAdd = (event) => {
+    const handleAdd = useCallback((event) => {
         event.preventDefault();
         const transaction = new Transaction();
 
         setForms(prevForms => {
-            const form = createTransactionForm(transaction, handleDelete, handleTransactionChange);
-            transaction.key = form.key;
-            return prevForms.concat([form]);
+            const transactionForm = createTransactionForm(transaction, handleDelete, handleTransactionChange, categories, types);
+            transaction.key = transactionForm.key;
+            transaction.identifier = transactionForm.key;
+            transaction.recurs = false;
+            return prevForms.concat([transactionForm]);
         });
 
         setTransactions(prevTransactions => prevTransactions.concat([transaction]));
-    }
+    }, [categories, types]);
 
-    const handleSave = useCallback((event) => {
+    const handleSave = useCallback(async (event) => {
         event.preventDefault();
 
-        const transactionDTOS = transactions.map(transaction => new TransactionDTO(transaction));
         const uri = `http://localhost:8080/api/transactions`;
-        fetch(uri, {
-            method: 'POST', 
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(transactionDTOS)
-        })
-        .then(response => {
-            response.text().then(text => console.log(text));
-        })
-        .catch(error => {
-            console.log("error:", error);
-        })
+        const transactionDTOs = transactions.map(transaction => mapper.mapToTransactionDTO(transaction));
+        const savedTransactionDTOs = await postData(uri, transactionDTOs);
+        console.log(savedTransactionDTOs);
+        if (savedTransactionDTOs.length > 0) {
+            setTransactions([]);
+            const savedTransactions = savedTransactionDTOs.map(savedTransactionDTO => mapper.mapToTransaction(savedTransactionDTO));
+            dataContext.addTransactions(savedTransactions);
+        }
     }, [transactions]);
 
     const handleTransactionChange = (attributeName, value, key) => {
@@ -103,7 +109,7 @@ const TransactionPage = () => {
     )
 }
 
-const createTransactionForm = (transaction, onButtonClick, handleTransactionChange) => {
+const createTransactionForm = (transaction, onButtonClick, handleTransactionChange, categories, types) => {
     const id = uuidv4();
 
     return (
@@ -113,20 +119,20 @@ const createTransactionForm = (transaction, onButtonClick, handleTransactionChan
                 initialTransaction={transaction} 
                 onButtonClick={onButtonClick}
                 handleTransactionChange={handleTransactionChange}
+                categories={categories}
+                types={types}
             />
         </li>
     )
 } 
 
-
-
-const TransactionForm = ({id, initialTransaction, onButtonClick, handleTransactionChange}) => {
-    const [transaction, setTransaction, updateTransaction] = useObject(initialTransaction);
+const TransactionForm = ({id, initialTransaction, onButtonClick, handleTransactionChange, categories, types}) => {
+    const [transaction, __, updateTransaction] = useObject(initialTransaction);
     const names = {
         ['startDate']: `startDate_${id}`,
         ['endDate']: `endDate_${id}`,
-        ['type']: `type_${id}`,
-        ['category']: `category_${id}`,
+        ['type']: `typeId_${id}`,
+        ['category']: `categoryId_${id}`,
         ['recurs']: `recurs_${id}`,
         ['amount']: `amount_${id}`,
         ['notes']: `notes_${id}`
@@ -158,14 +164,15 @@ const TransactionForm = ({id, initialTransaction, onButtonClick, handleTransacti
                         name={names['type']}
                         transaction={transaction}
                         onChange={handleChange}
+                        types={types}
                     />
 
                     <SelectWithLabel 
                         id={names['category']}
                         name={names['category']}
                         text='Category:'
-                        items={[new Category(1, "Testing")]}
-                        value={transaction.category}
+                        items={categories.filter(category => category.typeId === transaction.typeId)}
+                        value={transaction.categoryId}
                         onChange={handleChange}
                         wrapped={false}
                     />
@@ -207,28 +214,22 @@ const TransactionForm = ({id, initialTransaction, onButtonClick, handleTransacti
     )
 }
 
-const TypeSelection = ({name, transaction, onChange}) => {
+const TypeSelection = ({name, transaction, onChange, types}) => {
     return (
         <>
             <label htmlFor={name}>Type:</label>
             <div>
-                <RadioButtonWithLabel 
-                    name={name}
-                    value={transactionType.INCOME}
-                    text='Income'
-                    onChange={onChange}
-                    checked={transaction.type === transactionType.INCOME}
-                    wrapped
-                />
-                
-                <RadioButtonWithLabel
-                    name={name}
-                    value={transactionType.EXPENSE}
-                    text='Expense'
-                    onChange={onChange}
-                    checked={transaction.type !== transactionType.INCOME}
-                    wrapped
-                />
+                {types.map(type => (
+                    <RadioButtonWithLabel 
+                        key={type.id}
+                        name={name}
+                        value={type.id}
+                        text={type.name}
+                        onChange={onChange}
+                        checked={transaction.typeId === type.id}
+                        wrapped
+                    />
+                ))}
             </div>
         </>
     )

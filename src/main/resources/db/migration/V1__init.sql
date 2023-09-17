@@ -48,3 +48,14 @@ insert into type (name) values ('income'), ('expense');
 
 insert into user (email, username, password, first_name, date_created) 
 values ('test-user@gmail.com', 'testUser', 'password', 'name', "2023-09-11");
+
+insert into category (name, type_id)
+values 	('gift', 1),
+		('job', 1),
+		('other', 1),
+		('restaurant', 2),
+		('rent', 2),
+		('groceries', 2),
+		('gas', 2),
+		('health', 2),
+		('other', 2);

@@ -78,11 +78,12 @@
     .transactionForm .secondColumn {
         display: flex;
         flex-direction: column;
+        height: 100%;
     }
     
     .transactionForm .textarea {
-        width: 100%;
-        box-sizing: border-box;
+        flex: 1;
+        resize: none;
     }
 
     .transactionForm button {
@@ -112,5 +113,11 @@
     .transactionForm {
         grid-template-columns: 1fr;
         gap: 1em;
+    }
+
+    .transactionForm .textarea {
+        resize: vertical;
+        height: auto;
+        flex: auto;
     }
 }

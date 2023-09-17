@@ -11,5 +11,5 @@ public interface ITransactionRepository extends ListCrudRepository<Transaction, 
 
 	public List<Transaction> findAllByUserId(int userId);
 	public Optional<Transaction> findByIdentifier(String identifier);
-	
+
 }

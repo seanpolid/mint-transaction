@@ -36,10 +36,10 @@ public class TransactionController {
 												   @AuthenticationPrincipal User user) throws CategoryNotFoundException {
 		user = new User(1, "testUser");
 		logger.info("Saving transactions for user: " + user.getId());
-		transactionService.saveTransactions(transactionDTOs, user);
-		logger.info("Transactions successfully saved for user: " + user.getId());
-		
-		return new ResponseEntity<Object>("Transactions were successfully saved.", HttpStatus.CREATED);
+		transactionDTOs = transactionService.saveTransactions(transactionDTOs, user);
+		logger.info("Transactions successfully saved for user: " + user.getId() + ". Sending them back to client.");
+
+		return new ResponseEntity<Object>(transactionDTOs, HttpStatus.CREATED);
 	}
 	
 	@GetMapping

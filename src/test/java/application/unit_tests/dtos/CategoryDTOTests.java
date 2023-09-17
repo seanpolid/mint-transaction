@@ -13,8 +13,8 @@ public class CategoryDTOTests {
 	@Test
 	public void hashCode_sameFields_sameHash() {
 		// Arrange
-		CategoryDTO categoryDTO1 = new CategoryDTO(1, "name", "type");
-		CategoryDTO categoryDTO2 = new CategoryDTO(1, "name", "type");
+		CategoryDTO categoryDTO1 = new CategoryDTO(1, "name", 1);
+		CategoryDTO categoryDTO2 = new CategoryDTO(1, "name", 1);
 		
 		// Act
 		int categoryDTO1Hash = categoryDTO1.hashCode();
@@ -27,8 +27,8 @@ public class CategoryDTOTests {
 	@Test
 	public void hashCode_differentFields_differentHash() {
 		// Arrange
-		CategoryDTO categoryDTO1 = new CategoryDTO(1, "name", "type");
-		CategoryDTO categoryDTO2 = new CategoryDTO(2, "name", "type");
+		CategoryDTO categoryDTO1 = new CategoryDTO(1, "name", 1);
+		CategoryDTO categoryDTO2 = new CategoryDTO(2, "name", 1);
 		
 		// Act
 		int categoryDTO1Hash = categoryDTO1.hashCode();
@@ -41,8 +41,8 @@ public class CategoryDTOTests {
 	@Test
 	public void equals_sameFields_true() {
 		// Arrange
-		CategoryDTO categoryDTO1 = new CategoryDTO(1, "name", "type");
-		CategoryDTO categoryDTO2 = new CategoryDTO(1, "name", "type");
+		CategoryDTO categoryDTO1 = new CategoryDTO(1, "name", 1);
+		CategoryDTO categoryDTO2 = new CategoryDTO(1, "name", 1);
 		
 		// Act and Assert
 		assertTrue(categoryDTO1.equals(categoryDTO2));
@@ -51,8 +51,8 @@ public class CategoryDTOTests {
 	@Test
 	public void equals_differentFields_false() {
 		// Arrange
-		CategoryDTO categoryDTO1 = new CategoryDTO(1, "name", "type");
-		CategoryDTO categoryDTO2 = new CategoryDTO(2, "name", "type");
+		CategoryDTO categoryDTO1 = new CategoryDTO(1, "name", 1);
+		CategoryDTO categoryDTO2 = new CategoryDTO(2, "name", 1);
 		
 		// Act and Assert
 		assertFalse(categoryDTO1.equals(categoryDTO2));

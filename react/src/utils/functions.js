@@ -29,4 +29,32 @@ const asTitleCase = (string) => {
     return string;
 }
 
-export { findParent, asTitleCase }
+const getData = async (uri) => {
+    try {
+        const response = await fetch(uri);
+        return await response.json();
+    } catch (exception) {
+        console.log("exception : ", exception);
+    }
+}
+
+const postData = async (uri, data) => {
+    console.log("POSTING DATA: ", data);
+    try {
+        const response = await fetch(uri, {
+            method: 'POST', 
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+
+        return await response.json();
+    } catch (exception) {
+        console.log("exception: ", exception);
+        return [];
+    }
+}
+
+export { findParent, asTitleCase, getData, postData}

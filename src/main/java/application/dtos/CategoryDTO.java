@@ -6,15 +6,16 @@ public class CategoryDTO {
 
 	private int id;
 	private String name;
-	private String type;
+	private int typeId;
 	
 	public CategoryDTO() {
 	}
-	
-	public CategoryDTO(int id, String name, String type) {
+
+	public CategoryDTO(int id, String name, int typeId) {
+		super();
 		this.id = id;
 		this.name = name;
-		this.type = type;
+		this.typeId = typeId;
 	}
 
 	public int getId() {
@@ -33,17 +34,17 @@ public class CategoryDTO {
 		this.name = name;
 	}
 
-	public String getType() {
-		return type;
+	public int getTypeId() {
+		return typeId;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setTypeId(int typeId) {
+		this.typeId = typeId;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, name, type);
+		return Objects.hash(id, name, typeId);
 	}
 
 	@Override
@@ -55,6 +56,7 @@ public class CategoryDTO {
 		if (getClass() != obj.getClass())
 			return false;
 		CategoryDTO other = (CategoryDTO) obj;
-		return id == other.id && Objects.equals(name, other.name) && Objects.equals(type, other.type);
+		return id == other.id && Objects.equals(name, other.name) && typeId == other.typeId;
 	}
+
 }
