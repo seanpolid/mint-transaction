@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
 import { postData } from '../../../utils/functions';
-import DataContext from '../../App/DataContext';
+import DataContext from '../../DataContext';
 import InputWithLabel from '../../InputWithLabel';
+import mapper from '../../../utils/mapper';
 import RadioButtonWithLabel from '../../RadioButtonWithLabel';
 import Scrollpane from '../../Scrollpane';
 import SelectWithLabel from '../../SelectWithLabel';
@@ -28,7 +29,7 @@ const TransactionPage = () => {
         if (types.length > 0) {
             const defaultType = types.filter(type => type.name.toLowerCase() === "expense")[0];
             if (defaultType) {
-                transaction.type = defaultType.id;
+                transaction.typeId = defaultType.id;
             }
         }
         
@@ -78,9 +79,13 @@ const TransactionPage = () => {
         event.preventDefault();
 
         const uri = `http://localhost:8080/api/transactions`;
-        const updatedTransactions = await postData(uri, transactions);
-        if (!updatedTransactions.length > 0) {
+        const transactionDTOs = transactions.map(transaction => mapper.mapToTransactionDTO(transaction));
+        const savedTransactionDTOs = await postData(uri, transactionDTOs);
+        console.log(savedTransactionDTOs);
+        if (savedTransactionDTOs.length > 0) {
             setTransactions([]);
+            const savedTransactions = savedTransactionDTOs.map(savedTransactionDTO => mapper.mapToTransaction(savedTransactionDTO));
+            dataContext.addTransactions(savedTransactions);
         }
     }, [transactions]);
 
@@ -126,8 +131,8 @@ const TransactionForm = ({id, initialTransaction, onButtonClick, handleTransacti
     const names = {
         ['startDate']: `startDate_${id}`,
         ['endDate']: `endDate_${id}`,
-        ['type']: `type_${id}`,
-        ['category']: `category_${id}`,
+        ['type']: `typeId_${id}`,
+        ['category']: `categoryId_${id}`,
         ['recurs']: `recurs_${id}`,
         ['amount']: `amount_${id}`,
         ['notes']: `notes_${id}`
@@ -166,8 +171,8 @@ const TransactionForm = ({id, initialTransaction, onButtonClick, handleTransacti
                         id={names['category']}
                         name={names['category']}
                         text='Category:'
-                        items={categories.filter(category => category.type_id === transaction.type)}
-                        value={transaction.category}
+                        items={categories.filter(category => category.typeId === transaction.typeId)}
+                        value={transaction.categoryId}
                         onChange={handleChange}
                         wrapped={false}
                     />
@@ -221,7 +226,7 @@ const TypeSelection = ({name, transaction, onChange, types}) => {
                         value={type.id}
                         text={type.name}
                         onChange={onChange}
-                        checked={transaction.type === type.id}
+                        checked={transaction.typeId === type.id}
                         wrapped
                     />
                 ))}

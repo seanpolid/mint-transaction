@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { asTitleCase } from '../../utils/functions'
 import Dashboard from '../Dashboard'
-import DataContext from './DataContext'
+import DataContext from '../DataContext'
 import Log from '../Log'
 import { pageReducer, isLogType, isWideEnough, getPage, getAllData } from './functions'
 import Profile from '../Profile'
@@ -26,13 +26,14 @@ const App = () => {
         transactions: transactions,
         categories: categories,
         goals: goals,
-        types: types
+        types: types,
+        addTransactions: (newTransactions) => setTransactions(prevTransactions => prevTransactions.concat(newTransactions))
     }
 
     useEffect(() => {
         const loadData = async () => {
             const successful = await getAllData(setTypes, setCategories, setGoals, setTransactions);
-            
+ 
             if (!successful) {
                 setIsNetworkError(true);
                 setIsLoading(false);
