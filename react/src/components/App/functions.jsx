@@ -1,4 +1,5 @@
 import AddPage from "../AddPage";
+import mapper from "../../utils/mapper";
 import pageType from "../../enums/pageType";
 import tabType from "../../enums/tabType";
 import ViewPage from "../ViewPage";
@@ -49,16 +50,20 @@ const getAllData = async (setTypes, setCategories, setGoals, setTransactions) =>
 
         return true;
     } catch (exception) {
+        console.log(exception);
         return false;
     }
 };
 
 const getTypes = async () => {
     const uri = "http://localhost:8080/api/types";
-    let types = await getData(uri);
+    const typeDTOs = await getData(uri);
 
-    for (const type of types) {
+    const types = [];
+    for (const typeDTO of typeDTOs) {
+        const type = mapper.mapToType(typeDTO);
         type.name = asTitleCase(type.name);
+        types.push(type);
     }
 
     return types;
@@ -66,25 +71,44 @@ const getTypes = async () => {
 
 const getCategories = async (types) => {
     const uri = "http://localhost:8080/api/categories";
-    let categories = await getData(uri);
+    let categoryDTOs = await getData(uri);
 
-    for (const category of categories) {
-        category.name = asTitleCase(category.name);
-        category.type = asTitleCase(category.type);
+    const typeNames = {}
+    for (const type of types) {
+        typeNames[type.id] = type.name;
     }
 
-    categories = categories.map(category =>  {
-        const type = types.filter(type => type.name === category.type)[0];
-        return {...category, type_id: type.id};
-    });
+    const categories = [];
+    for (const categoryDTO of categoryDTOs) {
+        const category = mapper.mapToCategory(categoryDTO);
+        category.name = asTitleCase(category.name);
+        category.typeName = typeNames[category.typeId];
+        categories.push(category);
+    }
 
     return categories;
 }
 
 const getTransactions = async (types, categories) => {
     const uri = "http://localhost:8080/api/transactions";
-    let transactions = await getData(uri);
-    console.log(transactions);
+    let transactionDTOs = await getData(uri);
+
+    const categoryMap = {};
+    for (const category of categories) {
+        categoryMap[category.id] = category;
+    }
+
+    const transactions = [];
+    for (const transactionDTO of transactionDTOs) {
+        const transaction = mapper.mapToTransaction(transactionDTO);
+        
+        const category = categoryMap[transaction.categoryId];
+        transaction.categoryName = category.name;
+        transaction.typeName = category.typeName;
+
+        transactions.push(transaction);
+    }
+
     return transactions;
 }
 
