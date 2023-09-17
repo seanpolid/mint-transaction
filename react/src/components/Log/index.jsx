@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
-import DataContext from "../App/DataContext";
+import DataContext from "../DataContext";
 import Icon from "../Icon";
 import { iconType, tabType } from "../../enums";
 import Scrollpane from "../Scrollpane";
 import style from './style.module.css';
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 const Log = ({type}) => {
     const dataContext = useContext(DataContext);
@@ -43,12 +43,24 @@ const Log = ({type}) => {
 }
 
 const Transaction = ({transaction}) => {
+    const [className, setClassName] = useState(`${style.transaction}`);
+
+    const handleMouseEnter = () => {
+        setClassName(`${style.transaction} ${style.active}`);
+    }
+
+    const handleMouseLeave = () => {
+        setClassName(`${style.transaction}`);
+    }
+
     return (
-        <tr key={transaction.identifier} className={style.transaction}>
+        <tr key={transaction.identifier} className={className} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
             <td>
-                <span className={style.type}>Income</span>
-                <span className={style.category}>{transaction.category}</span>
-                <span className={style.date}>{transaction.startDate}</span>
+                <span className={style.type}>{transaction.typeName}</span>
+                <span className={style.category}>{transaction.categoryName}</span>
+                <span className={style.date}>
+                    {transaction.endDate ? transaction.endDate : transaction.startDate}
+                </span>
             </td>
             <td className={style.amount}>${transaction.amount}</td>
         </tr>
