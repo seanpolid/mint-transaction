@@ -38,8 +38,7 @@ public class Mapper implements IMapper {
 	}
 	
 	public CategoryDTO map(Category category) {
-		String typeName = category.getType() == null ? null : category.getType().getName();
-		return new CategoryDTO(category.getId(), category.getName(), typeName);
+		return new CategoryDTO(category.getId(), category.getName(), category.getType().getId());
 	}
 	
 }
