@@ -13,7 +13,7 @@ const Log = ({type}) => {
         [tabType.GOALS]: dataContext.goals
     };
     const convertToLog = {
-        [tabType.TRANSACTIONS]: (item) => <Transaction transaction={item} />,
+        [tabType.TRANSACTIONS]: (item) => <Transaction key={item.identifier} transaction={item} />,
         [tabType.GOALS]: (item) => <Goal goal={item} />
     }
 

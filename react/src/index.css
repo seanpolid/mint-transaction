@@ -18,20 +18,10 @@ body, header, nav, main, footer, div {
     box-sizing: border-box;
 }
 
+
 main {
-    width: 100%;
-}
-
-main > nav {
-    height: 100vh;
-    width: var(--nav-width);
-    position: fixed;
-}
-
-main > div {
-    margin-left: var(--nav-width);
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: var(--nav-width) 1fr 2fr;
     min-height: 100vh;
 }
 

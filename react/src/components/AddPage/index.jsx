@@ -13,9 +13,9 @@ const AddPage = ({type}) => {
 
 const GoalPage = () => {
     return (
-        <section>
+        <div>
             <h1>Add Goals</h1>
-        </section>
+        </div>
     )
 }
 

@@ -94,7 +94,7 @@ const TransactionPage = () => {
     }
 
     return (
-        <section>
+        <>
             <Scrollpane className={style.transactionContainer}>
                 <ul>
                     {forms}
@@ -105,7 +105,7 @@ const TransactionPage = () => {
                     <button onClick={handleSave}>Save</button>
                 </div>
             </Scrollpane>
-        </section>
+        </>
     )
 }
 
