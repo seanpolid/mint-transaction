@@ -97,7 +97,7 @@ const App = () => {
                     
                     {tabsWithPages.includes(currentTab) ? (
                         <section>
-                            <nav className={style.secondaryNav}>
+                            <nav className={style.secondaryNav} aria-label='Secondary Navigation'>
                                 <ul>
                                     {pages}
                                 </ul>
