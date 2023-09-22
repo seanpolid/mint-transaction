@@ -74,7 +74,9 @@ public class MapperTests {
 		// Arrange
 		Type type = new Type(1, "name");
 		Category category = new Category(1, "name", type);
-		CategoryDTO expected = new CategoryDTO(1, "name", type.getId());
+		
+		TypeDTO typeDTO = mapper.map(type);
+		CategoryDTO expected = new CategoryDTO(1, "name", typeDTO);
 		
 		// Act
 		CategoryDTO actual = mapper.map(category);

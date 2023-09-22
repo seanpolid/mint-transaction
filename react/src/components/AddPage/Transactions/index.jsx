@@ -170,7 +170,7 @@ const Form = ({id, initialTransaction, onButtonClick, handleTransactionChange, c
                         id={names['category']}
                         name={names['category']}
                         text='Category:'
-                        items={categories.filter(category => category.typeId === transaction.typeId)}
+                        items={categories.filter(category => category.type.id === transaction.typeId)}
                         value={transaction.categoryId}
                         onChange={handleChange}
                         wrapped={false}

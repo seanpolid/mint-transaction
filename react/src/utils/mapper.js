@@ -34,10 +34,11 @@ const mapToType = (typeDTO) => {
 }
 
 const mapToCategory = (categoryDTO) => {
+    const type = mapToType(categoryDTO.type);
     return new Category(
         categoryDTO.id,
         categoryDTO.name,
-        categoryDTO.typeId
+        type
     );
 }
 

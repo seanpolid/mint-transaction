@@ -42,10 +42,10 @@ const getAllData = async (setTypes, setCategories, setGoals, setTransactions) =>
         const types = await getTypes();
         setTypes(types);
         
-        const categories = await getCategories(types);
+        const categories = await getCategories();
         setCategories(categories);
 
-        const transactions = await getTransactions(types, categories);
+        const transactions = await getTransactions(categories);
         setTransactions(transactions);
 
         return true;
@@ -69,27 +69,23 @@ const getTypes = async () => {
     return types;
 }
 
-const getCategories = async (types) => {
+const getCategories = async () => {
     const uri = "http://localhost:8080/api/categories";
     let categoryDTOs = await getData(uri);
 
-    const typeNames = {}
-    for (const type of types) {
-        typeNames[type.id] = type.name;
-    }
 
     const categories = [];
     for (const categoryDTO of categoryDTOs) {
         const category = mapper.mapToCategory(categoryDTO);
         category.name = asTitleCase(category.name);
-        category.typeName = typeNames[category.typeId];
+        category.type.name = asTitleCase(category.type.name);
         categories.push(category);
     }
 
     return categories;
 }
 
-const getTransactions = async (types, categories) => {
+const getTransactions = async (categories) => {
     const uri = "http://localhost:8080/api/transactions";
     let transactionDTOs = await getData(uri);
 
@@ -100,11 +96,11 @@ const getTransactions = async (types, categories) => {
 
     const transactions = [];
     for (const transactionDTO of transactionDTOs) {
-        const transaction = mapper.mapToTransaction(transactionDTO);
+        const transaction = mapper.mapToTransaction(transactionDTO, categoryMap);
         
         const category = categoryMap[transaction.categoryId];
         transaction.categoryName = category.name;
-        transaction.typeName = category.typeName;
+        transaction.typeName = category.type.name;
 
         transactions.push(transaction);
     }
