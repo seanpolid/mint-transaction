@@ -20,26 +20,11 @@ const TransactionPage = () => {
     const types = dataContext.types;
 
     useEffect(() => {
-        const transaction = new Transaction();
-        const transactionForm = createTransactionForm(transaction, handleDelete, handleTransactionChange, categories, types);
-        transaction.key = transactionForm.key;
-        transaction.identifier = transactionForm.key;
-        transaction.recurs = false;
+        const [transaction, form] = createTransactionAndForm(handleDelete, handleTransactionChange, categories, types);
 
-        if (types.length > 0) {
-            const defaultType = types.filter(type => type.name.toLowerCase() === "expense")[0];
-            if (defaultType) {
-                transaction.typeId = defaultType.id;
-            }
-        }
-        
-        setForms([transactionForm]);
+        setForms([form]);
         setTransactions([transaction]);
     }, [categories, types]);
-
-    useEffect(() => {
-        console.log(transactions)
-    }, [transactions]);
 
     const handleDelete = (event) => {
         event.preventDefault();
@@ -62,39 +47,39 @@ const TransactionPage = () => {
 
     const handleAdd = useCallback((event) => {
         event.preventDefault();
-        const transaction = new Transaction();
+        const [transaction, form]= createTransactionAndForm(handleDelete, handleTransactionChange, categories, types);
 
-        setForms(prevForms => {
-            const transactionForm = createTransactionForm(transaction, handleDelete, handleTransactionChange, categories, types);
-            transaction.key = transactionForm.key;
-            transaction.identifier = transactionForm.key;
-            transaction.recurs = false;
-            return prevForms.concat([transactionForm]);
-        });
-
+        setForms(prevForms => prevForms.concat(form));
         setTransactions(prevTransactions => prevTransactions.concat([transaction]));
     }, [categories, types]);
 
     const handleSave = useCallback(async (event) => {
         event.preventDefault();
 
+        const transactionsWithoutCategories = transactions.filter(transaction => !transaction.category);
+        if (transactionsWithoutCategories.length > 0) {return;}
+
         const uri = `http://localhost:8080/api/transactions`;
         const transactionDTOs = transactions.map(transaction => mapper.mapToTransactionDTO(transaction));
         const savedTransactionDTOs = await postData(uri, transactionDTOs);
-        console.log(savedTransactionDTOs);
+
         if (savedTransactionDTOs.length > 0) {
-            setTransactions([]);
+            const [transaction, form] = createTransactionAndForm(handleDelete, handleTransactionChange, categories, types);
+            setForms(form);
+            setTransactions([transaction]);
+
             const savedTransactions = savedTransactionDTOs.map(savedTransactionDTO => mapper.mapToTransaction(savedTransactionDTO));
             dataContext.addTransactions(savedTransactions);
+            console.log("transactions:", transactions);
         }
-    }, [transactions]);
+    }, [transactions, categories]);
 
     const handleTransactionChange = (attributeName, value, key) => {
         updateTransaction(attributeName, value, key);
     }
 
     return (
-        <section>
+        <>
             <Scrollpane className={style.transactionContainer}>
                 <ul>
                     {forms}
@@ -105,16 +90,34 @@ const TransactionPage = () => {
                     <button onClick={handleSave}>Save</button>
                 </div>
             </Scrollpane>
-        </section>
+        </>
     )
 }
 
-const createTransactionForm = (transaction, onButtonClick, handleTransactionChange, categories, types) => {
+const createTransactionAndForm = (handleDelete, handleTransactionChange, categories, types) => {
+    const transaction = new Transaction();
+    const form = createForm(transaction, handleDelete, handleTransactionChange, categories, types);
+    
+    transaction.key = form.key;
+    transaction.identifier = form.key;
+    transaction.recurs = false;
+
+    if (types.length > 0) {
+        const defaultType = types.filter(type => type.name.toLowerCase() === "expense")[0];
+        if (defaultType) {
+            transaction.type = defaultType;
+        }
+    }
+
+    return [transaction, form];
+}
+
+const createForm = (transaction, onButtonClick, handleTransactionChange, categories, types) => {
     const id = uuidv4();
 
     return (
         <li key={id} data-key={id}>
-            <TransactionForm 
+            <Form 
                 id={id}
                 initialTransaction={transaction} 
                 onButtonClick={onButtonClick}
@@ -126,19 +129,19 @@ const createTransactionForm = (transaction, onButtonClick, handleTransactionChan
     )
 } 
 
-const TransactionForm = ({id, initialTransaction, onButtonClick, handleTransactionChange, categories, types}) => {
+const Form = ({id, initialTransaction, onButtonClick, handleTransactionChange, categories, types}) => {
     const [transaction, __, updateTransaction] = useObject(initialTransaction);
     const names = {
         ['startDate']: `startDate_${id}`,
         ['endDate']: `endDate_${id}`,
-        ['type']: `typeId_${id}`,
-        ['category']: `categoryId_${id}`,
+        ['type']: `type_${id}`,
+        ['category']: `category_${id}`,
         ['recurs']: `recurs_${id}`,
         ['amount']: `amount_${id}`,
         ['notes']: `notes_${id}`
     }
 
-    const handleChange = (event) => {
+    const handleChange = useCallback((event) => {
         const target = event.target;
         const [attributeName, key] = target.name.split('_');
         let value = target.value;
@@ -152,9 +155,17 @@ const TransactionForm = ({id, initialTransaction, onButtonClick, handleTransacti
             value = value === "true";
         }
 
+        if (attributeName === "type") {
+            value = types.filter(type => type.id === Number.parseInt(type.id))[0];
+        }
+
+        if (attributeName === "category") {
+            value = categories.filter(category => category.id === Number.parseInt(value))[0];
+        }
+
         updateTransaction(attributeName, value);
         handleTransactionChange(attributeName, value, key);
-    }
+    }, [categories, updateTransaction, handleTransactionChange]);
 
     return (
         <>
@@ -171,8 +182,8 @@ const TransactionForm = ({id, initialTransaction, onButtonClick, handleTransacti
                         id={names['category']}
                         name={names['category']}
                         text='Category:'
-                        items={categories.filter(category => category.typeId === transaction.typeId)}
-                        value={transaction.categoryId}
+                        items={categories.filter(category => category.type.id === transaction.type.id)}
+                        value={transaction.category ? transaction.category.id : null}
                         onChange={handleChange}
                         wrapped={false}
                     />
@@ -226,7 +237,7 @@ const TypeSelection = ({name, transaction, onChange, types}) => {
                         value={type.id}
                         text={type.name}
                         onChange={onChange}
-                        checked={transaction.typeId === type.id}
+                        checked={transaction.type.id === type.id}
                         wrapped
                     />
                 ))}

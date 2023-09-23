@@ -13,7 +13,7 @@ const Log = ({type}) => {
         [tabType.GOALS]: dataContext.goals
     };
     const convertToLog = {
-        [tabType.TRANSACTIONS]: (item) => <Transaction transaction={item} />,
+        [tabType.TRANSACTIONS]: (item) => <Transaction key={item.identifier} transaction={item} />,
         [tabType.GOALS]: (item) => <Goal goal={item} />
     }
 
@@ -56,8 +56,8 @@ const Transaction = ({transaction}) => {
     return (
         <tr key={transaction.identifier} className={className} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
             <td>
-                <span className={style.type}>{transaction.typeName}</span>
-                <span className={style.category}>{transaction.categoryName}</span>
+                <span className={style.type}>{transaction.category.type.name}</span>
+                <span className={style.category}>{transaction.category.name}</span>
                 <span className={style.date}>
                     {transaction.endDate ? transaction.endDate : transaction.startDate}
                 </span>

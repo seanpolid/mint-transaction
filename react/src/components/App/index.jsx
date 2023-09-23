@@ -38,7 +38,6 @@ const App = () => {
                 setIsNetworkError(true);
                 setIsLoading(false);
             } else {
-
                 setTimeout(() => setIsLoading(false), 4000);
             }
         }
@@ -93,24 +92,22 @@ const App = () => {
             {!isLoading && isNetworkError && <NetworkError />}
 
             {!isLoading && !isNetworkError && (
-                <div>
-                    <DataContext.Provider value={data}>
-                        <Tab currentTab={currentTab} />
-                        
-                        {tabsWithPages.includes(currentTab) ? (
-                            <div>
-                                <nav className={style.secondaryNav}>
-                                    <ul>
-                                        {pages}
-                                    </ul>
-                                </nav>
-                                {isLogType(currentTab) && isWideEnough() ? getPage(currentTab, currentPages) : null}
-                            </div>
-                        ) : (
-                            null
-                        )}
-                    </DataContext.Provider>
-                </div>
+                <DataContext.Provider value={data}>
+                    <Tab currentTab={currentTab} />
+                    
+                    {tabsWithPages.includes(currentTab) ? (
+                        <section>
+                            <nav className={style.secondaryNav} aria-label='Secondary Navigation'>
+                                <ul>
+                                    {pages}
+                                </ul>
+                            </nav>
+                            {isLogType(currentTab) && isWideEnough() ? getPage(currentTab, currentPages) : null}
+                        </section>
+                    ) : (
+                        null
+                    )}
+                </DataContext.Provider>
             )}
         </>
     )

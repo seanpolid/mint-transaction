@@ -2,27 +2,30 @@ package application.dtos;
 
 import java.util.Objects;
 
-public class CategoryDTO {
+import jakarta.validation.constraints.NotNull;
 
-	private int id;
+public class CategoryDTO {
+	
+	@NotNull
+	private Integer id;
 	private String name;
-	private int typeId;
+	private TypeDTO type;
 	
 	public CategoryDTO() {
 	}
 
-	public CategoryDTO(int id, String name, int typeId) {
+	public CategoryDTO(int id, String name, TypeDTO type) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.typeId = typeId;
+		this.type = type;
 	}
 
 	public int getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -34,17 +37,17 @@ public class CategoryDTO {
 		this.name = name;
 	}
 
-	public int getTypeId() {
-		return typeId;
+	public TypeDTO getType() {
+		return type;
 	}
 
-	public void setTypeId(int typeId) {
-		this.typeId = typeId;
+	public void setType(TypeDTO type) {
+		this.type = type;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, name, typeId);
+		return Objects.hash(id, name, type);
 	}
 
 	@Override
@@ -56,7 +59,7 @@ public class CategoryDTO {
 		if (getClass() != obj.getClass())
 			return false;
 		CategoryDTO other = (CategoryDTO) obj;
-		return id == other.id && Objects.equals(name, other.name) && typeId == other.typeId;
+		return id == other.id && Objects.equals(name, other.name) && Objects.equals(type, other.type);
 	}
 
 }

@@ -18,6 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 
+import application.dtos.CategoryDTO;
 import application.dtos.TransactionDTO;
 import application.entities.Category;
 import application.entities.Transaction;
@@ -49,7 +50,7 @@ public class TransactionServiceTests {
 	public void saveTransactions_categoryFound_success() throws Exception {
 		// Arrange
 		TransactionDTO transactionDTO = new TransactionDTO();
-		transactionDTO.setCategory(1);
+		transactionDTO.setCategory(new CategoryDTO(1, "name", null));
 		List<TransactionDTO> transactionDTOs = List.of(
 				transactionDTO,
 				transactionDTO

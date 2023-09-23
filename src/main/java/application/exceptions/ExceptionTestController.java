@@ -21,8 +21,8 @@ public class ExceptionTestController {
 	}
 	
 	@GetMapping("category")
-	public void throwsCategoryNotFoundException() throws CategoryNotFoundException {
-		throw new CategoryNotFoundException(0);
+	public void throwsCategoryNotFoundException_categoryNull() throws CategoryNotFoundException {
+		throw new CategoryNotFoundException();
 	}
 	
 }

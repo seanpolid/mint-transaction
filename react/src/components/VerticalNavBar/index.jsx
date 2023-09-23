@@ -35,7 +35,7 @@ const VerticalNavBar = ({currentTab, handleTabSelection}) => {
 
     return (
         <>
-            <nav className={style.container}>
+            <nav className={style.container} aria-label="Primary Navigation">
                 <ul>
                     {icons.filter(icon => icon.props["data-type"] !== tabType.PROFILE)}
                     {icons.filter(icon => icon.props["data-type"] === tabType.PROFILE)}
