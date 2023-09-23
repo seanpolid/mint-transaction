@@ -47,10 +47,13 @@ public class TransactionService implements ITransactionService {
 	}
 	
 	private Transaction mapToTransaction(TransactionDTO transactionDTO, User user) throws CategoryNotFoundException {
-		Optional<Category> optionalCategory = categoryRepository.findById(transactionDTO.getCategory());
+		if (transactionDTO.getCategory() == null) {
+			throw new CategoryNotFoundException();
+		}
 		
+		Optional<Category> optionalCategory = categoryRepository.findById(transactionDTO.getCategory().getId());
 		if (optionalCategory.isEmpty()) {
-			throw new CategoryNotFoundException(transactionDTO.getCategory());
+			throw new CategoryNotFoundException(transactionDTO.getCategory().getId());
 		}
 		Category category = optionalCategory.get();
 		

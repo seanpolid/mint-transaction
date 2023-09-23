@@ -2,9 +2,12 @@ package application.dtos;
 
 import java.util.Objects;
 
-public class CategoryDTO {
+import jakarta.validation.constraints.NotNull;
 
-	private int id;
+public class CategoryDTO {
+	
+	@NotNull
+	private Integer id;
 	private String name;
 	private TypeDTO type;
 	
@@ -22,7 +25,7 @@ public class CategoryDTO {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

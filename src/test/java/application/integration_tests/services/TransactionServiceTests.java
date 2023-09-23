@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import application.dtos.CategoryDTO;
 import application.dtos.TransactionDTO;
 import application.entities.Category;
 import application.entities.Transaction;
@@ -27,6 +28,7 @@ import application.repositories.ITypeRepository;
 import application.repositories.IUserRepository;
 import application.services.TransactionService;
 import application.utilities.IMapper;
+import application.utilities.Mapper;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -52,6 +54,7 @@ public class TransactionServiceTests {
 	
 	private User user;
 	private Category category;
+	private CategoryDTO categoryDTO;
 	private LocalDate date = LocalDate.now();
 	private String uuid1 = java.util.UUID.randomUUID().toString();
 	private String uuid2 = java.util.UUID.randomUUID().toString();
@@ -68,6 +71,7 @@ public class TransactionServiceTests {
 		Category category = new Category(0, "name", type);
 		this.category = categoryRepository.save(category);
 		this.category.getTransactions();
+		this.categoryDTO = new Mapper().map(category);
 		
 		transactionRepository.deleteAll();
 	}
@@ -84,8 +88,8 @@ public class TransactionServiceTests {
 	public void saveTransactions_twoNewTransactions_success() throws Exception {
 		// Arrange
 		List<TransactionDTO> transactionDTOs = List.of(
-				new TransactionDTO(0, uuid1, bigDecimal, date, date, "notes", category.getId()),
-				new TransactionDTO(0, uuid2, bigDecimal, date, date, "notes", category.getId())
+				new TransactionDTO(0, uuid1, bigDecimal, date, date, "notes", categoryDTO),
+				new TransactionDTO(0, uuid2, bigDecimal, date, date, "notes", categoryDTO)
 		);
 		
 		// Act

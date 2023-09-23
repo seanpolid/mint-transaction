@@ -1,11 +1,15 @@
 import { Category, Transaction, Type } from "../models";
 import { TransactionDTO } from "../dtos";
+import { asTitleCase } from "./functions";
 
 const mapToTransaction = (transactionDTO) => {
+    const category = mapToCategory(transactionDTO.category);
+
     return new Transaction(
         transactionDTO.id,
         transactionDTO.identifier,
-        transactionDTO.category,
+        category.type,
+        category,
         transactionDTO.startDate,
         transactionDTO.endDate,
         transactionDTO.amount,
@@ -22,22 +26,24 @@ const mapToTransactionDTO = (transaction) => {
         transaction.startDate,
         transaction.endDate,
         transaction.notes,
-        transaction.categoryId
+        transaction.category
     );
 }
 
 const mapToType = (typeDTO) => {
     return new Type(
         typeDTO.id,
-        typeDTO.name
+        asTitleCase(typeDTO.name)
     );
 }
 
 const mapToCategory = (categoryDTO) => {
     const type = mapToType(categoryDTO.type);
+    type.name = asTitleCase(type.name);
+
     return new Category(
         categoryDTO.id,
-        categoryDTO.name,
+        asTitleCase(categoryDTO.name),
         type
     );
 }

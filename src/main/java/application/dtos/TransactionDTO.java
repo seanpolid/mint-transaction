@@ -6,6 +6,8 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import application.entities.Category;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +15,6 @@ import jakarta.validation.constraints.Size;
 
 public class TransactionDTO {
 
-	@Min(0)
 	private int id;
 
 	@NotBlank
@@ -30,8 +31,8 @@ public class TransactionDTO {
 	
 	private String notes;
 	
-	@Min(1)
-	public int category;
+	@Valid
+	public CategoryDTO category;
 	
 	public TransactionDTO() {
 	}
@@ -41,7 +42,7 @@ public class TransactionDTO {
 	}
 
 	public TransactionDTO(int id, String identifier, BigDecimal amount, LocalDate startDate, LocalDate endDate, 
-			String notes, int category) {
+			String notes, CategoryDTO category) {
 		super();
 		this.id = id;
 		this.identifier = identifier;
@@ -100,11 +101,11 @@ public class TransactionDTO {
 		this.notes = notes;
 	}
 
-	public int getCategory() {
+	public CategoryDTO getCategory() {
 		return category;
 	}
 
-	public void setCategory(int category) {
+	public void setCategory(CategoryDTO category) {
 		this.category = category;
 	}
 
@@ -122,7 +123,7 @@ public class TransactionDTO {
 		if (getClass() != obj.getClass())
 			return false;
 		TransactionDTO other = (TransactionDTO) obj;
-		return Objects.equals(amount, other.amount) && category == other.category
+		return Objects.equals(amount, other.amount) && Objects.equals(category, other.category)
 				&& Objects.equals(endDate, other.endDate) && id == other.id
 				&& Objects.equals(identifier, other.identifier) && Objects.equals(notes, other.notes)
 				&& Objects.equals(startDate, other.startDate);

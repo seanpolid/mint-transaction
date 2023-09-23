@@ -20,18 +20,22 @@ public class MapperTests {
 
 	private static Mapper mapper;
 	private static BigDecimal bigDecimal;
+	private static Category category;
+	private static CategoryDTO categoryDTO;
 	
 	@BeforeAll
 	public static void setup() {
 		mapper = new Mapper();
 		bigDecimal = new BigDecimal("100.00");
+		category = new Category(1, "name", new Type(1, "name"));
+		categoryDTO = mapper.map(category);
 	}
 	
 	@Test
 	public void map_transactionDTO2Transaction_success() {
 		// Arrange
 		LocalDate date = LocalDate.now();
-		TransactionDTO transactionDTO = new TransactionDTO(1, "identifier", bigDecimal, date, date, "notes", 1);
+		TransactionDTO transactionDTO = new TransactionDTO(1, "identifier", bigDecimal, date, date, "notes", categoryDTO);
 		Transaction expected = new Transaction(1, "identifier", bigDecimal, date, date, "notes");
 		
 		// Act
@@ -46,8 +50,8 @@ public class MapperTests {
 		// Arrange
 		LocalDate date = LocalDate.now();
 		Transaction transaction = new Transaction(1, "identifier", bigDecimal, date, date, "notes");
-		transaction.setCategory(new Category(1));
-		TransactionDTO expected = new TransactionDTO(1, "identifier", bigDecimal, date, date, "notes", 1);
+		transaction.setCategory(category);
+		TransactionDTO expected = new TransactionDTO(1, "identifier", bigDecimal, date, date, "notes", categoryDTO);
 		
 		// Act
 		TransactionDTO actual = mapper.map(transaction);

@@ -56,6 +56,9 @@ const TransactionPage = () => {
     const handleSave = useCallback(async (event) => {
         event.preventDefault();
 
+        const transactionsWithoutCategories = transactions.filter(transaction => !transaction.category);
+        if (transactionsWithoutCategories.length > 0) {return;}
+
         const uri = `http://localhost:8080/api/transactions`;
         const transactionDTOs = transactions.map(transaction => mapper.mapToTransactionDTO(transaction));
         const savedTransactionDTOs = await postData(uri, transactionDTOs);
@@ -63,12 +66,13 @@ const TransactionPage = () => {
         if (savedTransactionDTOs.length > 0) {
             const [transaction, form] = createTransactionAndForm(handleDelete, handleTransactionChange, categories, types);
             setForms(form);
-            setTransactions(transaction);
+            setTransactions([transaction]);
 
             const savedTransactions = savedTransactionDTOs.map(savedTransactionDTO => mapper.mapToTransaction(savedTransactionDTO));
             dataContext.addTransactions(savedTransactions);
+            console.log("transactions:", transactions);
         }
-    }, [transactions]);
+    }, [transactions, categories]);
 
     const handleTransactionChange = (attributeName, value, key) => {
         updateTransaction(attributeName, value, key);
@@ -101,7 +105,7 @@ const createTransactionAndForm = (handleDelete, handleTransactionChange, categor
     if (types.length > 0) {
         const defaultType = types.filter(type => type.name.toLowerCase() === "expense")[0];
         if (defaultType) {
-            transaction.typeId = defaultType.id;
+            transaction.type = defaultType;
         }
     }
 
@@ -130,14 +134,14 @@ const Form = ({id, initialTransaction, onButtonClick, handleTransactionChange, c
     const names = {
         ['startDate']: `startDate_${id}`,
         ['endDate']: `endDate_${id}`,
-        ['type']: `typeId_${id}`,
-        ['category']: `categoryId_${id}`,
+        ['type']: `type_${id}`,
+        ['category']: `category_${id}`,
         ['recurs']: `recurs_${id}`,
         ['amount']: `amount_${id}`,
         ['notes']: `notes_${id}`
     }
 
-    const handleChange = (event) => {
+    const handleChange = useCallback((event) => {
         const target = event.target;
         const [attributeName, key] = target.name.split('_');
         let value = target.value;
@@ -151,9 +155,17 @@ const Form = ({id, initialTransaction, onButtonClick, handleTransactionChange, c
             value = value === "true";
         }
 
+        if (attributeName === "type") {
+            value = types.filter(type => type.id === Number.parseInt(type.id))[0];
+        }
+
+        if (attributeName === "category") {
+            value = categories.filter(category => category.id === Number.parseInt(value))[0];
+        }
+
         updateTransaction(attributeName, value);
         handleTransactionChange(attributeName, value, key);
-    }
+    }, [categories, updateTransaction, handleTransactionChange]);
 
     return (
         <>
@@ -170,8 +182,8 @@ const Form = ({id, initialTransaction, onButtonClick, handleTransactionChange, c
                         id={names['category']}
                         name={names['category']}
                         text='Category:'
-                        items={categories.filter(category => category.type.id === transaction.typeId)}
-                        value={transaction.categoryId}
+                        items={categories.filter(category => category.type.id === transaction.type.id)}
+                        value={transaction.category ? transaction.category.id : null}
                         onChange={handleChange}
                         wrapped={false}
                     />
@@ -225,7 +237,7 @@ const TypeSelection = ({name, transaction, onChange, types}) => {
                         value={type.id}
                         text={type.name}
                         onChange={onChange}
-                        checked={transaction.typeId === type.id}
+                        checked={transaction.type.id === type.id}
                         wrapped
                     />
                 ))}

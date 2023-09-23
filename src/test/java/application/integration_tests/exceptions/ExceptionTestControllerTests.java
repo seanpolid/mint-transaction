@@ -34,7 +34,7 @@ public class ExceptionTestControllerTests {
 	}
 	
 	@Test
-	public void throwsCategoryNotFoundException_statusBadRequest() throws Exception {
+	public void throwsCategoryNotFoundException_idInvalid_statusBadRequest() throws Exception {
 		mockMvc.perform(get("/exceptions/category"))
 			   .andExpectAll(status().isBadRequest(),
 					   		 content().contentType("text/plain;charset=UTF-8"));
