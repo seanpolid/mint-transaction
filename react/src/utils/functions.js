@@ -1,3 +1,9 @@
+/**
+ * Finds the parent dom element based on the provided options.
+ * @param {*} element 
+ * @param {*} options 
+ * @returns 
+ */
 const findParent = (element, options = {}) => {
     const { elementLimit, className, id, type} = options;
     if (!className && !id && !type) {

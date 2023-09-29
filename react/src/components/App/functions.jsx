@@ -29,9 +29,9 @@ const getPage = (currentTab, currentPages) => {
     const currentPage = currentPages[currentTab];
     switch (currentPage) {
         case pageType.ADD:
-            return <AddPage type={currentTab} />
+            return <AddPage type={currentTab}/>
         case pageType.VIEW:
-            return <ViewPage type={currentTab} />
+            return <ViewPage type={currentTab}/>
         default:
             return null;
     }

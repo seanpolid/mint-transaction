@@ -1,20 +1,21 @@
 /* eslint-disable react/prop-types */
 import DataContext from "../DataContext";
+import { findParent } from "../../utils/functions";
 import Icon from "../Icon";
 import { iconType, tabType } from "../../enums";
 import Scrollpane from "../Scrollpane";
 import style from './style.module.css';
 import { useContext, useState } from "react";
 
-const Log = ({type}) => {
+const Log = ({type, handleSelection}) => {
     const dataContext = useContext(DataContext);
     const items = {
         [tabType.TRANSACTIONS]: dataContext.transactions,
         [tabType.GOALS]: dataContext.goals
     };
     const convertToLog = {
-        [tabType.TRANSACTIONS]: (item) => <Transaction key={item.identifier} transaction={item} />,
-        [tabType.GOALS]: (item) => <Goal goal={item} />
+        [tabType.TRANSACTIONS]: (item) => <Transaction key={item.identifier} transaction={item} handleSelection={handleSelection} />,
+        [tabType.GOALS]: (item) => <Goal goal={item} handleSelection={handleSelection} />
     }
 
     const logs = items[type].map(item => convertToLog[type](item));
@@ -42,7 +43,7 @@ const Log = ({type}) => {
     )
 }
 
-const Transaction = ({transaction}) => {
+const Transaction = ({transaction, handleSelection}) => {
     const [className, setClassName] = useState(`${style.transaction}`);
     const amountStyle = {
         "income": `${style.amount} ${style.positive}`,
@@ -57,8 +58,19 @@ const Transaction = ({transaction}) => {
         setClassName(`${style.transaction}`);
     }
 
+    const handleClick = (event) => {
+        const target = findParent(event.target, {type: "tr"});
+        const identifier = target.getAttribute("data-identifier");
+        handleSelection(identifier);
+    }
+
     return (
-        <tr key={transaction.identifier} className={className} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+        <tr key={transaction.identifier} 
+            data-identifier={transaction.identifier} 
+            className={className} 
+            onMouseEnter={handleMouseEnter} 
+            onMouseLeave={handleMouseLeave} 
+            onClick={handleClick}>
             <td>
                 <span className={style.type}>{transaction.category.type.name}</span>
                 <span className={style.category}>{transaction.category.name}</span>

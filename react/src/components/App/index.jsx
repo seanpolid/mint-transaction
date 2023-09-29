@@ -8,14 +8,15 @@ import Profile from '../Profile'
 import style from './style.module.css'
 import { tabType, pageType } from '../../enums' 
 import VerticalNavBar from '../VerticalNavBar'
-import { useEffect, useState, useReducer } from 'react'
+import { useEffect, useState, useReducer, useCallback } from 'react'
 
 const App = () => {
     const tabsWithPages = [tabType.TRANSACTIONS, tabType.GOALS];
     const tabTypes = Object.values(tabType);
-    const [pages, setPages] = useState([]);
     const [currentTab, setCurrentTab] = useState(tabTypes[0]);
+    const [pages, setPages] = useState([]);
     const [currentPages, pageDispatch] = useReducer(pageReducer, defaultCurrentPages);
+    const [selectedTransaction, setSelectedTransaction] = useState();
     const [transactions, setTransactions] = useState([]);
     const [goals, setGoals] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -23,6 +24,7 @@ const App = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isNetworkError, setIsNetworkError] = useState(false);
     const data = {
+        selectedTransaction: selectedTransaction,
         transactions: transactions,
         categories: categories,
         goals: goals,
@@ -43,6 +45,10 @@ const App = () => {
         }
         loadData();
     }, []);
+
+    useEffect(() => {
+        setSelectedTransaction(transactions.length > 0 ? transactions[0] : null);
+    }, [transactions]);
     
 
     useEffect(() => {
@@ -76,9 +82,15 @@ const App = () => {
         pageDispatch( {tab: currentTab, type: dataType} );
     }
     
-    const handleLogSelection = (selectedLog) => {
+    const handleSelection = useCallback((selectedIdentifier) => {
+        const selected = {
+            [tabType.TRANSACTIONS]: () => transactions.filter(transaction => transaction.identifier === selectedIdentifier)[0],
+            [tabType.GOALS]: () => goals.filter(goal => goal.identifier === selectedIdentifier)[0]
+        };
 
-    }
+        setSelectedTransaction(selected[currentTab]);
+        pageDispatch( {tab: currentTab, type: pageType.VIEW});
+    }, [transactions]);
 
     return (
         <>
@@ -93,7 +105,7 @@ const App = () => {
 
             {!isLoading && !isNetworkError && (
                 <DataContext.Provider value={data}>
-                    <Tab currentTab={currentTab} />
+                    <Tab currentTab={currentTab} handleSelection={handleSelection}/>
                     
                     {tabsWithPages.includes(currentTab) ? (
                         <section>
@@ -118,11 +130,11 @@ const defaultCurrentPages = {
     [tabType.GOALS]: pageType.ADD
 }
 
-const Tab = ({currentTab}) => {
+const Tab = ({currentTab, handleSelection}) => {
     switch (currentTab) {
         case tabType.TRANSACTIONS:
         case tabType.GOALS:
-            return <Log type={currentTab} />
+            return <Log type={currentTab} handleSelection={handleSelection} />
         case tabType.DASHBOARD:
             return <Dashboard />
         case tabType.PROFILE:
