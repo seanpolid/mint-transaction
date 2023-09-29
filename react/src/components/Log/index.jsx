@@ -44,6 +44,10 @@ const Log = ({type}) => {
 
 const Transaction = ({transaction}) => {
     const [className, setClassName] = useState(`${style.transaction}`);
+    const amountStyle = {
+        "income": `${style.amount} ${style.positive}`,
+        "expense": `${style.amount} ${style.negative}`
+    }
 
     const handleMouseEnter = () => {
         setClassName(`${style.transaction} ${style.active}`);
@@ -62,7 +66,7 @@ const Transaction = ({transaction}) => {
                     {transaction.endDate ? transaction.endDate : transaction.startDate}
                 </span>
             </td>
-            <td className={style.amount}>${transaction.amount}</td>
+            <td className={amountStyle[transaction.category.type.name.toLowerCase()]}>${transaction.amount}</td>
         </tr>
     )
 }
