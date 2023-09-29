@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
+import GoalPage from "./GoalPage";
 import { tabType } from "../../enums"
-import TransactionPage from "./Transactions";
+import TransactionPage from "./TransactionPage";
 
 const AddPage = ({type}) => {
     const page = {
@@ -9,14 +10,6 @@ const AddPage = ({type}) => {
     }
 
     return page[type];
-}
-
-const GoalPage = () => {
-    return (
-        <div>
-            <h1>Add Goals</h1>
-        </div>
-    )
 }
 
 export default AddPage
