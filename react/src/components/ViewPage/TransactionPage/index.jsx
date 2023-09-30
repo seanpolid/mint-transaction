@@ -3,7 +3,7 @@ import { useObject } from "../../../utils/hooks";
 import DataContext from "../../DataContext";
 import InputWithLabel from "../../InputWithLabel";
 import SelectWithLabel from "../../SelectWithLabel"
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import TextAreaWithLabel from "../../TextAreaWithLabel";
 import style from "../style.module.css";
 
@@ -18,6 +18,10 @@ const TransactionPage = () => {
         amount: "amount",
         notes: "notes"
     };
+
+    useEffect(() => {
+        setTransaction(dataContext.selectedTransaction);
+    }, [dataContext.selectedTransaction]);
 
     const handleChange = (event) => {
         console.log(event);
