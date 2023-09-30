@@ -53,11 +53,12 @@
     .buttons, .amount, .notes {
         display: flex;
         justify-content: center;
-        align-items: center;
+        align-items: start;
     }
     
     .amount {
         grid-column: 1/3;
+        padding-top: 1em;
     }
     
     .amount input {
@@ -87,13 +88,12 @@
     
     .notes textarea {
         resize: none;
-        height: 12vh;
+        height: 15vh;
     }
     
     .buttons {
         gap: 10vw;
         grid-column: 1/3;
-        align-self: start;
     }
     
     .buttons button {
