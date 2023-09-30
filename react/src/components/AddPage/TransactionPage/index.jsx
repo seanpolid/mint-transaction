@@ -154,9 +154,9 @@ const Form = ({id, initialTransaction, onButtonClick, handleTransactionChange, c
         if (value === "true" || value === "false") {
             value = value === "true";
         }
-
+        
         if (attributeName === "type") {
-            value = types.filter(type => type.id === Number.parseInt(type.id))[0];
+            value = types.filter(type => type.id === Number.parseInt(value))[0];
         }
 
         if (attributeName === "category") {
