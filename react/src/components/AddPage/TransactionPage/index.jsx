@@ -8,6 +8,7 @@ import Scrollpane from '../../Scrollpane';
 import SelectWithLabel from '../../SelectWithLabel';
 import style from './style.module.css'
 import { Transaction } from '../../../models';
+import TextAreaWithLabel from '../../TextAreaWithLabel';
 import { useState, useEffect, useCallback, useContext } from 'react';
 import { useList, useObject } from '../../../utils/hooks';
 import { v4 as uuidv4 } from 'uuid';
@@ -198,17 +199,17 @@ const Form = ({id, initialTransaction, onButtonClick, handleTransactionChange, c
                         id={names['amount']}
                         name={names['amount']}
                         type='number'
-                        text='Amount:'
+                        text='Amount ($):'
                         value={transaction.amount}
                         onChange={handleChange}
                     />
                 </div>
                 
                 <div className={style.secondColumn}>
-                    <label htmlFor={names['notes']}>Notes:</label>
-                    <textarea 
-                        id={names['notes']} 
+                    <TextAreaWithLabel 
+                        id={names['notes']}
                         name={names['notes']}
+                        text="Notes:"
                         className={style.textarea}
                         value={transaction.notes}
                         onChange={handleChange}
