@@ -75,6 +75,7 @@ const App = () => {
     }
 
     const handlePageSwitch = (event) => {
+        event.preventDefault();
         const target = event.target;
         const dataType = target.getAttribute("data-type")
         if (dataType === null) {return;}
