@@ -1,7 +1,10 @@
 /* eslint-disable react/prop-types */
 
 const TextAreaWithLabel = ({id, name, text, value, className, onChange, wrapped=false}) => {
-    value = value === undefined ? '' : value;
+    if (!value) {
+        value = '';
+    }
+
     return (
         <>
             {wrapped ? (
