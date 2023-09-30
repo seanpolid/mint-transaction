@@ -1,5 +1,5 @@
 .secondaryNav {
-    height: 3em;
+    height: var(--secondary-nav-height);
     display: flex;
     justify-content: center;
     align-items: center;

@@ -87,8 +87,8 @@ const TransactionPage = () => {
                 </ul>
 
                 <div className={style.options}>
-                    <button onClick={handleAdd}>Add</button>
-                    <button onClick={handleSave}>Save</button>
+                    <button className="button" onClick={handleAdd}>Add</button>
+                    <button className="button" onClick={handleSave}>Save</button>
                 </div>
             </Scrollpane>
         </>
