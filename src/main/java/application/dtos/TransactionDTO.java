@@ -15,7 +15,9 @@ import jakarta.validation.constraints.Size;
 
 public class TransactionDTO {
 
-	private int id;
+	@NotNull
+	@Min(value = 0)
+	private Integer id;
 
 	@NotBlank
 	@Size(min=36, max=36)
@@ -37,11 +39,11 @@ public class TransactionDTO {
 	public TransactionDTO() {
 	}
 	
-	public TransactionDTO(int id) {
+	public TransactionDTO(Integer id) {
 		this.id = id;
 	}
 
-	public TransactionDTO(int id, String identifier, BigDecimal amount, LocalDate startDate, LocalDate endDate, 
+	public TransactionDTO(Integer id, String identifier, BigDecimal amount, LocalDate startDate, LocalDate endDate, 
 			String notes, CategoryDTO category) {
 		super();
 		this.id = id;
@@ -57,7 +59,7 @@ public class TransactionDTO {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

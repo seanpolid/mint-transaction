@@ -2,11 +2,13 @@ package application.dtos;
 
 import java.util.Objects;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 public class CategoryDTO {
 	
 	@NotNull
+	@Min(value=1)
 	private Integer id;
 	private String name;
 	private TypeDTO type;
