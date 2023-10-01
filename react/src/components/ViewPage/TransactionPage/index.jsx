@@ -79,65 +79,73 @@ const TransactionPage = () => {
     }
 
     return (
-        <section>
-            <form className={style.form}>
-                <div className={style.topLeft}>
-                    <h1>{transaction.category.type.name}</h1>
-                    <SelectWithLabel 
-                        id={names.category}
-                        name={names.category}
-                        items={categories.filter(category => category.type.id === transaction.category.type.id)}
-                        value={transaction.category.id}
-                        onChange={handleChange}
-                    />
-                </div>
+        <>
+            {transaction === null ? (
+                <section className={style.header}>
+                    <h1>No transactions to show.</h1>
+                </section>
+            ) : (
+                <section>
+                    <form className={style.form}>
+                        <div className={style.topLeft}>
+                            <h1>{transaction.category.type.name}</h1>
+                            <SelectWithLabel 
+                                id={names.category}
+                                name={names.category}
+                                items={categories.filter(category => category.type.id === transaction.category.type.id)}
+                                value={transaction.category.id}
+                                onChange={handleChange}
+                            />
+                        </div>
 
-                <div className={style.topRight}>
-                    <InputWithLabel
-                        id={names.startDate}
-                        name={names.startDate}
-                        type="date"
-                        text={transaction.endDate === null ? "Date:" : "Start Date:"}
-                        value={transaction.startDate}
-                        onChange={handleChange}
-                    />
-                    {transaction.endDate === null ? null : (
-                        <InputWithLabel
-                            id={names.endDate}
-                            name={names.endDate}
-                            type="date"
-                            text="End Date:"
-                            value={transaction.endDate}
-                            onChange={handleChange}
-                        />
-                    )}
-                </div>
-                
-                <div className={style.amount}>
-                    <input 
-                        name={names.amount}
-                        type="text" 
-                        value={`$${transaction.amount}`} 
-                        onChange={handleChange}
-                    />
-                </div>
-                
+                        <div className={style.topRight}>
+                            <InputWithLabel
+                                id={names.startDate}
+                                name={names.startDate}
+                                type="date"
+                                text={transaction.endDate === null ? "Date:" : "Start Date:"}
+                                value={transaction.startDate}
+                                onChange={handleChange}
+                            />
+                            {transaction.endDate === null ? null : (
+                                <InputWithLabel
+                                    id={names.endDate}
+                                    name={names.endDate}
+                                    type="date"
+                                    text="End Date:"
+                                    value={transaction.endDate}
+                                    onChange={handleChange}
+                                />
+                            )}
+                        </div>
+                        
+                        <div className={style.amount}>
+                            <input 
+                                name={names.amount}
+                                type="text" 
+                                value={`$${transaction.amount}`} 
+                                onChange={handleChange}
+                            />
+                        </div>
+                        
 
-                <div className={style.notes}>
-                    <TextAreaWithLabel 
-                        name={names.notes}
-                        text="Notes:"
-                        value={transaction.notes}
-                        onChange={handleChange}
-                    />
-                </div>
-                
-                <div className={style.buttons}>
-                    <button className="button" onClick={handleDelete}>Delete</button>
-                    <button className="button" onClick={handleUpdate}>Update</button>
-                </div>
-            </form>
-        </section>
+                        <div className={style.notes}>
+                            <TextAreaWithLabel 
+                                name={names.notes}
+                                text="Notes:"
+                                value={transaction.notes}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        
+                        <div className={style.buttons}>
+                            <button className="button" onClick={handleDelete}>Delete</button>
+                            <button className="button" onClick={handleUpdate}>Update</button>
+                        </div>
+                    </form>
+                </section>
+            )}
+        </>
     )
 }
 
