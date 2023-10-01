@@ -25,7 +25,7 @@ Transaction Tracker is an app that I've been wanting to make for a while. Here a
 
 ![demo](https://github.com/seanpolid/transaction-tracker-images/blob/main/demo2.gif)
 
-<h3>** If gif is not visible, it is still downloading</h3>
+<h3>** If gif above is not visible, it is still downloading</h3>
 
 <h1>Data Model</h1>
 
