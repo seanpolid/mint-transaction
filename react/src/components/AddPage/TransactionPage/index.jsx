@@ -71,7 +71,6 @@ const TransactionPage = () => {
 
             const savedTransactions = savedTransactionDTOs.map(savedTransactionDTO => mapper.mapToTransaction(savedTransactionDTO));
             dataContext.addTransactions(savedTransactions);
-            console.log("transactions:", transactions);
         }
     }, [transactions, categories]);
 
@@ -99,6 +98,7 @@ const createTransactionAndForm = (handleDelete, handleTransactionChange, categor
     const transaction = new Transaction();
     const form = createForm(transaction, handleDelete, handleTransactionChange, categories, types);
     
+    transaction.id = 0;
     transaction.key = form.key;
     transaction.identifier = form.key;
     transaction.recurs = false;

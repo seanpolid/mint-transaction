@@ -1,11 +1,13 @@
 /* eslint-disable react/prop-types */
-import { useObject } from "../../../utils/hooks";
 import DataContext from "../../DataContext";
+import { deleteData, putData } from "../../../utils/functions";
 import InputWithLabel from "../../InputWithLabel";
+import mapper from "../../../utils/mapper";
 import SelectWithLabel from "../../SelectWithLabel"
 import { useContext, useEffect } from "react";
 import TextAreaWithLabel from "../../TextAreaWithLabel";
 import style from "../style.module.css";
+import { useObject } from "../../../utils/hooks";
 
 const TransactionPage = () => {
     const dataContext = useContext(DataContext);
@@ -24,7 +26,56 @@ const TransactionPage = () => {
     }, [dataContext.selectedTransaction]);
 
     const handleChange = (event) => {
-        console.log(event);
+        const target = event.target;
+        const attributeName = target.name;
+        let value = target.value;
+
+        if (attributeName === "amount") {
+            const digits = /[0-9]+[.]*[0-9]{0,2}/;
+            const match = value.match(digits);
+
+            if (match === null) {
+                value = "0"
+            } else {
+                value = match[0];
+                if (value[0] === "0" && (value.length == 1 || value[1] != ".")) {
+                    value = value.substring(1);
+                }
+            }
+        }
+
+        if (attributeName === "category") {
+            value = Number.parseInt(value);
+            value = categories.filter(category => category.id === value)[0];
+        }
+
+        updateTransaction(attributeName, value);
+    }
+
+    const handleDelete = async (event) => {
+        event.preventDefault();
+        const uri = `http://localhost:8080/api/transactions/${transaction.id}`;
+        const successful = await deleteData(uri);
+
+        if (successful) {
+            dataContext.removeTransaction(transaction.id);
+        } else {
+            console.log('Failed to delete transaction');
+        }
+    }
+
+    const handleUpdate = async (event) => {
+        event.preventDefault();
+
+        const uri = 'http://localhost:8080/api/transactions';
+        const transactionDTO = mapper.mapToTransactionDTO(transaction);
+        const successful = await putData(uri, transactionDTO); 
+
+        if (successful) {
+            dataContext.updateTransaction(transaction);
+        } else {
+            console.log('Failed to update transaction');
+        }
     }
 
     return (
@@ -46,7 +97,7 @@ const TransactionPage = () => {
                         id={names.startDate}
                         name={names.startDate}
                         type="date"
-                        text="Start Date:"
+                        text={transaction.endDate === null ? "Date:" : "Start Date:"}
                         value={transaction.startDate}
                         onChange={handleChange}
                     />
@@ -74,6 +125,7 @@ const TransactionPage = () => {
 
                 <div className={style.notes}>
                     <TextAreaWithLabel 
+                        name={names.notes}
                         text="Notes:"
                         value={transaction.notes}
                         onChange={handleChange}
@@ -81,8 +133,8 @@ const TransactionPage = () => {
                 </div>
                 
                 <div className={style.buttons}>
-                    <button className="button">Delete</button>
-                    <button className="button">Update</button>
+                    <button className="button" onClick={handleDelete}>Delete</button>
+                    <button className="button" onClick={handleUpdate}>Update</button>
                 </div>
             </form>
         </section>
