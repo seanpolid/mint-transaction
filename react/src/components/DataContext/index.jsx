@@ -6,7 +6,9 @@ const DataContext = createContext({
     goals: [],
     categories: [],
     types: [],
-    addTransactions: () => {}
+    addTransactions: () => {},
+    removeTransaction: () => {},
+    updateTransaction: () => {}
 });
 
 export default DataContext;

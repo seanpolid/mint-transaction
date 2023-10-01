@@ -94,4 +94,36 @@ const getTransactions = async () => {
     return transactions;
 }
 
-export { pageReducer, isLogType, isWideEnough, getPage, getAllData }
+const addTransactions = (newTransactions, setTransactions) => {
+    setTransactions(prevTransactions => prevTransactions.concat(newTransactions));
+}
+
+const removeTransaction = (id, setTransactions) => {
+    setTransactions(prevTransactions => prevTransactions.filter(transaction => transaction.id !== id));
+}
+
+const updateTransaction = (transaction, setTransaction) => {
+    setTransaction(prevTransactions => {
+        let index = 0;
+        for (let i = 0; i < prevTransactions.length; i++) {
+            const prevTransaction = prevTransactions[i];
+            if (prevTransaction.id === transaction.id) {
+                index = i;
+                break;
+            }
+        }
+
+        return prevTransactions.toSpliced(index, 1, transaction);
+    })
+}
+
+export default { 
+    pageReducer: pageReducer, 
+    isLogType: isLogType, 
+    isWideEnough: isWideEnough, 
+    getPage: getPage, 
+    getAllData: getAllData, 
+    addTransactions: addTransactions, 
+    removeTransaction: removeTransaction,
+    updateTransaction: updateTransaction
+}

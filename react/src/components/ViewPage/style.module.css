@@ -15,6 +15,7 @@
     .form select, .form input {
         background: transparent;
         border: 0;
+        outline: transparent;
     }
     
     .topLeft, .topRight {

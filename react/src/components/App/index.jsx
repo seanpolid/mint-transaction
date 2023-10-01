@@ -3,7 +3,7 @@ import { asTitleCase } from '../../utils/functions'
 import Dashboard from '../Dashboard'
 import DataContext from '../DataContext'
 import Log from '../Log'
-import { pageReducer, isLogType, isWideEnough, getPage, getAllData } from './functions'
+import functions from './functions'
 import Profile from '../Profile'
 import style from './style.module.css'
 import { tabType, pageType } from '../../enums' 
@@ -15,7 +15,7 @@ const App = () => {
     const tabTypes = Object.values(tabType);
     const [currentTab, setCurrentTab] = useState(tabTypes[0]);
     const [pages, setPages] = useState([]);
-    const [currentPages, pageDispatch] = useReducer(pageReducer, defaultCurrentPages);
+    const [currentPages, pageDispatch] = useReducer(functions.pageReducer, defaultCurrentPages);
     const [selectedTransaction, setSelectedTransaction] = useState();
     const [transactions, setTransactions] = useState([]);
     const [goals, setGoals] = useState([]);
@@ -29,12 +29,14 @@ const App = () => {
         categories: categories,
         goals: goals,
         types: types,
-        addTransactions: (newTransactions) => setTransactions(prevTransactions => prevTransactions.concat(newTransactions))
+        addTransactions: (newTransactions) => functions.addTransactions(newTransactions, setTransactions),
+        removeTransaction: (id) => functions.removeTransaction(id, setTransactions),
+        updateTransaction: (transaction) => functions.updateTransaction(transaction, setTransactions) 
     }
 
     useEffect(() => {
         const loadData = async () => {
-            const successful = await getAllData(setTypes, setCategories, setGoals, setTransactions);
+            const successful = await functions.getAllData(setTypes, setCategories, setGoals, setTransactions);
  
             if (!successful) {
                 setIsNetworkError(true);
@@ -47,7 +49,17 @@ const App = () => {
     }, []);
 
     useEffect(() => {
-        setSelectedTransaction(transactions.length > 0 ? transactions[0] : null);
+        // custom logic for handling selection
+        if (selectedTransaction === null) {
+            setSelectedTransaction(transactions.length > 0 ? transactions[0] : null);
+        } else {
+            const filteredTransactions = transactions.filter(transaction => transaction.id === selectedTransaction.id);
+            if (filteredTransactions.length === 0) {
+                setSelectedTransaction(transactions.length > 0 ? transactions[0] : null);
+            } else {
+                setSelectedTransaction(filteredTransactions[0]);
+            }
+        }
     }, [transactions]);
     
 
@@ -115,7 +127,7 @@ const App = () => {
                                     {pages}
                                 </ul>
                             </nav>
-                            {isLogType(currentTab) && isWideEnough() ? getPage(currentTab, currentPages) : null}
+                            {functions.isLogType(currentTab) && functions.isWideEnough() ? functions.getPage(currentTab, currentPages) : null}
                         </section>
                     ) : (
                         null
