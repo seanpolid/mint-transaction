@@ -5,7 +5,7 @@ import Icon from "../Icon";
 import { iconType, tabType } from "../../enums";
 import Scrollpane from "../Scrollpane";
 import style from './style.module.css';
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 const Log = ({type, handleSelection}) => {
     const dataContext = useContext(DataContext);
@@ -44,14 +44,25 @@ const Log = ({type, handleSelection}) => {
 }
 
 const Transaction = ({transaction, handleSelection}) => {
+    const dataContext = useContext(DataContext);
     const [className, setClassName] = useState(`${style.transaction}`);
+
+    useEffect(() => {
+        if (transaction === dataContext.selectedTransaction) {
+            setClassName(`${style.transaction} ${style.active}`);
+        } else {
+            setClassName(`${style.transaction}`);
+        }
+    }, [dataContext.selectedTransaction]);
 
     const handleMouseEnter = () => {
         setClassName(`${style.transaction} ${style.active}`);
     }
 
     const handleMouseLeave = () => {
-        setClassName(`${style.transaction}`);
+        if (transaction !== dataContext.selectedTransaction) {
+            setClassName(`${style.transaction}`);
+        }
     }
 
     const handleClick = (event) => {
