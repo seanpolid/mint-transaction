@@ -4,6 +4,7 @@
     --primary-color: rgb(242, 243, 245);
     --secondary-color: rgb(208, 208, 208);
     --accent-color: rgb(242, 243, 245);
+    --active-color: rgb(153, 238, 255);
     --primary-nav-width: 4.75rem;
     --secondary-nav-height: 3em;
 }

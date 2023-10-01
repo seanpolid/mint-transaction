@@ -11,11 +11,11 @@
 }
 
 .container:hover {
-    --color: rgb(153, 238, 255);
+    --color: var(--active-color);
 }
 
 .active {
-    --color: rgb(153, 238, 255);
+    --color: var(--active-color);
 }
 
 .container div {
