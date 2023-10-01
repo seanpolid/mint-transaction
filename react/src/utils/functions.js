@@ -40,12 +40,11 @@ const getData = async (uri) => {
         const response = await fetch(uri);
         return await response.json();
     } catch (exception) {
-        console.log("exception : ", exception);
+        console.log("exception:", exception);
     }
 }
 
 const postData = async (uri, data) => {
-    console.log("POSTING DATA: ", data);
     try {
         const response = await fetch(uri, {
             method: 'POST', 
@@ -58,9 +57,45 @@ const postData = async (uri, data) => {
 
         return await response.json();
     } catch (exception) {
-        console.log("exception: ", exception);
+        console.log("exception:", exception);
         return [];
     }
 }
 
-export { findParent, asTitleCase, getData, postData}
+const deleteData = async (uri) => {
+    try {
+        const response = await fetch(uri, {method: 'DELETE'});
+        if (response.status >= 200 && response.status < 300) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (exception) {
+        console.log("exception:", exception);
+        return false;
+    }
+}
+
+const putData = async (uri, data) => {
+    try {
+        const response = await fetch(uri, {
+            method: 'PUT',
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (response.status >= 200 && response.status < 300) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (exception) {
+        console.log("exception:", exception);
+        return false;
+    }
+}
+
+export { findParent, asTitleCase, getData, postData, deleteData, putData}

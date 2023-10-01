@@ -21,9 +21,7 @@ const useList = (initialState, constructor) => {
 
     const updateListItem = (attributeName, value, key) => {
         setList((list) => {
-            console.log(key);
             const item = list.filter(item => item.key === key)[0];
-            console.log(item);
             const itemToUpdate = cloneObject(item);
             itemToUpdate[attributeName] = value;
             return list.filter(item => item.key !== key).concat([itemToUpdate]);
