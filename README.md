@@ -21,7 +21,8 @@ Transaction Tracker is an app that I've been wanting to make for a while. Here a
   <li>Jenkins</li>
 </ol>
 
-<h1>Demo (10/01/23 ; You will have to wait for the gif to download)</h1>
+<h1>Demo (10/01/23)</h1> 
+<h2>You will have to wait for the gif to download</h2>
 
 ![demo](https://github.com/seanpolid/transaction-tracker-images/blob/main/demo2.gif)
 
