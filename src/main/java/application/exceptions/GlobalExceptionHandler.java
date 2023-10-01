@@ -14,8 +14,24 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(CategoryNotFoundException.class)
 	public ResponseEntity<String> categoryNotFoundExceptionHandler(Exception ex) {
-		logger.error("An exception occurred in " + ex.getStackTrace()[0].getClassName(), ex);
+		logger.error(generateErrorMessage(ex), ex);
 		return new ResponseEntity<String>("Please provide a valid category.", HttpStatus.BAD_REQUEST);
+	}
+	
+	private String generateErrorMessage(Exception ex) {
+		return String.format("An exception occurred in %s", ex.getStackTrace()[0].getClassName());
+	}
+	
+	@ExceptionHandler(TransactionNotFoundException.class)
+	public ResponseEntity<String> transactionNotFoundExceptionHandler(Exception ex) {
+		logger.error(generateErrorMessage(ex), ex);
+		return new ResponseEntity<String>("The provided transaction was not found.", HttpStatus.NOT_FOUND);
+	}
+	
+	@ExceptionHandler(InvalidTransactionIdentifierException.class)
+	public ResponseEntity<String> invalidTransactionIdentifierExceptionHandler(Exception ex) {
+		logger.error(generateErrorMessage(ex), ex);
+		return new ResponseEntity<String>("Please provide a valid transaction.", HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler({ RuntimeException.class, Exception.class })

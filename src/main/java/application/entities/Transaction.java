@@ -40,6 +40,10 @@ public class Transaction {
 	
 	public Transaction() {
 	}
+	
+	public Transaction(int id) {
+		this.id = id;
+	}
 
 	public Transaction(int id, String identifier, BigDecimal amount, LocalDate startDate, LocalDate endDate, String notes) {
 		super();
