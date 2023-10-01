@@ -21,14 +21,10 @@ Transaction Tracker is an app that I've been wanting to make for a while. Here a
   <li>Jenkins</li>
 </ol>
 
-<h1>Current Frontend Status (09/16/2023)</h1>
+<h1>Current Frontend Status (10/01/23)</h1>
 <h2>Transaction Page</h2>
 
-![load screen](https://github.com/seanpolid/transaction-tracker-images/blob/main/09-16-2023-load-screen.png?raw=true)
-
-![transactions none](https://github.com/seanpolid/transaction-tracker-images/blob/main/09-16-2023-no-transactions.png?raw=true)
-
-![transactions few](https://github.com/seanpolid/transaction-tracker-images/blob/main/09-16-2023-transactions.png?raw=true)
+![demo](https://github.com/seanpolid/transaction-tracker-images/blob/main/demo2.gif)
 
 <h1>Data Model</h1>
 
