@@ -2,7 +2,9 @@ package application.dtos;
 
 import java.util.Objects;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 public class CategoryDTO {
@@ -10,20 +12,25 @@ public class CategoryDTO {
 	@NotNull
 	@Min(value=1)
 	private Integer id;
+	
+	@NotEmpty
 	private String name;
+	
+	@NotNull
+	@Valid
 	private TypeDTO type;
 	
 	public CategoryDTO() {
 	}
 
-	public CategoryDTO(int id, String name, TypeDTO type) {
+	public CategoryDTO(Integer id, String name, TypeDTO type) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.type = type;
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
@@ -61,7 +68,7 @@ public class CategoryDTO {
 		if (getClass() != obj.getClass())
 			return false;
 		CategoryDTO other = (CategoryDTO) obj;
-		return id == other.id && Objects.equals(name, other.name) && Objects.equals(type, other.type);
+		return id.equals(other.id) && Objects.equals(name, other.name) && Objects.equals(type, other.type);
 	}
 
 }

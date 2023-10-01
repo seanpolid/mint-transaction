@@ -4,21 +4,28 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.BeforeAll;
+import java.util.Set;
+
+import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import org.junit.jupiter.api.Test;
 
 import application.dtos.CategoryDTO;
 import application.dtos.TypeDTO;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 
 public class CategoryDTOTests {
 	
-	private static TypeDTO type;
+	private TypeDTO type;
+	private Validator validator;
 	
-	@BeforeAll
-	public static void setup() {
+	@BeforeEach
+	public void setup() {
 		type = new TypeDTO(1, "name");
+		validator = Validation.buildDefaultValidatorFactory().getValidator();
 	}
 
 	@Test
@@ -68,5 +75,78 @@ public class CategoryDTOTests {
 		
 		// Act and Assert
 		assertFalse(categoryDTO1.equals(categoryDTO2));
+	}
+	
+	@Test
+	public void id_null_violationRaised() {
+		// Arrange
+		CategoryDTO categoryDTO = new CategoryDTO(null, "name", type);
+		
+		// Act
+		Set<ConstraintViolation<CategoryDTO>> violations = validator.validate(categoryDTO);
+		
+		// Assert
+		assertEquals(1, violations.size());
+	}
+	
+	@Test
+	public void id_lessThan1_violationRaised() {
+		// Arrange
+		CategoryDTO categoryDTO = new CategoryDTO(0, "name", type);
+		
+		// Act
+		Set<ConstraintViolation<CategoryDTO>> violations = validator.validate(categoryDTO);
+		
+		// Assert
+		assertEquals(1, violations.size());
+	}
+	
+	@Test
+	public void name_null_violationRaised() {
+		// Arrange
+		CategoryDTO categoryDTO = new CategoryDTO(1, null, type);
+		
+		// Act
+		Set<ConstraintViolation<CategoryDTO>> violations = validator.validate(categoryDTO);
+		
+		// Assert
+		assertEquals(1, violations.size());
+	}
+	
+	@Test
+	public void name_empty_violationRaised() {
+		// Arrange
+		CategoryDTO categoryDTO = new CategoryDTO(1, "", type);
+		
+		// Act
+		Set<ConstraintViolation<CategoryDTO>> violations = validator.validate(categoryDTO);
+		
+		// Assert
+		assertEquals(1, violations.size());
+	}
+	
+	@Test
+	public void type_null_violationRaised() {
+		// Arrange
+		CategoryDTO categoryDTO = new CategoryDTO(1, "name", null);
+		
+		// Act
+		Set<ConstraintViolation<CategoryDTO>> violations = validator.validate(categoryDTO);
+		
+		// Assert
+		assertEquals(1, violations.size());
+	}
+	
+	@Test
+	public void type_invalid_violationRaised() {
+		// Arrange
+		type.setName("");
+		CategoryDTO categoryDTO = new CategoryDTO(1, "name", type);
+		
+		// Act
+		Set<ConstraintViolation<CategoryDTO>> violations = validator.validate(categoryDTO);
+		
+		// Assert
+		assertEquals(1, violations.size());
 	}
 }

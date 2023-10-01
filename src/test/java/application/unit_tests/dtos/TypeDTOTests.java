@@ -3,12 +3,27 @@ package application.unit_tests.dtos;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Set;
+
+import org.junit.jupiter.api.BeforeEach;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import org.junit.jupiter.api.Test;
 
 import application.dtos.TypeDTO;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 
 public class TypeDTOTests {
+	
+	private Validator validator;
+	
+	@BeforeEach
+	public void setup() {
+		validator = Validation.buildDefaultValidatorFactory().getValidator();
+	}
 
 	@Test
 	public void hashCode_sameFields_sameHash() {
@@ -56,5 +71,53 @@ public class TypeDTOTests {
 		
 		// Act and Assert
 		assertFalse(typeDTO1.equals(typeDTO2));
+	}
+	
+	@Test
+	public void id_null_violationRaised() {
+		// Arrange
+		TypeDTO typeDTO = new TypeDTO(null, "name");
+		
+		// Act
+		Set<ConstraintViolation<TypeDTO>> violations = validator.validate(typeDTO);
+		
+		// Assert
+		assertEquals(1, violations.size());
+	}
+	
+	@Test
+	public void id_lessThan1_violationRaised() {
+		// Arrange
+		TypeDTO typeDTO = new TypeDTO(0, "name");
+		
+		// Act
+		Set<ConstraintViolation<TypeDTO>> violations = validator.validate(typeDTO);
+		
+		// Assert
+		assertEquals(1, violations.size());
+	}
+	
+	@Test
+	public void name_null_violationRaised() {
+		// Arrange
+		TypeDTO typeDTO = new TypeDTO(1, null);
+		
+		// Act
+		Set<ConstraintViolation<TypeDTO>> violations = validator.validate(typeDTO);
+		
+		// Assert
+		assertEquals(1, violations.size());
+	}
+	
+	@Test
+	public void name_empty_violationRaised() {
+		// Arrange
+		TypeDTO typeDTO = new TypeDTO(1, "");
+		
+		// Act
+		Set<ConstraintViolation<TypeDTO>> violations = validator.validate(typeDTO);
+		
+		// Assert
+		assertEquals(1, violations.size());
 	}
 }

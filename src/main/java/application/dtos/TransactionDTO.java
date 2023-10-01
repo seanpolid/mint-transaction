@@ -33,6 +33,7 @@ public class TransactionDTO {
 	
 	private String notes;
 	
+	@NotNull
 	@Valid
 	public CategoryDTO category;
 	
@@ -126,7 +127,7 @@ public class TransactionDTO {
 			return false;
 		TransactionDTO other = (TransactionDTO) obj;
 		return Objects.equals(amount, other.amount) && Objects.equals(category, other.category)
-				&& Objects.equals(endDate, other.endDate) && id == other.id
+				&& Objects.equals(endDate, other.endDate) && id.equals(other.id)
 				&& Objects.equals(identifier, other.identifier) && Objects.equals(notes, other.notes)
 				&& Objects.equals(startDate, other.startDate);
 	}
