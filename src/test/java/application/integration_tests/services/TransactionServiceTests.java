@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,9 @@ import application.entities.Category;
 import application.entities.Transaction;
 import application.entities.Type;
 import application.entities.User;
+import application.exceptions.CategoryNotFoundException;
+import application.exceptions.InvalidTransactionIdentifierException;
+import application.exceptions.TransactionNotFoundException;
 import application.repositories.ICategoryRepository;
 import application.repositories.ITransactionRepository;
 import application.repositories.ITypeRepository;
@@ -54,7 +58,9 @@ public class TransactionServiceTests {
 	
 	private User user;
 	private Category category;
+	private Category category2;
 	private CategoryDTO categoryDTO;
+	private CategoryDTO categoryDTO2;
 	private LocalDate date = LocalDate.now();
 	private String uuid1 = java.util.UUID.randomUUID().toString();
 	private String uuid2 = java.util.UUID.randomUUID().toString();
@@ -68,10 +74,14 @@ public class TransactionServiceTests {
 		Type type = new Type(0, "name");
 		type = typeRepository.save(type);
 		
-		Category category = new Category(0, "name", type);
-		this.category = categoryRepository.save(category);
-		this.category.getTransactions();
-		this.categoryDTO = new Mapper().map(category);
+		category = new Category(0, "name", type);
+		category2 = new Category(0, "name2", type);
+		
+		category = categoryRepository.save(category);
+		category2 = categoryRepository.save(category2);
+
+		categoryDTO = new Mapper().map(category);
+		categoryDTO2 = new Mapper().map(category2);
 		
 		transactionRepository.deleteAll();
 	}
@@ -132,4 +142,46 @@ public class TransactionServiceTests {
 		// Assert
 		assertTrue(transactionDTOs.size() == 0);
 	}
+	
+	@Test
+	public void deleteTransaction_sucess() {
+		// Arrange
+		Transaction transaction = new Transaction(0, "guid", bigDecimal, date, date, "notes", category, user);
+		transactionRepository.save(transaction);
+		
+		// Act
+		transactionRepository.deleteById(transaction.getId());
+		Optional<Transaction> optionalTransaction = transactionRepository.findById(transaction.getId());
+		
+		// Assert
+		assertTrue(transaction.getId() > 0);
+		assertTrue(optionalTransaction.isEmpty());
+	}
+	
+	@Test
+	public void updateTransaction_success() throws TransactionNotFoundException, InvalidTransactionIdentifierException, CategoryNotFoundException {
+		// Arrange
+		Transaction transaction = new Transaction(0, "guid", bigDecimal, date, null, "notes", category, user);
+		transactionRepository.save(transaction);
+		
+		Optional<Transaction> optionalTransaction = transactionRepository.findById(transaction.getId());
+		transaction = optionalTransaction.get();
+		
+		BigDecimal newAmount = new BigDecimal("1000.00");
+		TransactionDTO transactionDTO = new TransactionDTO(transaction.getId(), transaction.getIdentifier(), 
+				newAmount, LocalDate.now(), LocalDate.now(), "new notes", categoryDTO2);
+		
+		// Act
+		transactionService.updateTransaction(transactionDTO);
+		optionalTransaction = transactionRepository.findById(transaction.getId());
+		Transaction updatedTransaction = optionalTransaction.get();
+		
+		// Assert 
+		assertEquals(updatedTransaction.getAmount(), transactionDTO.getAmount());
+		assertEquals(updatedTransaction.getStartDate(), transactionDTO.getStartDate());
+		assertEquals(updatedTransaction.getEndDate(), transactionDTO.getEndDate());
+		assertEquals(updatedTransaction.getNotes(), transactionDTO.getNotes());
+		assertEquals(mapper.map(updatedTransaction.getCategory()), transactionDTO.getCategory());
+	}
+	
 }

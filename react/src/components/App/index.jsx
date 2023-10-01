@@ -3,19 +3,20 @@ import { asTitleCase } from '../../utils/functions'
 import Dashboard from '../Dashboard'
 import DataContext from '../DataContext'
 import Log from '../Log'
-import { pageReducer, isLogType, isWideEnough, getPage, getAllData } from './functions'
+import functions from './functions'
 import Profile from '../Profile'
 import style from './style.module.css'
 import { tabType, pageType } from '../../enums' 
 import VerticalNavBar from '../VerticalNavBar'
-import { useEffect, useState, useReducer } from 'react'
+import { useEffect, useState, useReducer, useCallback } from 'react'
 
 const App = () => {
     const tabsWithPages = [tabType.TRANSACTIONS, tabType.GOALS];
     const tabTypes = Object.values(tabType);
-    const [pages, setPages] = useState([]);
     const [currentTab, setCurrentTab] = useState(tabTypes[0]);
-    const [currentPages, pageDispatch] = useReducer(pageReducer, defaultCurrentPages);
+    const [pages, setPages] = useState([]);
+    const [currentPages, pageDispatch] = useReducer(functions.pageReducer, defaultCurrentPages);
+    const [selectedTransaction, setSelectedTransaction] = useState();
     const [transactions, setTransactions] = useState([]);
     const [goals, setGoals] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -23,16 +24,19 @@ const App = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isNetworkError, setIsNetworkError] = useState(false);
     const data = {
+        selectedTransaction: selectedTransaction,
         transactions: transactions,
         categories: categories,
         goals: goals,
         types: types,
-        addTransactions: (newTransactions) => setTransactions(prevTransactions => prevTransactions.concat(newTransactions))
+        addTransactions: (newTransactions) => functions.addTransactions(newTransactions, setTransactions),
+        removeTransaction: (id) => functions.removeTransaction(id, setTransactions),
+        updateTransaction: (transaction) => functions.updateTransaction(transaction, setTransactions) 
     }
 
     useEffect(() => {
         const loadData = async () => {
-            const successful = await getAllData(setTypes, setCategories, setGoals, setTransactions);
+            const successful = await functions.getAllData(setTypes, setCategories, setGoals, setTransactions);
  
             if (!successful) {
                 setIsNetworkError(true);
@@ -43,6 +47,20 @@ const App = () => {
         }
         loadData();
     }, []);
+
+    useEffect(() => {
+        // custom logic for handling selection
+        if (selectedTransaction === null) {
+            setSelectedTransaction(transactions.length > 0 ? transactions[0] : null);
+        } else {
+            const filteredTransactions = transactions.filter(transaction => transaction.id === selectedTransaction.id);
+            if (filteredTransactions.length === 0) {
+                setSelectedTransaction(transactions.length > 0 ? transactions[0] : null);
+            } else {
+                setSelectedTransaction(filteredTransactions[0]);
+            }
+        }
+    }, [transactions]);
     
 
     useEffect(() => {
@@ -69,6 +87,7 @@ const App = () => {
     }
 
     const handlePageSwitch = (event) => {
+        event.preventDefault();
         const target = event.target;
         const dataType = target.getAttribute("data-type")
         if (dataType === null) {return;}
@@ -76,9 +95,15 @@ const App = () => {
         pageDispatch( {tab: currentTab, type: dataType} );
     }
     
-    const handleLogSelection = (selectedLog) => {
+    const handleSelection = useCallback((selectedIdentifier) => {
+        const selected = {
+            [tabType.TRANSACTIONS]: () => transactions.filter(transaction => transaction.identifier === selectedIdentifier)[0],
+            [tabType.GOALS]: () => goals.filter(goal => goal.identifier === selectedIdentifier)[0]
+        };
 
-    }
+        setSelectedTransaction(selected[currentTab]);
+        pageDispatch( {tab: currentTab, type: pageType.VIEW});
+    }, [transactions]);
 
     return (
         <>
@@ -93,7 +118,7 @@ const App = () => {
 
             {!isLoading && !isNetworkError && (
                 <DataContext.Provider value={data}>
-                    <Tab currentTab={currentTab} />
+                    <Tab currentTab={currentTab} handleSelection={handleSelection}/>
                     
                     {tabsWithPages.includes(currentTab) ? (
                         <section>
@@ -102,7 +127,7 @@ const App = () => {
                                     {pages}
                                 </ul>
                             </nav>
-                            {isLogType(currentTab) && isWideEnough() ? getPage(currentTab, currentPages) : null}
+                            {functions.isLogType(currentTab) && functions.isWideEnough() ? functions.getPage(currentTab, currentPages) : null}
                         </section>
                     ) : (
                         null
@@ -118,11 +143,11 @@ const defaultCurrentPages = {
     [tabType.GOALS]: pageType.ADD
 }
 
-const Tab = ({currentTab}) => {
+const Tab = ({currentTab, handleSelection}) => {
     switch (currentTab) {
         case tabType.TRANSACTIONS:
         case tabType.GOALS:
-            return <Log type={currentTab} />
+            return <Log type={currentTab} handleSelection={handleSelection} />
         case tabType.DASHBOARD:
             return <Dashboard />
         case tabType.PROFILE:

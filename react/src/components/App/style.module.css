@@ -1,5 +1,5 @@
 .secondaryNav {
-    height: 3em;
+    height: var(--secondary-nav-height);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -81,6 +81,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    grid-column: 2/4;
 }
 
 .networkError h1 {

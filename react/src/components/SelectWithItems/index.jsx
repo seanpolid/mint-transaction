@@ -10,7 +10,7 @@ const SelectWithItems = ({id, name, items, value, onChange, selectRef}) => {
     if (onChange) {
         selectValue = value ? value : '';
     } 
-
+    
     return (
         <select id={id} name={name} onChange={onChange} value={selectValue} ref={selectRef}>
             <option hidden>-- Choose option --</option>

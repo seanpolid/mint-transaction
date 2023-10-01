@@ -25,4 +25,14 @@ public class ExceptionTestController {
 		throw new CategoryNotFoundException();
 	}
 	
+	@GetMapping("transaction-not-found")
+	public void throwsTransactionNotFoundException() throws TransactionNotFoundException {
+		throw new TransactionNotFoundException(1);
+	}
+	
+	@GetMapping("invalid-transaction-identifier")
+	public void throwsInvalidTransactionIdentifierException() throws InvalidTransactionIdentifierException {
+		throw new InvalidTransactionIdentifierException("original identifier", "provided identifier");
+	}
+	
 }

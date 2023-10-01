@@ -85,10 +85,47 @@ public class TransactionDTOTests {
 	}
 	
 	@Test
-	public void id_null_violationRaised() {
+	public void categoryId_null_violationRaised() {
 		// Arrange
 		category.setId(null);
-		TransactionDTO transactionDTO = new TransactionDTO(-1, identifier, bigDecimal, date, date, "notes", category);
+		TransactionDTO transactionDTO = new TransactionDTO(1, identifier, bigDecimal, date, date, "notes", category);
+	
+		// Act
+		Set<ConstraintViolation<TransactionDTO>> violations = validator.validate(transactionDTO);
+		
+		// Assert
+		assertEquals(1, violations.size());
+	}
+	
+	@Test
+	public void categoryId_lessThan1_violationRaised() {
+		// Arrange
+		category.setId(0);
+		TransactionDTO transactionDTO = new TransactionDTO(1, identifier, bigDecimal, date, date, "notes", category);
+	
+		// Act
+		Set<ConstraintViolation<TransactionDTO>> violations = validator.validate(transactionDTO);
+		
+		// Assert
+		assertEquals(1, violations.size());
+	}
+	
+	@Test 
+	public void id_null_violationRaised() {
+		// Arrange
+		TransactionDTO transactionDTO = new TransactionDTO(null, identifier, bigDecimal, date, date, "notes", category);
+	
+		// Act
+		Set<ConstraintViolation<TransactionDTO>> violations = validator.validate(transactionDTO);
+		
+		// Assert
+		assertEquals(1, violations.size());
+	}
+	
+	@Test 
+	public void id_lessThan1_violationRaised() {
+		// Arrange
+		TransactionDTO transactionDTO = new TransactionDTO(-5, identifier, bigDecimal, date, date, "notes", category);
 	
 		// Act
 		Set<ConstraintViolation<TransactionDTO>> violations = validator.validate(transactionDTO);
@@ -134,7 +171,19 @@ public class TransactionDTOTests {
 	}
 	
 	@Test
-	public void category_lessThan1_violationRaised() {
+	public void category_null_violationRaised() {
+		// Arrange
+		TransactionDTO transactionDTO = new TransactionDTO(1, identifier, bigDecimal, date, date, "notes", null);
+		
+		// Act
+		Set<ConstraintViolation<TransactionDTO>> violations = validator.validate(transactionDTO);
+		
+		// Assert
+		assertEquals(1, violations.size());
+	}
+	
+	@Test
+	public void category_invalid_violationRaised() {
 		// Arrange
 		category.setId(null);
 		TransactionDTO transactionDTO = new TransactionDTO(1, identifier, bigDecimal, date, date, "notes", category);

@@ -40,4 +40,18 @@ public class ExceptionTestControllerTests {
 					   		 content().contentType("text/plain;charset=UTF-8"));
 	}
 	
+	@Test
+	public void throwsTransactionNotFoundException_statusNotFound() throws Exception {
+		mockMvc.perform(get("/exceptions/transaction-not-found"))
+			   .andExpectAll(status().isNotFound(),
+					   		 content().contentType("text/plain;charset=UTF-8"));
+	}
+	
+	@Test
+	public void throwsInvalidTransactionIdentifierException_statusBadRequest() throws Exception {
+		mockMvc.perform(get("/exceptions/invalid-transaction-identifier"))
+			   .andExpectAll(status().isBadRequest(),
+					   		 content().contentType("text/plain;charset=UTF-8"));
+	}
+	
 }

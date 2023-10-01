@@ -4,7 +4,9 @@
     --primary-color: rgb(242, 243, 245);
     --secondary-color: rgb(208, 208, 208);
     --accent-color: rgb(242, 243, 245);
-    --nav-width: 4.75rem;
+    --active-color: rgb(153, 238, 255);
+    --primary-nav-width: 4.75rem;
+    --secondary-nav-height: 3em;
 }
 
 body {
@@ -21,7 +23,7 @@ body, header, nav, main, footer, div {
 
 main {
     display: grid;
-    grid-template-columns: var(--nav-width) 1fr 2fr;
+    grid-template-columns: var(--primary-nav-width) 1fr 2fr;
     min-height: 100vh;
 }
 
@@ -34,4 +36,20 @@ input, select, textarea {
     background: white;
     border-radius: 5px;
     border: 1px solid rgb(236, 236, 236);
+    box-sizing: border-box;
+}
+
+.button {
+    padding: 10px 35px;
+    border: 0;
+    border-radius: 5px;
+    font-size: 18px;
+    color: black;
+    cursor: pointer;
+    background: rgb(232, 229, 229);
+}
+
+.button:hover {
+    background: rgb(217, 214, 214);
+    transition: 0.5s;
 }
