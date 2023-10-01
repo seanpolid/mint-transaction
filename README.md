@@ -22,7 +22,7 @@ Transaction Tracker is an app that I've been wanting to make for a while. Here a
 </ol>
 
 <h1>Current Frontend Status (10/01/23)</h1>
-<h2>Transaction Page</h2>
+<h2>Demo (You might have to wait for the gif to load)</h2>
 
 ![demo](https://github.com/seanpolid/transaction-tracker-images/blob/main/demo2.gif)
 
