@@ -27,6 +27,11 @@ const findParent = (element, options = {}) => {
     return currentElement !== elementLimit ? currentElement : null;
 };
 
+/**
+ * Makes the first word of a string title case.
+ * @param {*} string 
+ * @returns 
+ */
 const asTitleCase = (string) => {
     if (string[0] >= 'a' && string[0] <= 'z') {
         string = string[0].toUpperCase() + string.substring(1);
