@@ -56,10 +56,10 @@ const TransactionPage = () => {
 
     const handleSave = useCallback(async (event) => {
         event.preventDefault();
-
+        
         const transactionsWithoutCategories = transactions.filter(transaction => !transaction.category);
         if (transactionsWithoutCategories.length > 0) {return;}
-
+    
         const uri = `http://localhost:8080/api/transactions`;
         const transactionDTOs = transactions.map(transaction => mapper.mapToTransactionDTO(transaction));
         const savedTransactionDTOs = await postData(uri, transactionDTOs);
