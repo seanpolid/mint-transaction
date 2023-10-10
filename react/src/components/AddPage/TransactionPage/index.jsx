@@ -228,8 +228,8 @@ const Form = ({id, initialTransaction, onButtonClick, handleTransactionChange, c
 
 const TypeSelection = ({name, transaction, onChange, types}) => {
     return (
-        <>
-            <label htmlFor={name}>Type:</label>
+        <fieldset>
+            <legend>Type:</legend>
             <div>
                 {types.map(type => (
                     <RadioButtonWithLabel 
@@ -243,34 +243,36 @@ const TypeSelection = ({name, transaction, onChange, types}) => {
                     />
                 ))}
             </div>
-        </>
+        </fieldset>
     )
 }
 
 const RecursSelection = ({names, transaction, onChange}) => {
     return (
         <>
-            <label htmlFor={names['recur']}>Recurs:</label>
-            <div>
-                <RadioButtonWithLabel
-                    name={names['recurs']}
-                    value={true}
-                    text='Yes'
-                    onChange={onChange}
-                    checked={transaction.recurs}
-                    wrapped
-                />
+            <fieldset>
+                <legend>Recurs:</legend>
+                <div>
+                    <RadioButtonWithLabel
+                        name={names['recurs']}
+                        value={true}
+                        text='Yes'
+                        onChange={onChange}
+                        checked={transaction.recurs}
+                        wrapped
+                    />
 
-                <RadioButtonWithLabel
-                    name={names['recurs']}
-                    value={false}
-                    text='No'
-                    onChange={onChange}
-                    checked={!transaction.recurs}
-                    wrapped
-                />
-            </div>
-
+                    <RadioButtonWithLabel
+                        name={names['recurs']}
+                        value={false}
+                        text='No'
+                        onChange={onChange}
+                        checked={!transaction.recurs}
+                        wrapped
+                    />
+                </div>
+            </fieldset>
+            
             {transaction.recurs ? (
                 <>
                     <InputWithLabel 
