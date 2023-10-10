@@ -35,7 +35,7 @@ const Icon = ({type, active}) => {
     };
 
     return (
-        <div className={`icon ${icons[type].className} ${active ? style.active : ""}`} data-type={type}>
+        <div role="button" className={`icon ${icons[type].className} ${active ? style.active : ""}`} data-type={type}>
             {icons[type].content}
         </div>
     )
