@@ -84,7 +84,7 @@ const getCategories = async () => {
 const getTransactions = async () => {
     const uri = "http://localhost:8080/api/transactions";
     const transactionDTOs = await getData(uri);
-
+    
     const transactions = [];
     for (const transactionDTO of transactionDTOs) {
         const transaction = mapper.mapToTransaction(transactionDTO);

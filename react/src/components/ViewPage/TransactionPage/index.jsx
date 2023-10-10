@@ -54,16 +54,17 @@ const TransactionPage = () => {
 
     const handleDelete = async (event) => {
         event.preventDefault();
+
         const uri = `http://localhost:8080/api/transactions/${transaction.id}`;
         const successful = await deleteData(uri);
-
+ 
         if (successful) {
             dataContext.removeTransaction(transaction.id);
         } else {
             console.log('Failed to delete transaction');
         }
     }
-
+    
     const handleUpdate = async (event) => {
         event.preventDefault();
 
@@ -131,6 +132,7 @@ const TransactionPage = () => {
 
                         <div className={style.notes}>
                             <TextAreaWithLabel 
+                                id={names.notes}
                                 name={names.notes}
                                 text="Notes:"
                                 value={transaction.notes}
