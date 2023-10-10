@@ -24,7 +24,7 @@ const failureHandlers = [
     })
 ]
 
-describe('TransactionPage', () => {
+describe('Transaction View Page', () => {
     const type = new Type(1, "Income");
     const category = new Category(1, "Job", type);
     const transaction = new Transaction(1, "uuid", type, category, "2023-10-09", "2023-10-25", 2000, "notes", "uuid");
