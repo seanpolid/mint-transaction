@@ -1,17 +1,9 @@
-import DataContext from '../DataContext';
 import { describe, test, expect, afterEach, vi } from 'vitest'
 import Log from ".";
-import { render, screen, cleanup, fireEvent } from "@testing-library/react";
+import { renderElement } from '../../utils/test-functions';
+import { screen, cleanup, fireEvent } from "@testing-library/react";
 import { tabType } from '../../enums/'
 import { Transaction, Type, Category } from '../../models';
-
-const renderElement = (element, data) => {
-    render(
-        <DataContext.Provider value={data}>
-            {element}
-        </DataContext.Provider>
-    )
-}
 
 describe('Log', () => {
     const type = new Type(1, "Income");
@@ -70,7 +62,7 @@ describe('Log', () => {
         const mockFunctions = {
             handleSelection: () => {}
         }
-        const spy = vi.spyOn(mockFunctions, 'handleSelection').mockImplementation(() => {})
+        const spy = vi.spyOn(mockFunctions, 'handleSelection')
         const element = <Log type={tabType.TRANSACTIONS} handleSelection={mockFunctions.handleSelection}/>
         const data = {
             transactions: [
@@ -81,7 +73,6 @@ describe('Log', () => {
         // Act
         renderElement(element, data);
         fireEvent.click(screen.getByRole('row'));
-        screen.getBy
 
         // Assert
         expect(spy).toHaveBeenCalledOnce();
