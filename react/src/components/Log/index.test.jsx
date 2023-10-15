@@ -14,7 +14,7 @@ describe('Log', () => {
 
     test('should render with a selected transaction', () => {
         // Arrange
-        const element = <Log type={tabType.TRANSACTIONS} />
+        const element = <Log type={tabType.TRANSACTIONS} handleSelection={() => {}}/>
         const data = {
             transactions: [
                 transaction
@@ -34,7 +34,7 @@ describe('Log', () => {
 
     test('should style transaction row based on mouse', () => {
         // Arrange
-        const element = <Log type={tabType.TRANSACTIONS} />
+        const element = <Log type={tabType.TRANSACTIONS} handleSelection={() => {}}/>
         const data = {
             transactions: [
                 transaction
@@ -75,6 +75,6 @@ describe('Log', () => {
         fireEvent.click(screen.getByRole('row'));
 
         // Assert
-        expect(spy).toHaveBeenCalledOnce();
+        expect(spy).toHaveBeenCalledTimes(2);
     })
 })

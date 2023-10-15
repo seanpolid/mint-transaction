@@ -49,19 +49,10 @@ const App = () => {
     }, []);
 
     useEffect(() => {
-        // custom logic for handling selection
-        if (selectedTransaction === null) {
-            setSelectedTransaction(transactions.length > 0 ? transactions[0] : null);
-        } else {
-            const filteredTransactions = transactions.filter(transaction => transaction.id === selectedTransaction.id);
-            if (filteredTransactions.length === 0) {
-                setSelectedTransaction(transactions.length > 0 ? transactions[0] : null);
-            } else {
-                setSelectedTransaction(filteredTransactions[0]);
-            }
+        if (transactions.length === 0) {
+            setSelectedTransaction(null);
         }
-    }, [transactions]);
-    
+    }, [transactions])
 
     useEffect(() => {
         if (tabsWithPages.includes(currentTab)) {
@@ -95,14 +86,17 @@ const App = () => {
         pageDispatch( {tab: currentTab, type: dataType} );
     }
     
-    const handleSelection = useCallback((selectedIdentifier) => {
+    const handleSelection = useCallback((selectedIdentifier, switchPage=true) => {
         const selected = {
             [tabType.TRANSACTIONS]: () => transactions.filter(transaction => transaction.identifier === selectedIdentifier)[0],
             [tabType.GOALS]: () => goals.filter(goal => goal.identifier === selectedIdentifier)[0]
         };
 
         setSelectedTransaction(selected[currentTab]);
-        pageDispatch( {tab: currentTab, type: pageType.VIEW});
+
+        if (switchPage) {
+            pageDispatch( {tab: currentTab, type: pageType.VIEW});
+        }
     }, [transactions]);
 
     return (
