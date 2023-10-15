@@ -36,6 +36,10 @@ class Transaction {
         transaction.key = this.key;
         return transaction;
     }
+
+    toString() {
+        return `${this.type.name} ${this.category.name} ${this.startDate} ${this.endDate} $${this.amount} ${this.notes}`;
+    }
 }
 
 export default Transaction

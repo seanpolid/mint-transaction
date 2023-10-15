@@ -83,7 +83,7 @@ const TransactionPage = () => {
         <>
             {transaction === null ? (
                 <section className={style.header}>
-                    <h1>No transactions to show.</h1>
+                    <h1>No transactions to view.</h1>
                 </section>
             ) : (
                 <section>

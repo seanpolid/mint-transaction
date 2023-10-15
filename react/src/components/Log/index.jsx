@@ -9,6 +9,9 @@ import { useContext, useEffect, useState } from "react";
 
 const Log = ({type, handleSelection}) => {
     const dataContext = useContext(DataContext);
+    const [logs, setLogs] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+
     const items = {
         [tabType.TRANSACTIONS]: dataContext.transactions,
         [tabType.GOALS]: dataContext.goals
@@ -18,12 +21,19 @@ const Log = ({type, handleSelection}) => {
         [tabType.GOALS]: (item) => <Goal goal={item} handleSelection={handleSelection} />
     }
 
-    const logs = items[type].map(item => convertToLog[type](item));
+    useEffect(() => {
+        const filteredItems = items[type].filter(item => searchTerm.length == 0 || item.toString().toLowerCase().includes(searchTerm));
+        setLogs(filteredItems.map(item => convertToLog[type](item)));
+    }, [searchTerm, dataContext.transactions]);
+
+    const handleChange = (event) => {
+        setSearchTerm(event.target.value);
+    }
 
     return (
         <section className={style.container}>
             <form>
-                <SearchBar />
+                <SearchBar onChange={handleChange} />
                 <a href="#">
                     <Icon type={iconType.FILTER} />
                 </a>
@@ -90,10 +100,10 @@ const Transaction = ({transaction, handleSelection}) => {
     )
 }
 
-const SearchBar = () => {
+const SearchBar = ({onChange}) => {
     return (
         <div className={style.searchBar}>
-            <input type='text' placeholder='Search'/>
+            <input type='text' placeholder='Search' onChange={onChange}/>
             <Icon type={iconType.SEARCH} />
         </div>
         

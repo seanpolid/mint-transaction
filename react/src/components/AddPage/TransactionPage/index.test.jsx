@@ -150,7 +150,7 @@ describe('Transaction Add Page', () => {
         // Assert
         await waitFor(() => expect(spy).toHaveBeenCalledOnce());
         expect(screen.getByLabelText("Category:").value).toBe("-- Choose option --");   // indicates forms got reset
-
+        
         server.close();
     })
 })
