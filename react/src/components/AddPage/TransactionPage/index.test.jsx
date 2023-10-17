@@ -2,9 +2,10 @@ import { Category, Type } from '../../../models'
 import { expect, describe, test, vi, afterEach } from 'vitest'
 import { renderElement } from '../../../utils/test-functions'
 import { rest } from 'msw'
-import { screen, fireEvent, cleanup, waitFor } from '@testing-library/react'
+import { screen, cleanup, waitFor } from '@testing-library/react'
 import { setupServer } from 'msw/node'
 import TransactionPage from '.'
+import userEvent from '@testing-library/user-event'
 
 const successHandlers = [
     rest.post("http://localhost:8080/api/transactions", (req, res, ctx) => {
@@ -55,12 +56,13 @@ describe('Transaction Add Page', () => {
         expect(screen.getByRole("button", {name: "Save"})).toBeDefined();
     })
 
-    test('should handle type change', () => {
+    test('should handle type change', async () => {
         // Act
+        const user = userEvent.setup();
         renderElement(<TransactionPage />, data);
 
         const incomeSelectionBeforeClick = screen.getByLabelText("Income").checked;
-        fireEvent.click(screen.getByLabelText("Income"));
+        await user.click(screen.getByLabelText("Income"));
         const incomeSelectionAfterClick = screen.getByLabelText("Income").checked;
 
         // Assert
@@ -68,12 +70,13 @@ describe('Transaction Add Page', () => {
         expect(incomeSelectionAfterClick).toBeTruthy();
     })
 
-    test('should handle category change', () => {
+    test('should handle category change', async () => {
         // Act
+        const user = userEvent.setup();
         renderElement(<TransactionPage />, data);
         
         const categorySelectionBeforeChange = screen.getByLabelText("Category:").value;
-        fireEvent.change(screen.getByLabelText("Category:"), {target: {value: 1}});
+        await user.selectOptions(screen.getByLabelText("Category:"), '1');
         const categorySelectionAfterChange = screen.getByLabelText("Category:").selectedOptions[0].textContent;
 
         // Assert
@@ -81,14 +84,15 @@ describe('Transaction Add Page', () => {
         expect(categorySelectionAfterChange).toBe("Rent");
     })
 
-    test('should handle recurs change', () => {
+    test('should handle recurs change', async () => {
         // Act
+        const user = userEvent.setup();
         renderElement(<TransactionPage />, data);
 
         const recursSelectionBeforeClick = screen.getByLabelText("Yes").checked;
         const endDateInputBeforeClick = screen.queryByLabelText("End Date:");
 
-        fireEvent.click(screen.getByLabelText("Yes"));
+        await user.click(screen.getByLabelText("Yes"));
 
         const recursSelectionAfterClick = screen.getByLabelText("Yes").checked;
         const endDateInputAfterClick = screen.queryAllByLabelText("End Date:");
@@ -100,30 +104,33 @@ describe('Transaction Add Page', () => {
         expect(endDateInputAfterClick).not.toBeNull();
     })
 
-    test('should handle amount change', () => {
+    test('should handle amount change', async () => {
         // Act
+        const user = userEvent.setup();
         renderElement(<TransactionPage />, data);
-        fireEvent.change(screen.getByLabelText("Amount ($):"), {target: {value: "1.44"}});
+        await user.type(screen.getByLabelText("Amount ($):"), "1.44");
 
         // Assert
         expect(screen.getByLabelText("Amount ($):").value).toBe("1.44");
     })
 
-    test('should handle notes change', () => {
+    test('should handle notes change', async () => {
         // Act
+        const user = userEvent.setup();
         renderElement(<TransactionPage />, data);
-        fireEvent.change(screen.getByLabelText("Notes:"), {target: {value: "new notes"}});
+        await user.type(screen.getByLabelText("Notes:"), "new notes");
 
         // Assert
         expect(screen.getByLabelText("Notes:").value).toBe("new notes");
     })
 
-    test('should handle add', () => {
+    test('should handle add', async () => {
         // Act
+        const user = userEvent.setup();
         renderElement(<TransactionPage />, data);
         
         const numFormsBeforeClick  = screen.getAllByText("Type:").length;
-        fireEvent.click(screen.getByRole('button', {name: "Add"}));
+        await user.click(screen.getByRole('button', {name: "Add"}));
         const numFormsAfterClick = screen.getAllByText("Type:").length;
 
         // Assert
@@ -133,6 +140,7 @@ describe('Transaction Add Page', () => {
 
     test('should handle save', async () => {
         // Arrange
+        const user = userEvent.setup();
         const server = setupServer(...successHandlers);
         server.listen();
         const data = {
@@ -144,8 +152,8 @@ describe('Transaction Add Page', () => {
 
         // Act
         renderElement(<TransactionPage />, data);
-        fireEvent.change(screen.getByLabelText("Category:"), {target: {value: 1}});     // save will be rejected if there isn't a valid category
-        fireEvent.click(screen.getByRole('button', {name: 'Save'}));
+        await user.selectOptions(screen.getByLabelText("Category:"), '1');     // save will be rejected if there isn't a valid category
+        await user.click(screen.getByRole('button', {name: 'Save'}));
 
         // Assert
         await waitFor(() => expect(spy).toHaveBeenCalledOnce());

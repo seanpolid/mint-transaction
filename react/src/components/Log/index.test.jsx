@@ -1,9 +1,10 @@
 import { describe, test, expect, afterEach, vi } from 'vitest'
 import Log from ".";
 import { renderElement } from '../../utils/test-functions';
-import { screen, cleanup, fireEvent } from "@testing-library/react";
+import { screen, cleanup } from "@testing-library/react";
 import { tabType } from '../../enums/'
 import { Transaction, Type, Category } from '../../models';
+import userEvent from '@testing-library/user-event';
 
 describe('Log', () => {
     const type = new Type(1, "Income");
@@ -32,8 +33,9 @@ describe('Log', () => {
         expect(screen.getByRole("row").className).toContain('active');
     })
 
-    test('should style transaction row based on mouse', () => {
+    test('should style transaction row based on mouse', async () => {
         // Arrange
+        const user = userEvent.setup();
         const element = <Log type={tabType.TRANSACTIONS} handleSelection={() => {}}/>
         const data = {
             transactions: [
@@ -45,10 +47,10 @@ describe('Log', () => {
         renderElement(element, data);
 
         const classBeforeMouseEnter = screen.getByRole('row').className;
-        fireEvent.mouseEnter(screen.getByRole('row'));
+        await user.hover(screen.getByRole('row'));
         const classAfterMouseEnter = screen.getByRole('row').className;
 
-        fireEvent.mouseLeave(screen.getByRole('row'));
+        await user.unhover(screen.getByRole('row'));
         const classAfterMouseLeave = screen.getByRole('row').className;
 
         // Assert
@@ -57,8 +59,9 @@ describe('Log', () => {
         expect(classAfterMouseLeave).not.toContain('active');
     })
 
-    test('should select transaction after click', () => {
+    test('should select transaction after click', async () => {
         // Arrange
+        const user = userEvent.setup();
         const mockFunctions = {
             handleSelection: () => {}
         }
@@ -72,7 +75,7 @@ describe('Log', () => {
 
         // Act
         renderElement(element, data);
-        fireEvent.click(screen.getByRole('row'));
+        await user.click(screen.getByRole('row'));
 
         // Assert
         expect(spy).toHaveBeenCalledTimes(2);

@@ -1,7 +1,8 @@
 import { expect, test, describe, vi } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import VerticalNavBar from ".";
 import { iconType, tabType } from "../../enums";
+import userEvent from "@testing-library/user-event";
 
 const getIcon = (type) => {
     const icons = screen.getAllByRole('button');
@@ -70,8 +71,9 @@ describe('VerticalNavBar', () => {
         expect(userIcon.className).toContain('active');
     })
 
-    test('should handle tab selection', () => {
+    test('should handle tab selection', async () => {
         // Arrange
+        const user = userEvent.setup();
         const mockFunctions = {
             handleTabSelection: () => {}
         }
@@ -81,7 +83,7 @@ describe('VerticalNavBar', () => {
         // Act
         render(element);
         const userIcon = getIcon(iconType.USER);
-        fireEvent.click(userIcon);
+        await user.click(userIcon);
 
         // Assert
         expect(spy).toHaveBeenCalledOnce();

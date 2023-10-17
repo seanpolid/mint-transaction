@@ -1,10 +1,11 @@
 import { expect, test, describe, vi, afterEach } from "vitest";
 import { renderElement } from "../../../utils/test-functions";
-import { screen, fireEvent, cleanup, waitFor } from "@testing-library/react";
+import { screen, cleanup, waitFor, fireEvent } from "@testing-library/react";
 import { setupServer } from 'msw/node'
 import { rest } from "msw";
 import { Type, Category, Transaction } from "../../../models";
 import TransactionPage from ".";
+import userEvent from "@testing-library/user-event";
 
 const successHandlers = [
     rest.delete('http://localhost:8080/api/transactions/*', (req, res, ctx) => {
@@ -56,6 +57,8 @@ describe('Transaction View Page', () => {
         // Arrange
         const server = setupServer(...successHandlers);
         server.listen();
+
+        const user = userEvent.setup();
         const data = {
             selectedTransaction: transaction,
             categories: [category],
@@ -65,7 +68,7 @@ describe('Transaction View Page', () => {
         
         // Act
         renderElement(<TransactionPage />, data);
-        fireEvent.click(screen.getByRole("button", {name: "Delete"}));
+        await user.click(screen.getByRole("button", {name: "Delete"}));
 
         // Assert
         await waitFor(() => expect(spy).toHaveBeenCalledOnce());
@@ -77,6 +80,8 @@ describe('Transaction View Page', () => {
         // Arrange
         const server = setupServer(...successHandlers);
         server.listen();
+
+        const user = userEvent.setup();
         const data = {
             selectedTransaction: transaction,
             categories: [category],
@@ -86,7 +91,7 @@ describe('Transaction View Page', () => {
 
         // Act
         renderElement(<TransactionPage />, data);
-        fireEvent.click(screen.getByRole('button', {name: 'Update'}));
+        await user.click(screen.getByRole('button', {name: 'Update'}));
 
         // Assert
         await waitFor(() => expect(spy).toHaveBeenCalledOnce());
@@ -94,8 +99,9 @@ describe('Transaction View Page', () => {
         server.close();
     })
 
-    test('should handle category change', () => {
+    test('should handle category change', async () => {
         // Arrange
+        const user = userEvent.setup();
         const category2 = new Category(2, "Gift", type);
         const data = {
             selectedTransaction: transaction, 
@@ -104,7 +110,7 @@ describe('Transaction View Page', () => {
 
         // Act
         renderElement(<TransactionPage />, data);
-        fireEvent.change(screen.getByRole("combobox", {target: {value: 2}}));
+        await user.selectOptions(screen.getByRole("combobox"), '2');
 
         // Assert
         expect(screen.getByText("Gift")).toBeDefined();
@@ -140,8 +146,9 @@ describe('Transaction View Page', () => {
         expect(screen.getByLabelText('End Date:').value).toBe("2023-09-05");
     })
 
-    test('should handle amount change', () => {
+    test('should handle amount change', async () => {
         // Arrange
+        const user = userEvent.setup();
         const data = {
             selectedTransaction: transaction,
             categories: [category]
@@ -149,14 +156,16 @@ describe('Transaction View Page', () => {
 
         // Act
         renderElement(<TransactionPage />, data);
-        fireEvent.change(screen.getByDisplayValue("$2000"), {target: {value: "$1.01"}});
+        await user.clear(screen.getByDisplayValue("$2000"));
+        await user.type(screen.getByDisplayValue("$0"), "$1.01");
 
         // Assert
         expect(screen.getByDisplayValue("$1.01")).toBeDefined();
     })
 
-    test('should handle empty amount change', () => {
+    test('should handle empty amount change', async () => {
         // Arrange
+        const user = userEvent.setup();
         const data = {
             selectedTransaction: transaction,
             categories: [category]
@@ -164,14 +173,15 @@ describe('Transaction View Page', () => {
 
         // Act
         renderElement(<TransactionPage />, data);
-        fireEvent.change(screen.getByDisplayValue("$2000"), {target: {value: "$"}});
+        await user.clear(screen.getByDisplayValue("$2000"));
 
         // Assert
         expect(screen.getByDisplayValue("$0")).toBeDefined();
     })
 
-    test('should handle invalid amount change', () => {
+    test('should handle invalid amount change', async () => {
         // Arrange
+        const user = userEvent.setup();
         const data = {
             selectedTransaction: transaction,
             categories: [category]
@@ -179,14 +189,16 @@ describe('Transaction View Page', () => {
 
         // Act
         renderElement(<TransactionPage />, data);
-        fireEvent.change(screen.getByDisplayValue("$2000"), {target: {value: "$abc"}});
+        await user.clear(screen.getByDisplayValue("$2000"));
+        await user.type(screen.getByDisplayValue("$0"), "$abc");
 
         // Assert
         expect(screen.getByDisplayValue("$0")).toBeDefined();
     })
 
-    test('should handle notes change', () => {
+    test('should handle notes change', async () => {
         // Arrange
+        const user = userEvent.setup();
         const data = {
             selectedTransaction: transaction,
             categories: [category]
@@ -194,7 +206,8 @@ describe('Transaction View Page', () => {
 
         // Act
         renderElement(<TransactionPage />, data);
-        fireEvent.change(screen.getByLabelText("Notes:"), {target: {value: "new notes"}});
+        await user.clear(screen.getByLabelText("Notes:"));
+        await user.type(screen.getByLabelText("Notes:"), "new notes");
 
         // Assert
         expect(screen.getByLabelText("Notes:").value).toBe("new notes");
