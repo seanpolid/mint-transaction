@@ -44,7 +44,7 @@ const Icon = ({type, active}) => {
 const Log = () => {
     return (
         <>
-            <div className={style.log}>
+            <div className={style.log} aria-label='transactions'>
                 <div></div>
                 <div></div>
                 <div></div>
@@ -61,7 +61,7 @@ const Log = () => {
 const Graph = () => {
     return (
         <>
-            <div className={style.bars}>
+            <div className={style.bars} aria-label='dashboard'>
                 <div></div> 
                 <div></div>
                 <div></div>
@@ -74,7 +74,7 @@ const Graph = () => {
 const Target = () => {
     return (
         <>
-            <div className={style.ring}>
+            <div className={style.ring} aria-label='goals'>
                 <div className={style.ring}>
                     <div className={style.ring}></div>
                 </div>
@@ -89,7 +89,7 @@ const Target = () => {
 const User = () => {
     return (
         <>
-            <div className={style.frame}>
+            <div className={style.frame} aria-label='profile'>
                 <div className={style.head}></div>
                 <div className={style.body}></div>
             </div>
@@ -108,7 +108,7 @@ const Filter = () => {
 const Sort = () => {
     return (
         <>
-            <div className={style.bars}>
+            <div className={style.bars} aria-label='sort items'>
                 <div></div>
                 <div></div>
                 <div></div>
@@ -122,7 +122,7 @@ const Sort = () => {
 const Search = () => {
     return (
         <>
-            <div className={style.handle}></div>
+            <div className={style.handle} aria-label='search items'></div>
         </>
     )
 }
