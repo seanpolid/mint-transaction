@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
+import { asTitleCase, findParent } from '../../utils/functions';
 import DataContext from "../DataContext";
-import { findParent } from "../../utils/functions";
 import Icon from "../Icon";
-import { iconType, tabType } from "../../enums";
+import { iconType, tabType, orderType } from "../../enums";
+import RadioButtonWithLabel from '../RadioButtonWithLabel'
 import Scrollpane from "../Scrollpane";
 import { compareDate, compareString, compareAmount } from "./functions";
 import style from './style.module.css';
@@ -13,6 +14,8 @@ const Log = ({type, handleSelection}) => {
     const [logs, setLogs] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [sortTerm, setSortTerm] = useState(transactionSortType.DATE);
+    const [sortOrder, setSortOrder] = useState(orderType.DESCENDING)
+    const [sortWindowVisible, setSortWindowVisible] = useState(false);
 
     const items = {
         [tabType.TRANSACTIONS]: dataContext.transactions,
@@ -25,28 +28,51 @@ const Log = ({type, handleSelection}) => {
 
     useEffect(() => {
         const filteredItems = items[type].filter(item => searchTerm.length == 0 || item.toString().toLowerCase().includes(searchTerm));
-        const sortItems = filteredItems.sort((t1, t2) => compareTransactions(sortTerm, t1, t2));
+        const sortItems = filteredItems.sort((t1, t2) => compareTransactions(sortTerm, sortOrder, t1, t2));
         if (sortItems.length > 0) {
             handleSelection(sortItems[0].identifier, false);
         }
         
         setLogs(sortItems.map(item => convertToLog[type](item)));
-    }, [searchTerm, dataContext.transactions]);
+    }, [type, searchTerm, sortTerm, sortOrder, dataContext.transactions]);
 
-    const handleChange = (event) => {
+    const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
+    }
+
+    const handleSortChange = (sortTerm, sortOrder) => {
+        setSortTerm(sortTerm);
+        setSortOrder(sortOrder);
+    }
+
+    const handleClick = (event) => {
+        event.preventDefault();
+
+        if (event.target.name === 'overlay') {
+            setSortWindowVisible(false);
+        } else {
+            setSortWindowVisible(prev => !prev);
+        }
     }
 
     return (
         <section className={style.container}>
             <form>
-                <SearchBar onChange={handleChange} />
-                <a href="#">
-                    <Icon type={iconType.FILTER} />
-                </a>
-                <a href="#">
+                <SearchBar onChange={handleSearchChange} />
+                <a href="#" onClick={handleClick}>
                     <Icon type={iconType.SORT} />
                 </a>
+                {sortWindowVisible ? (
+                    <>
+                        <SortWindow 
+                            initialSortTerm={sortTerm}
+                            initialSortOrder={sortOrder}
+                            type={type} 
+                            onChange={handleSortChange} 
+                        /> 
+                        <div id='overlay' className={style.overlay} onClick={handleClick}></div>
+                    </>
+                ) : null}
             </form>
 
             <Scrollpane className={style.log}>
@@ -61,18 +87,14 @@ const Log = ({type, handleSelection}) => {
 }
 
 const transactionSortType = {
-    TYPE: "type",
     CATEGORY: "category",
     DATE: "date",
     AMOUNT: "amount"
 }
 
-const compareTransactions = (sortTerm, t1, t2, ascending=false) => {
-    const multiplier = ascending ? 1 : -1;
+const compareTransactions = (sortTerm, sortOrder, t1, t2) => {
+    const multiplier = sortOrder === orderType.ASCENDING ? 1 : -1;
     const compare = {
-        [transactionSortType.TYPE]: () => {
-            return compareString(t1.type.name, t2.type.name) * multiplier;
-        },
         [transactionSortType.CATEGORY]: () => {
             return compareString(t1.category.name, t2.category.name) * multiplier;
         },
@@ -112,7 +134,7 @@ const Transaction = ({transaction, handleSelection}) => {
     }
 
     const handleClick = (event) => {
-        const target = findParent(event.target, {type: "tr"});
+        const target = findParent(event.target, {nodeName: "tr"});
         const identifier = target.getAttribute("data-identifier");
         handleSelection(identifier);
     }
@@ -143,6 +165,63 @@ const SearchBar = ({onChange}) => {
             <Icon type={iconType.SEARCH} />
         </div>
         
+    )
+}
+
+const SortWindow = ({initialSortTerm, initialSortOrder, type, onChange}) => {
+    const [sortTerm, setSortTerm] = useState(initialSortTerm);
+    const [sortOrder, setSortOrder] = useState(initialSortOrder);
+    const radioButtons = [
+        {name: "order", text: asTitleCase(orderType.ASCENDING), checked: false, value: orderType.ASCENDING},
+        {name: "order", text: asTitleCase(orderType.DESCENDING), checked: true, value: orderType.DESCENDING}
+    ]
+
+    // The option names should correspond to the attributes of the object 
+    // that will be sorted
+    const sortOptions = {
+        [tabType.TRANSACTIONS]: Object.values(transactionSortType).sort((t1, t2) => compareString(t1, t2)),
+        [tabType.GOALS]: []
+    }
+
+    useEffect(() => {
+        onChange(sortTerm, sortOrder);
+    }, [sortTerm, sortOrder]);
+
+    const handleChange = (event) => {
+        const target = event.target;
+        if (target.nodeName === 'INPUT') {
+            setSortOrder(target.value);
+        } else {
+            const row = findParent(target, {nodeName: 'tr'});
+            setSortTerm(row.getAttribute("data-value"));
+        }
+    }
+
+    return (
+        <div className={style.sortWindow}>
+            <div>
+                {radioButtons.map(button => (
+                    <RadioButtonWithLabel 
+                        key={button.text}
+                        name={button.name}
+                        text={button.text}
+                        value={button.value}
+                        checked={button.value === sortOrder}
+                        onChange={handleChange}
+                        wrapped
+                    />
+                ))}
+            </div>
+            <table>
+                <tbody>
+                    {sortOptions[type].map(option => (
+                        <tr key={option} onClick={handleChange} data-value={option}>
+                            <td className={option === sortTerm ? style.active : null}>{asTitleCase(option)}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
     )
 }
 

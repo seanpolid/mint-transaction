@@ -5,8 +5,8 @@
  * @returns 
  */
 const findParent = (element, options = {}) => {
-    const { elementLimit, className, id, type} = options;
-    if (!className && !id && !type) {
+    const { elementLimit, className, id, nodeName} = options;
+    if (!className && !id && !nodeName) {
         throw Error('Please provide a className or an id');
     }
 
@@ -16,7 +16,7 @@ const findParent = (element, options = {}) => {
     } else if (id) {
         hasAttribute = (elementToCheck) => elementToCheck.id === id;
     } else {
-        hasAttribute = (elementToCheck) => elementToCheck.nodeName.toLowerCase() === type;
+        hasAttribute = (elementToCheck) => elementToCheck.nodeName.toLowerCase() === nodeName;
     }
 
     let currentElement = element;

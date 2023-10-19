@@ -34,8 +34,8 @@ const compareString = (string1, string2) => {
 }
 
 const compareAmount = (amount1, amount2) => {
-    amount1 = Number.parseFloat(amount1.substring(1));
-    amount2 = Number.parseFloat(amount2.substring(1));
+    amount1 = Number.parseFloat(amount1);
+    amount2 = Number.parseFloat(amount2);
 
     return amount1 - amount2;
 }

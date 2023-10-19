@@ -1,5 +1,6 @@
 .container {
     border-right: 1px solid gray;
+    position: relative;
 }
 
 .container form, .container .scrollpane {
@@ -12,7 +13,7 @@
     padding: 0em 1em;
     border-bottom: 1px solid gray;
     display: grid;
-    grid-template-columns: 1fr 2em 2em;
+    grid-template-columns: 1fr 2em;
     gap: 0.5em;
     align-content: center;
 }
@@ -45,7 +46,7 @@
     border-spacing: 0;
 }
 
-.container table td {
+.container td {
     cursor: pointer;
 }
 
@@ -78,4 +79,49 @@
 .active {
     box-shadow: 0px 1px rgba(0, 0, 0, 0.104), -0px -1px 1px rgba(0, 0, 0, 0.104);
     background: #9c9fa220;
+}
+
+.sortWindow {
+    z-index: 100;
+    position: absolute;
+    background: white;
+    right: 1em;
+    top: 2.5em;
+    border-radius: 5px;
+    width: 15.5em;
+    box-shadow: 1px 3px rgba(0, 0, 0, 0.104), -3px -1px 2px rgba(0, 0, 0, 0.104);
+}
+
+.sortWindow div:first-child {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75em 1em;
+}
+
+.sortWindow td {
+    text-align: right;
+    padding: 0.25em 1em;
+    cursor: default;
+}
+
+.sortWindow table {
+    padding: 0 0 0.5em;
+}
+
+.sortWindow td:hover {
+    background: rgba(193, 193, 193, 0.323);
+}
+
+.sortWindow .active {
+    background: rgba(193, 193, 193, 0.323);
+    box-shadow: none;
+}
+
+.overlay {
+    z-index: 99;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    left: calc(-1 * var(--primary-nav-width));
+    background: transparent;
 }
