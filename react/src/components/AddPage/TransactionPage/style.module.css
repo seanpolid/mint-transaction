@@ -127,13 +127,23 @@
 
 @media screen and (max-width: 1190px) {
     .transactionForm {
+        grid-template-columns: 3fr 1fr;
+    }
+
+    .transactionForm .textarea {
+        height: auto;
+        flex: auto;
+        width: 11em;
+    }
+}
+
+@media screen and (max-width: 1045px) {
+    .transactionForm {
         grid-template-columns: 1fr;
         gap: 1em;
     }
 
     .transactionForm .textarea {
-        resize: vertical;
-        height: auto;
-        flex: auto;
+        width: auto;
     }
 }
