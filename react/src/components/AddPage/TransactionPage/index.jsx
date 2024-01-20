@@ -66,7 +66,7 @@ const TransactionPage = () => {
 
         if (savedTransactionDTOs.length > 0) {
             const [transaction, form] = createTransactionAndForm(handleDelete, handleTransactionChange, categories, types);
-            setForms(form);
+            setForms([form]);
             setTransactions([transaction]);
 
             const savedTransactions = savedTransactionDTOs.map(savedTransactionDTO => mapper.mapToTransaction(savedTransactionDTO));
