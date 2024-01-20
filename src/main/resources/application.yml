@@ -1,0 +1,38 @@
+spring:
+  profiles:
+    active: dev
+    
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+  
+  datasource:
+    url: jdbc:mysql://${TT_MYSQL_HOST}/transaction_tracker
+    username: ${TT_MYSQL_USERNAME}
+    password: ${TT_MYSQL_PASSWORD}
+  
+  flyway:
+    enabled: true
+    
+logging:
+  file:
+    name: transaction-tracker.log
+
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: test
+      
+  datasource:
+    url: jdbc:mysql://${TT_MYSQL_TEST_HOST}/transaction_tracker
+    username: ${TT_MYSQL_TEST_USERNAME}
+    password: ${TT_MYSQL_TEST_PASSWORD}
+    
+  flyway: 
+    enabled: true 
