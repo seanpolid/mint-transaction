@@ -6,13 +6,10 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
-public class TransactionTrackerApplication implements WebMvcConfigurer {
+public class TransactionTrackerApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(TransactionTrackerApplication.class, args);
 	}
 
-	public void addViewControllers(ViewControllerRegistry registry) {
-		registry.addViewController("/").setViewName("index.html");
-	}
 }

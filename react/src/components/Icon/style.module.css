@@ -7,14 +7,10 @@
 }
 
 .container {
-    --color: var(--secondary-color);
+    --color: inherit;
 }
 
 .container:hover {
-    --color: var(--active-color);
-}
-
-.active {
     --color: var(--active-color);
 }
 

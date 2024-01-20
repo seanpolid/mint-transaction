@@ -46,3 +46,11 @@
 .zero {
     color: white;
 }
+
+.active {
+    --color: var(--active-color);
+}
+
+.normal {
+    --color: var(--secondary-color);
+}

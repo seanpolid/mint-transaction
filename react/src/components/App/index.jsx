@@ -1,152 +1,99 @@
 /* eslint-disable react/prop-types */
-import { asTitleCase } from '../../utils/functions'
+import AddPage from '../AddPage'
+import { BrowserRouter, Routes, Route, NavLink, Outlet } from 'react-router-dom'
 import Dashboard from '../Dashboard'
 import DataContext from '../DataContext'
+import GoalContext from '../../stores/GoalContext'
 import Log from '../Log'
-import functions from './functions'
+import links from '../../config/links'
 import Profile from '../Profile'
 import style from './style.module.css'
-import { tabType, pageType } from '../../enums' 
+import StatusContext from '../../stores/StatusContext'
+import TransactionContext from '../../stores/TransactionContext'
+import { tabType } from '../../enums' 
 import VerticalNavBar from '../VerticalNavBar'
-import { useEffect, useState, useReducer, useCallback } from 'react'
+import ViewPage from '../ViewPage'
+import { useEffect, useState, useContext } from 'react'
+import { v4 } from 'uuid'
 
 const App = () => {
-    const tabsWithPages = [tabType.TRANSACTIONS, tabType.GOALS];
     const tabTypes = Object.values(tabType);
-    const [currentTab, setCurrentTab] = useState(tabTypes[0]);
-    const [pages, setPages] = useState([]);
-    const [currentPages, pageDispatch] = useReducer(functions.pageReducer, defaultCurrentPages);
-    const [selectedTransaction, setSelectedTransaction] = useState();
-    const [transactions, setTransactions] = useState([]);
-    const [goals, setGoals] = useState([]);
-    const [categories, setCategories] = useState([]);
-    const [types, setTypes] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isNetworkError, setIsNetworkError] = useState(false);
+    const sc = useContext(StatusContext);
+    const tc = useContext(TransactionContext);
+    const gc = useContext(GoalContext);
+
     const data = {
-        selectedTransaction: selectedTransaction,
-        transactions: transactions,
-        categories: categories,
-        goals: goals,
-        types: types,
+        selectedTransaction: tc.selectedTransaction,
+        transactions: tc.transactions,
+        categories: tc.categories,
+        goals: gc.goals,
+        types: tc.types,
         addTransactions: (newTransactions) => functions.addTransactions(newTransactions, setTransactions),
         removeTransaction: (id) => functions.removeTransaction(id, setTransactions),
         updateTransaction: (transaction) => functions.updateTransaction(transaction, setTransactions) 
     }
 
-    useEffect(() => {
-        const loadData = async () => {
-            const successful = await functions.getAllData(setTypes, setCategories, setGoals, setTransactions);
- 
-            if (!successful) {
-                setIsNetworkError(true);
-                setIsLoading(false);
-            } else {
-                setTimeout(() => setIsLoading(false), 4000);
-            }
-        }
-        loadData();
-    }, []);
-
-    useEffect(() => {
-        if (transactions.length === 0) {
-            setSelectedTransaction(null);
-        }
-    }, [transactions])
-
-    useEffect(() => {
-        if (tabsWithPages.includes(currentTab)) {
-            setPages(Object.values(pageType).map(type => {
-                const pageStyling = type === currentPages[currentTab] ? style.active : '';
-                return (
-                    <li key={type}>
-                        <a 
-                            href="#" 
-                            className={pageStyling} 
-                            onClick={handlePageSwitch}
-                            data-type={type}>
-                                {asTitleCase(type)}
-                        </a>
-                    </li>
-                )
-            }))
-        }
-    }, [currentPages, currentTab]);
-
-    const handleTabSelection = (selectedTab) => {
-        setCurrentTab(selectedTab);
-    }
-
-    const handlePageSwitch = (event) => {
-        event.preventDefault();
-        const target = event.target;
-        const dataType = target.getAttribute("data-type")
-        if (dataType === null) {return;}
-
-        pageDispatch( {tab: currentTab, type: dataType} );
-    }
-    
-    const handleSelection = useCallback((selectedIdentifier, switchPage=true) => {
-        const selected = {
-            [tabType.TRANSACTIONS]: () => transactions.filter(transaction => transaction.identifier === selectedIdentifier)[0],
-            [tabType.GOALS]: () => goals.filter(goal => goal.identifier === selectedIdentifier)[0]
-        };
-
-        setSelectedTransaction(selected[currentTab]);
-
-        if (switchPage) {
-            pageDispatch( {tab: currentTab, type: pageType.VIEW});
-        }
-    }, [transactions]);
-
     return (
-        <>
-            <VerticalNavBar 
-                currentTab={currentTab}
-                handleTabSelection={handleTabSelection}
-            />
+        <BrowserRouter>
+            <VerticalNavBar />
 
-            {isLoading && <LoadAnimation />}
+            {sc.loadingData > 0 && <LoadAnimation />}
 
-            {!isLoading && isNetworkError && <NetworkError />}
+            {sc.loadingData == 0 && sc.isNetworkError && <NetworkError />}
 
-            {!isLoading && !isNetworkError && (
+            {sc.loadingData == 0 && !sc.isNetworkError && (
                 <DataContext.Provider value={data}>
-                    <Tab currentTab={currentTab} handleSelection={handleSelection}/>
-                    
-                    {tabsWithPages.includes(currentTab) ? (
-                        <section>
-                            <nav className={style.secondaryNav} aria-label='Secondary Navigation'>
-                                <ul>
-                                    {pages}
-                                </ul>
-                            </nav>
-                            {functions.isLogType(currentTab) && functions.isWideEnough() ? functions.getPage(currentTab, currentPages) : null}
-                        </section>
-                    ) : (
-                        null
-                    )}
+                    <Routes>
+                        {tabTypes.map(type => (
+                            <Route key={v4()} path={`${links[type]}`} element={<Tab type={type} />}>
+                                <Route path='view' element={<ViewPage type={type} />} />
+                                <Route path='add' element={<AddPage type={type} />} index/>
+                            </Route>
+                        ))}
+                    </Routes>
                 </DataContext.Provider>
             )}
-        </>
+        </BrowserRouter>
     )
 }
 
-const defaultCurrentPages = {
-    [tabType.TRANSACTIONS]: pageType.ADD,
-    [tabType.GOALS]: pageType.ADD
-}
-
-const Tab = ({currentTab, handleSelection}) => {
-    switch (currentTab) {
-        case tabType.TRANSACTIONS:
-        case tabType.GOALS:
-            return <Log type={currentTab} handleSelection={handleSelection} />
-        case tabType.DASHBOARD:
-            return <Dashboard />
-        case tabType.PROFILE:
-            return <Profile />
+const Tab = ({type}) => {
+    const tabsWithPages = [tabType.TRANSACTIONS, tabType.GOALS];
+    const tabs = {
+        [tabType.TRANSACTIONS]: <Log type={tabType.TRANSACTIONS} handleSelection={() => {}} />,
+        [tabType.GOALS]: <Log type={tabType.GOALS} handleSelection={() => {}} />,
+        [tabType.DASHBOARD]: <Dashboard />,
+        [tabType.PROFILE]: <Profile />
     }
+    
+    return (
+        <>
+            {tabs[type]}
+
+            {tabsWithPages.includes(type) ? (
+                <section>
+                    <nav className={style.secondaryNav} aria-label='Secondary Navigation'>
+                        <ul>
+                            <li>
+                                <NavLink to={'view'} className={({isActive}) => isActive ? style.active : ''}>
+                                View
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink to={'add'} className={({isActive}) => isActive ? style.active : ''}>
+                                    Add
+                                </NavLink>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <Outlet/>
+                </section>
+            ) : (
+                null
+            )}
+        </>
+    )
 }
 
 const LoadAnimation = () => {
