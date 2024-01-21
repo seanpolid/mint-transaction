@@ -6,11 +6,32 @@ import links from '../../config/links'
 import { NavLink, useNavigate } from "react-router-dom";
 import style from "./style.module.css";
 import { useEffect, useState } from "react";
+import { useCallback } from "react";
 
-const VerticalNavBar = () => {
+const VerticalNavBar = ({pageState}) => {
     const [icons, setIcons] = useState([]);
     const [net, setNet] = useState(14000);
     const navigate = useNavigate();
+
+    const handleClick = useCallback((event) => {
+        event.preventDefault();
+
+        const target = findParent(event.target,  {nodeName: "li"})
+        const type = target.getAttribute("data-type");
+        if (target === null || type === null) { return; }
+
+        switch (type) {
+            case tabType.TRANSACTIONS:
+            case tabType.GOALS:
+                navigate(`${links[type]}/${pageState[type]}`);
+                break;
+            case tabType.DASHBOARD:
+                navigate(`${links[type]}`);
+                break;
+            case tabType.PROFILE:
+                navigate(`${links[type]}`);
+        }
+    }, [pageState]);
 
     useEffect(() => {
         setIcons(Object.values(tabType).map(tab => (
@@ -22,27 +43,7 @@ const VerticalNavBar = () => {
                 </NavLink>
             </li>
         )));
-    }, []);
-
-    const handleClick = (event) => {
-        event.preventDefault();
-
-        const target = findParent(event.target,  {nodeName: "li"})
-        const type = target.getAttribute("data-type");
-        if (target === null || type === null) { return; }
-        
-        switch (type) {
-            case tabType.TRANSACTIONS:
-            case tabType.GOALS:
-                navigate(`${links[type]}/view`);
-                break;
-            case tabType.DASHBOARD:
-                navigate(`${links[type]}`);
-                break;
-            case tabType.PROFILE:
-                navigate(`${links[type]}`);
-        }
-    }
+    }, [handleClick]);
 
     return (
         <>

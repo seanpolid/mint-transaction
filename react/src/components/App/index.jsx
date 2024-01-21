@@ -7,17 +7,18 @@ import GoalContext from '../../stores/GoalContext'
 import Log from '../Log'
 import links from '../../config/links'
 import Profile from '../Profile'
+import pageType from '../../enums/pageType'
 import style from './style.module.css'
 import StatusContext from '../../stores/StatusContext'
 import TransactionContext from '../../stores/TransactionContext'
 import { tabType } from '../../enums' 
 import VerticalNavBar from '../VerticalNavBar'
 import ViewPage from '../ViewPage'
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState, useContext, useReducer } from 'react'
 import { v4 } from 'uuid'
 
 const App = () => {
-    const tabTypes = Object.values(tabType);
+    const [pageState, dispatch] = useReducer(pageReducer, initialPageState);
     const sc = useContext(StatusContext);
     const tc = useContext(TransactionContext);
     const gc = useContext(GoalContext);
@@ -28,14 +29,22 @@ const App = () => {
         categories: tc.categories,
         goals: gc.goals,
         types: tc.types,
-        addTransactions: (newTransactions) => functions.addTransactions(newTransactions, setTransactions),
-        removeTransaction: (id) => functions.removeTransaction(id, setTransactions),
-        updateTransaction: (transaction) => functions.updateTransaction(transaction, setTransactions) 
+        addTransactions: tc.saveNewTransactions,
+        removeTransaction: (id) => tc.removeTransaction(id),
+        updateTransaction: (transaction) => tc.updateTransaction(transaction) 
+    }
+
+    const handleClick = (event) => {
+        const target = event.target;
+        const type = target.getAttribute('data-type');
+        const page = target.getAttribute('data-page');
+        
+        dispatch({ type: type, page: page });
     }
 
     return (
         <BrowserRouter>
-            <VerticalNavBar />
+            <VerticalNavBar pageState={pageState} />
 
             {sc.loadingData > 0 && <LoadAnimation />}
 
@@ -44,10 +53,17 @@ const App = () => {
             {sc.loadingData == 0 && !sc.isNetworkError && (
                 <DataContext.Provider value={data}>
                     <Routes>
-                        {tabTypes.map(type => (
-                            <Route key={v4()} path={`${links[type]}`} element={<Tab type={type} />}>
-                                <Route path='view' element={<ViewPage type={type} />} />
-                                <Route path='add' element={<AddPage type={type} />} index/>
+                        {Object.values(tabType).map(type => (
+                            <Route key={v4()} path={`${links[type]}`} element={<Tab type={type} onClick={handleClick}/>}>
+                                <Route 
+                                    path={pageType.VIEW} 
+                                    element={<ViewPage type={type} />} 
+                                />
+                                <Route 
+                                    path={pageType.ADD} 
+                                    element={<AddPage type={type} />} 
+                                    index
+                                />
                             </Route>
                         ))}
                     </Routes>
@@ -57,7 +73,19 @@ const App = () => {
     )
 }
 
-const Tab = ({type}) => {
+const initialPageState = {
+    [tabType.TRANSACTIONS]: pageType.ADD,
+    [tabType.GOALS]: pageType.ADD
+}
+
+function pageReducer(state, action) {
+    return {
+        ...state,
+        [action.type]: action.page,
+    }
+}
+
+const Tab = ({type, onClick}) => {
     const tabsWithPages = [tabType.TRANSACTIONS, tabType.GOALS];
     const tabs = {
         [tabType.TRANSACTIONS]: <Log type={tabType.TRANSACTIONS} handleSelection={() => {}} />,
@@ -75,12 +103,22 @@ const Tab = ({type}) => {
                     <nav className={style.secondaryNav} aria-label='Secondary Navigation'>
                         <ul>
                             <li>
-                                <NavLink to={'view'} className={({isActive}) => isActive ? style.active : ''}>
-                                View
+                                <NavLink 
+                                    to={'view'} 
+                                    className={({isActive}) => isActive ? style.active : ''} 
+                                    onClick={onClick}
+                                    data-type={type}
+                                    data-page={pageType.VIEW}>
+                                    View
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink to={'add'} className={({isActive}) => isActive ? style.active : ''}>
+                                <NavLink 
+                                    to={'add'} 
+                                    className={({isActive}) => isActive ? style.active : ''} 
+                                    onClick={onClick}
+                                    data-type={type}
+                                    data-page={pageType.ADD}>
                                     Add
                                 </NavLink>
                             </li>
