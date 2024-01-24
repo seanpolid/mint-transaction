@@ -29,19 +29,19 @@ Mint Transaction is an app that I've been wanting to make for a while. Here are 
 
 <h1>Data Model</h1>
 
-![data model](https://github.com/seanpolid/transaction-tracker-images/blob/main/data-model.png?raw=true)
+![data model](https://github.com/seanpolid/mint-transaction-images/blob/main/data-model.png?raw=true)
 
 <h1>Mocks</h1>
 
 <h2>Home & Login</h2>
 
-![home & login](https://github.com/seanpolid/transaction-tracker-images/blob/main/home_login.png?raw=true)
+![home & login](https://github.com/seanpolid/mint-transaction-images/blob/main/home_login.png?raw=true)
 
 <h2>Main Application (desktop)</h2>
 
-![main app desktop](https://github.com/seanpolid/transaction-tracker-images/blob/main/main_application.png?raw=true)
+![main app desktop](https://github.com/seanpolid/mint-transaction-images/blob/main/main_application.png?raw=true)
 
 <h2>Main Application (mobile)</h2>
 ** This was one of the first mocks so the division of widgets may not match the mocks above
 
-![main app mobile](https://github.com/seanpolid/transaction-tracker-images/blob/main/main_application_mobile.png?raw=true)
+![main app mobile](https://github.com/seanpolid/mint-transaction-images/blob/main/main_application_mobile.png?raw=true)
