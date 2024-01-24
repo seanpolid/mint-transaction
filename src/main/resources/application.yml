@@ -10,16 +10,16 @@ spring:
       on-profile: dev
   
   datasource:
-    url: jdbc:mysql://${TT_MYSQL_HOST}/transaction_tracker
-    username: ${TT_MYSQL_USERNAME}
-    password: ${TT_MYSQL_PASSWORD}
+    url: jdbc:mysql://${MT_MYSQL_HOST}/mint_transaction
+    username: ${MT_MYSQL_USERNAME}
+    password: ${MT_MYSQL_PASSWORD}
   
   flyway:
     enabled: true
     
 logging:
   file:
-    name: transaction-tracker.log
+    name: mint-transaction.log
 
 
 ---
@@ -30,9 +30,9 @@ spring:
       on-profile: test
       
   datasource:
-    url: jdbc:mysql://${TT_MYSQL_TEST_HOST}/transaction_tracker
-    username: ${TT_MYSQL_TEST_USERNAME}
-    password: ${TT_MYSQL_TEST_PASSWORD}
+    url: jdbc:mysql://${MT_MYSQL_TEST_HOST}/mint_transaction
+    username: ${MT_MYSQL_TEST_USERNAME}
+    password: ${MT_MYSQL_TEST_PASSWORD}
     
   flyway: 
     enabled: true 

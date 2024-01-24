@@ -6,10 +6,10 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
-public class TransactionTrackerApplication {
+public class MintTransactionApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(TransactionTrackerApplication.class, args);
+		SpringApplication.run(MintTransactionApplication.class, args);
 	}
 
 }

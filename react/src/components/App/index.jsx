@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import AddPage from '../AddPage'
-import { BrowserRouter, Routes, Route, NavLink, Outlet } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import Dashboard from '../Dashboard'
 import DataContext from '../DataContext'
 import GoalContext from '../../stores/GoalContext'
@@ -22,6 +22,12 @@ const App = () => {
     const sc = useContext(StatusContext);
     const tc = useContext(TransactionContext);
     const gc = useContext(GoalContext);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const landingPage = `${links[tabType.TRANSACTIONS]}/${initialPageState[tabType.TRANSACTIONS]}`;
+        navigate(landingPage);
+    }, []);
 
     const data = {
         selectedTransaction: tc.selectedTransaction,
@@ -43,7 +49,7 @@ const App = () => {
     }
 
     return (
-        <BrowserRouter>
+        <>
             <VerticalNavBar pageState={pageState} />
 
             {sc.loadingData > 0 && <LoadAnimation />}
@@ -69,7 +75,7 @@ const App = () => {
                     </Routes>
                 </DataContext.Provider>
             )}
-        </BrowserRouter>
+        </>
     )
 }
 

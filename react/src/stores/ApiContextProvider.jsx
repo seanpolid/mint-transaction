@@ -31,7 +31,7 @@ function getUri(type, id) {
     if (import.meta.env.DEV) {
         host = "http://localhost:8080";
     } else {
-        host = "PROD";
+        host = "http://localhost:8080";
     }
 
     const endpoints = {
