@@ -1,7 +1,10 @@
 import { createContext } from "react";
 
 const GoalContext = createContext({
-    goals: []
+    goals: [],
+
+    selectedGoal: {},
+    setSelectedGoal: () => {}
 })
 
 export default GoalContext

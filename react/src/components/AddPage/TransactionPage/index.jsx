@@ -1,88 +1,47 @@
 /* eslint-disable react/prop-types */
-import { postData } from '../../../utils/functions';
-import DataContext from '../../DataContext';
 import InputWithLabel from '../../InputWithLabel';
-import mapper from '../../../utils/mapper';
 import RadioButtonWithLabel from '../../RadioButtonWithLabel';
 import Scrollpane from '../../Scrollpane';
 import SelectWithLabel from '../../SelectWithLabel';
 import style from './style.module.css'
-import { Transaction } from '../../../models';
+import TransactionContext from '../../../stores/TransactionContext'
 import TextAreaWithLabel from '../../TextAreaWithLabel';
-import { useState, useEffect, useCallback, useContext } from 'react';
-import { useList, useObject } from '../../../utils/hooks';
-import { v4 as uuidv4 } from 'uuid';
+import { useCallback, useContext } from 'react';
 
 const TransactionPage = () => {
-    const [forms, setForms] = useState([]);
-    const [transactions, setTransactions, updateTransaction] = useList([]);
-    const dataContext = useContext(DataContext);
-    const categories = dataContext.categories;
-    const types = dataContext.types;
+    const tc = useContext(TransactionContext);
 
-    useEffect(() => {
-        const [transaction, form] = createTransactionAndForm(handleDelete, handleTransactionChange, categories, types);
-
-        setForms([form]);
-        setTransactions([transaction]);
-    }, [categories, types]);
-
-    const handleDelete = (event) => {
+    const handleDelete = useCallback((event) => {
         event.preventDefault();
         const key = event.target.parentNode.parentNode.getAttribute("data-key");
         
-        setForms(prevForms => {
-            if (prevForms.length > 1) {
-                return prevForms.filter(form => form.key !== key);
-            }
-            return prevForms;
-        });
-
-        setTransactions(prevTransactions => {
-            if (prevTransactions.length > 1) {
-                return prevTransactions.filter(transaction => transaction.key !== key);
-            }
-            return prevTransactions;
-        })
-    };
+        if (tc.newTransactions.length > 1) {
+            tc.deleteNewTransaction(key);
+        }
+    }, [tc.newTransactions]);
 
     const handleAdd = useCallback((event) => {
         event.preventDefault();
-        const [transaction, form]= createTransactionAndForm(handleDelete, handleTransactionChange, categories, types);
-
-        setForms(prevForms => prevForms.concat(form));
-        setTransactions(prevTransactions => prevTransactions.concat([transaction]));
-    }, [categories, types]);
+        tc.addNewTransaction();
+    }, [tc.addNewTransaction]);
 
     const handleSave = useCallback(async (event) => {
         event.preventDefault();
-        
-        const transactionsWithoutCategories = transactions.filter(transaction => !transaction.category);
-        if (transactionsWithoutCategories.length > 0) {return;}
-    
-        const uri = `http://localhost:8080/api/transactions`;
-        const transactionDTOs = transactions.map(transaction => mapper.mapToTransactionDTO(transaction));
-        const savedTransactionDTOs = await postData(uri, transactionDTOs);
-
-        if (savedTransactionDTOs.length > 0) {
-            const [transaction, form] = createTransactionAndForm(handleDelete, handleTransactionChange, categories, types);
-            setForms([form]);
-            setTransactions([transaction]);
-
-            const savedTransactions = savedTransactionDTOs.map(savedTransactionDTO => mapper.mapToTransaction(savedTransactionDTO));
-            dataContext.addTransactions(savedTransactions);
-        }
-    }, [transactions, categories]);
-
-    const handleTransactionChange = (attributeName, value, key) => {
-        updateTransaction(attributeName, value, key);
-    }
+        tc.saveNewTransactions();
+    }, [tc.saveNewTransactions]);
 
     return (
         <>
             <Scrollpane className={style.transactionContainer}>
                 <ul>
-                    {forms}
+                    {tc.newTransactions.map(transaction => (
+                        <li key={transaction.identifier} data-key={transaction.identifier}>
+                            <Form 
+                                transaction={transaction} 
+                                onButtonClick={handleDelete}
+                            />   
+                        </li>
+                    ))}
                 </ul>
 
                 <div className={style.options}>
@@ -94,52 +53,20 @@ const TransactionPage = () => {
     )
 }
 
-const createTransactionAndForm = (handleDelete, handleTransactionChange, categories, types) => {
-    const transaction = new Transaction();
-    const form = createForm(transaction, handleDelete, handleTransactionChange, categories, types);
-    
-    transaction.id = 0;
-    transaction.key = form.key;
-    transaction.identifier = form.key;
-    transaction.recurs = false;
+const Form = ({transaction, onButtonClick}) => {
+    const tc = useContext(TransactionContext);
+    const categories = tc.categories;
+    const types = tc.types;
 
-    if (types.length > 0) {
-        const defaultType = types.filter(type => type.name.toLowerCase() === "expense")[0];
-        if (defaultType) {
-            transaction.type = defaultType;
-        }
-    }
-
-    return [transaction, form];
-}
-
-const createForm = (transaction, onButtonClick, handleTransactionChange, categories, types) => {
-    const id = uuidv4();
-
-    return (
-        <li key={id} data-key={id}>
-            <Form 
-                id={id}
-                initialTransaction={transaction} 
-                onButtonClick={onButtonClick}
-                handleTransactionChange={handleTransactionChange}
-                categories={categories}
-                types={types}
-            />
-        </li>
-    )
-} 
-
-const Form = ({id, initialTransaction, onButtonClick, handleTransactionChange, categories, types}) => {
-    const [transaction, __, updateTransaction] = useObject(initialTransaction);
+    const identifier = transaction.identifier;
     const names = {
-        ['startDate']: `startDate_${id}`,
-        ['endDate']: `endDate_${id}`,
-        ['type']: `type_${id}`,
-        ['category']: `category_${id}`,
-        ['recurs']: `recurs_${id}`,
-        ['amount']: `amount_${id}`,
-        ['notes']: `notes_${id}`
+        ['startDate']: `startDate_${identifier}`,
+        ['endDate']: `endDate_${identifier}`,
+        ['type']: `type_${identifier}`,
+        ['category']: `category_${identifier}`,
+        ['recurs']: `recurs_${identifier}`,
+        ['amount']: `amount_${identifier}`,
+        ['notes']: `notes_${identifier}`
     }
 
     const handleChange = useCallback((event) => {
@@ -164,9 +91,8 @@ const Form = ({id, initialTransaction, onButtonClick, handleTransactionChange, c
             value = categories.filter(category => category.id === Number.parseInt(value))[0];
         }
 
-        updateTransaction(attributeName, value);
-        handleTransactionChange(attributeName, value, key);
-    }, [categories, updateTransaction, handleTransactionChange]);
+        tc.updateNewTransaction(attributeName, value, key);
+    }, [categories, types]);
 
     return (
         <>

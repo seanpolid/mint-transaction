@@ -5,12 +5,16 @@ const TransactionContext = createContext({
     types: [],
 
     transactions: [],
-    removeTransaction: () => {},
+    deleteTransaction: () => {},
     updateTransaction: () => {},
     
     selectedTransaction: {},
+    setSelectedTransaction: () => {},
 
     newTransactions: [],
+    updateNewTransaction: (attributeName, value, key) => {},
+    deleteNewTransaction: (identifier) => {},
+    addNewTransaction: () => {},
     saveNewTransactions: () => {}
 })
 

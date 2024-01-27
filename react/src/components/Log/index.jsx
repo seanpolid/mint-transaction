@@ -6,7 +6,7 @@ import RadioButtonWithLabel from '../RadioButtonWithLabel'
 import Scrollpane from "../Scrollpane";
 import { compareDate, compareString, compareAmount } from "./functions";
 import style from './style.module.css';
-import { useContext, useEffect, useState, useMemo } from "react";
+import { useContext, useEffect, useState } from "react";
 import TransactionContext from '../../stores/TransactionContext';
 import GoalContext from '../../stores/GoalContext';
 
@@ -15,6 +15,7 @@ const Log = ({type}) => {
     const [sortTerm, setSortTerm] = useState(sortType.DATE);
     const [sortOrder, setSortOrder] = useState(orderType.DESCENDING)
     const [sortWindowVisible, setSortWindowVisible] = useState(false);
+    const [preparedItems, setPreparedItems] = useState([]);
     const tc = useContext(TransactionContext);
     const gc = useContext(GoalContext);
 
@@ -23,14 +24,20 @@ const Log = ({type}) => {
         [tabType.GOALS]: gc.goals
     };
 
-    const preparedItems = useMemo(() => {
+    useEffect(() => {
         const filteredItems = items[type].filter(item => searchTerm.length == 0 || item.toString().toLowerCase().includes(searchTerm));
-        return filteredItems.sort((t1, t2) => compareTransactions(sortTerm, sortOrder, t1, t2));
-    }, [type, searchTerm, sortTerm, sortOrder, tc.transactions, gc.goals]);
+        const sortedItems = filteredItems.sort((t1, t2) => compareTransactions(sortTerm, sortOrder, t1, t2));
 
-    if (preparedItems.length > 0) {
-        handleSelection(preparedItems[0].identifier, false);
-    }
+        if (sortedItems.length > 0) {
+            if (type === tabType.TRANSACTIONS) {
+                tc.setSelectedTransaction(sortedItems[0]);
+            } else {
+                gc.setSelectedGoal(sortedItems[0]);
+            }
+        }
+
+        setPreparedItems(sortedItems);
+    }, [type, searchTerm, sortTerm, sortOrder, tc.transactions, gc.goals]);
 
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
@@ -74,7 +81,7 @@ const Log = ({type}) => {
             <Scrollpane className={style.log}>
                 <table>
                     <tbody>
-                        {preparedItems.map(item => convertToLog[type](item))}
+                        {preparedItems.map(item => convertToLog(type, item))}
                     </tbody>
                 </table>
             </Scrollpane>
@@ -103,14 +110,14 @@ function compareTransactions(sortTerm, sortOrder, t1, t2) {
 
 function convertToLog(type, item) {
     const logs = {
-        [tabType.TRANSACTIONS]: <Transaction key={item.identifier} transaction={item} handleSelection={handleSelection} />,
-        [tabType.GOALS]: <Goal goal={item} handleSelection={handleSelection} />
+        [tabType.TRANSACTIONS]: <Transaction key={item.identifier} transaction={item} />,
+        [tabType.GOALS]: <Goal key={item.id} goal={item} />
     }
     
     return logs[type]
 }
 
-const Transaction = ({transaction, handleSelection}) => {
+const Transaction = ({transaction}) => {
     const [className, setClassName] = useState(`${style.transaction}`);
     const tc = useContext(TransactionContext);
 
@@ -135,7 +142,7 @@ const Transaction = ({transaction, handleSelection}) => {
     const handleClick = (event) => {
         const target = findParent(event.target, {nodeName: "tr"});
         const identifier = target.getAttribute("data-identifier");
-        handleSelection(identifier);
+        tc.setSelectedTransaction(transaction);
     }
 
     return (
