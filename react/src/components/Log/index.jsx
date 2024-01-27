@@ -6,7 +6,7 @@ import RadioButtonWithLabel from '../RadioButtonWithLabel'
 import Scrollpane from "../Scrollpane";
 import { compareDate, compareString, compareAmount } from "./functions";
 import style from './style.module.css';
-import { useContext, useEffect, useState, memo, useCallback } from "react";
+import { useContext, useEffect, useState, memo, useCallback, useRef } from "react";
 import DataContext from '../../stores/DataContext';
 
 const Log = ({type, handleSelection, selectedId}) => {
@@ -26,12 +26,12 @@ const Log = ({type, handleSelection, selectedId}) => {
         const filteredItems = items[type].filter(item => searchTerm.length == 0 || item.toString().toLowerCase().includes(searchTerm));
         const sortedItems = filteredItems.sort((t1, t2) => compareTransactions(sortTerm, sortOrder, t1, t2));
 
-        if (sortedItems.length > 0 && sortedItems[0].id !== selectedId) {
+        if (sortedItems.length > 0 && selectedId === null) {
             handleSelection(sortedItems[0], false);
         }
 
         setPreparedItems(sortedItems);
-    }, [searchTerm, sortTerm, sortOrder, dc.transactions, dc.goals]);
+    }, [type, searchTerm, sortTerm, sortOrder, dc.transactions, dc.goals]);
 
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);

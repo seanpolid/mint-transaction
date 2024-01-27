@@ -121,7 +121,7 @@ const NetworkError = () => {
 const TabWithPages = ({type, onClick}) => {    
     const tc = useContext(TransactionContext);
     const gc = useContext(GoalContext);
-    const [selectedId, setSelectedId] = useState(null);
+    const [selectedId, setSelectedId] = useState(getSelectedId(type, tc, gc));
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -189,6 +189,19 @@ const TabWithPages = ({type, onClick}) => {
             </section>
         </>
     )
+}
+
+function getSelectedId(type, tc, gc) {
+    const selectedItem = {
+        [tabType.TRANSACTIONS]: tc.selectedTransaction,
+        [tabType.GOALS]: gc.selectedGoal
+    }
+
+    if (!selectedItem[type]) {
+        return null;
+    }
+
+    return selectedItem[type].id;
 }
 
 export default App

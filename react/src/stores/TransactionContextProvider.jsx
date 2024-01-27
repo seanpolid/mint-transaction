@@ -88,13 +88,13 @@ const TransactionContextProvider = ({children}) => {
 
     const saveNewTransactions = useCallback(async () => {
         const newTransactionDTOs = newTransactions.map(newTransaction => mapper.mapToTransactionDTO(newTransaction));
-        const savedTransactionDTOs = api.postData(endpointType.TRANSACTIONS, newTransactionDTOs);
+        const savedTransactionDTOs = await api.postData(endpointType.TRANSACTIONS, newTransactionDTOs);
         
         if (savedTransactionDTOs.length > 0) {
             const savedTransactions = savedTransactionDTOs.map(savedTransactionDTO => mapper.mapToTransaction(savedTransactionDTO));
 
             setNewTransactions([createTransaction(dc.types)]);
-            dc.setTransactions(prevTransactions => prevTransactions.concat(savedTransactions));
+            dc.setTransactions(prevTransactions => savedTransactions.concat(prevTransactions));
         }
     }, [newTransactions, dc.types]);
 
