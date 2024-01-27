@@ -218,7 +218,7 @@
 .sort .arrow {
     position: absolute;
     top: 0.6em;
-    left: -0.5em;
+    left: -0.45em;
     width: 70%;
     border: 1px solid #303030;
     transform: rotate(90deg);
