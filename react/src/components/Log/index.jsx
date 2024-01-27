@@ -6,38 +6,32 @@ import RadioButtonWithLabel from '../RadioButtonWithLabel'
 import Scrollpane from "../Scrollpane";
 import { compareDate, compareString, compareAmount } from "./functions";
 import style from './style.module.css';
-import { useContext, useEffect, useState } from "react";
-import TransactionContext from '../../stores/TransactionContext';
-import GoalContext from '../../stores/GoalContext';
+import { useContext, useEffect, useState, memo, useCallback } from "react";
+import DataContext from '../../stores/DataContext';
 
-const Log = ({type}) => {
+const Log = ({type, handleSelection, selectedId}) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [sortTerm, setSortTerm] = useState(sortType.DATE);
     const [sortOrder, setSortOrder] = useState(orderType.DESCENDING)
     const [sortWindowVisible, setSortWindowVisible] = useState(false);
     const [preparedItems, setPreparedItems] = useState([]);
-    const tc = useContext(TransactionContext);
-    const gc = useContext(GoalContext);
+    const dc = useContext(DataContext);
 
     const items = {
-        [tabType.TRANSACTIONS]: tc.transactions,
-        [tabType.GOALS]: gc.goals
+        [tabType.TRANSACTIONS]: dc.transactions,
+        [tabType.GOALS]: dc.goals
     };
 
     useEffect(() => {
         const filteredItems = items[type].filter(item => searchTerm.length == 0 || item.toString().toLowerCase().includes(searchTerm));
         const sortedItems = filteredItems.sort((t1, t2) => compareTransactions(sortTerm, sortOrder, t1, t2));
 
-        if (sortedItems.length > 0) {
-            if (type === tabType.TRANSACTIONS) {
-                tc.setSelectedTransaction(sortedItems[0]);
-            } else {
-                gc.setSelectedGoal(sortedItems[0]);
-            }
+        if (sortedItems.length > 0 && sortedItems[0].id !== selectedId) {
+            handleSelection(sortedItems[0], false);
         }
 
         setPreparedItems(sortedItems);
-    }, [type, searchTerm, sortTerm, sortOrder, tc.transactions, gc.goals]);
+    }, [searchTerm, sortTerm, sortOrder, dc.transactions, dc.goals]);
 
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
@@ -81,7 +75,7 @@ const Log = ({type}) => {
             <Scrollpane className={style.log}>
                 <table>
                     <tbody>
-                        {preparedItems.map(item => convertToLog(type, item))}
+                        {preparedItems.map(item => convertToLog(type, item, handleSelection, selectedId))}
                     </tbody>
                 </table>
             </Scrollpane>
@@ -108,42 +102,49 @@ function compareTransactions(sortTerm, sortOrder, t1, t2) {
     return compare[sortTerm](t1, t2);
 }
 
-function convertToLog(type, item) {
+function convertToLog(type, item, onClick, selectedId) {
     const logs = {
-        [tabType.TRANSACTIONS]: <Transaction key={item.identifier} transaction={item} />,
-        [tabType.GOALS]: <Goal key={item.id} goal={item} />
+        [tabType.TRANSACTIONS]: (
+            <Transaction 
+                key={item.identifier} 
+                transaction={item} 
+                onClick={onClick} 
+                selectedId={selectedId}
+            />
+        ),
+        [tabType.GOALS]: (
+            <Goal 
+                key={item.id} 
+                goal={item} 
+                onClick={onClick} 
+                selectedId={selectedId}
+            />
+        )
     }
     
     return logs[type]
 }
 
-const Transaction = ({transaction}) => {
+const Transaction = ({transaction, onClick, selectedId}) => {
     const [className, setClassName] = useState(`${style.transaction}`);
-    const tc = useContext(TransactionContext);
 
     useEffect(() => {
-        if (transaction === tc.selectedTransaction) {
+        if (transaction.id === selectedId) {
             setClassName(`${style.transaction} ${style.active}`);
         } else {
             setClassName(`${style.transaction}`);
         }
-    }, [tc.selectedTransaction]);
+    }, [selectedId]);
 
     const handleMouseEnter = () => {
         setClassName(`${style.transaction} ${style.active}`);
     }
 
-    const handleMouseLeave = () => {
-        if (transaction !== tc.selectedTransaction) {
+    const handleMouseLeave = useCallback(() => {
+        if (transaction.id !== selectedId) {
             setClassName(`${style.transaction}`);
         }
-    }
-
-    const handleClick = (event) => {
-        const target = findParent(event.target, {nodeName: "tr"});
-        const identifier = target.getAttribute("data-identifier");
-        tc.setSelectedTransaction(transaction);
-    }
+    }, [transaction, selectedId]);
 
     return (
         <tr key={transaction.identifier} 
@@ -151,7 +152,7 @@ const Transaction = ({transaction}) => {
             className={className} 
             onMouseEnter={handleMouseEnter} 
             onMouseLeave={handleMouseLeave} 
-            onClick={handleClick}>
+            onClick={() => onClick(transaction, true)}>
             <td>
                 <span className={style.type}>{transaction.category.type.name}</span>
                 <span className={style.category}>{transaction.category.name}</span>
@@ -239,4 +240,4 @@ const Goal = () => {
     )
 }
 
-export default Log;
+export default memo(Log);

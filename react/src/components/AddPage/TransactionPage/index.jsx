@@ -7,6 +7,7 @@ import style from './style.module.css'
 import TransactionContext from '../../../stores/TransactionContext'
 import TextAreaWithLabel from '../../TextAreaWithLabel';
 import { useCallback, useContext } from 'react';
+import DataContext from '../../../stores/DataContext';
 
 const TransactionPage = () => {
     const tc = useContext(TransactionContext);
@@ -55,8 +56,9 @@ const TransactionPage = () => {
 
 const Form = ({transaction, onButtonClick}) => {
     const tc = useContext(TransactionContext);
-    const categories = tc.categories;
-    const types = tc.types;
+    const dc = useContext(DataContext);
+    const categories = dc.categories;
+    const types = dc.types;
 
     const identifier = transaction.identifier;
     const names = {

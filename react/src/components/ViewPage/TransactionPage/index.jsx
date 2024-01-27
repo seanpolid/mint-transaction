@@ -1,18 +1,18 @@
 /* eslint-disable react/prop-types */
-import DataContext from "../../DataContext";
-import { deleteData, putData } from "../../../utils/functions";
 import InputWithLabel from "../../InputWithLabel";
-import mapper from "../../../utils/mapper";
 import SelectWithLabel from "../../SelectWithLabel"
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import TextAreaWithLabel from "../../TextAreaWithLabel";
+import TransactionContext from "../../../stores/TransactionContext";
 import style from "../style.module.css";
-import { useObject } from "../../../utils/hooks";
+import DataContext from "../../../stores/DataContext";
 
 const TransactionPage = () => {
-    const dataContext = useContext(DataContext);
-    const categories = dataContext.categories;
-    const [transaction, setTransaction, updateTransaction] = useObject(dataContext.selectedTransaction);
+    const tc = useContext(TransactionContext);
+    const dc = useContext(DataContext);
+    const categories = dc.categories;
+    const transaction = tc.selectedTransaction;
+
     const names = {
         category: "category",
         startDate: "startDate",
@@ -20,10 +20,6 @@ const TransactionPage = () => {
         amount: "amount",
         notes: "notes"
     };
-
-    useEffect(() => {
-        setTransaction(dataContext.selectedTransaction);
-    }, [dataContext.selectedTransaction]);
 
     const handleChange = (event) => {
         const target = event.target;
@@ -49,32 +45,23 @@ const TransactionPage = () => {
             value = categories.filter(category => category.id === value)[0];
         }
 
-        updateTransaction(attributeName, value);
+        tc.updateSelectedTransaction(attributeName, value);
     }
 
     const handleDelete = async (event) => {
         event.preventDefault();
 
-        const uri = `http://localhost:8080/api/transactions/${transaction.id}`;
-        const successful = await deleteData(uri);
- 
-        if (successful) {
-            dataContext.removeTransaction(transaction.id);
-        } else {
+        const successful = await tc.deleteSelectedTransaction();
+        if (!successful) {
             console.log('Failed to delete transaction');
         }
     }
     
     const handleUpdate = async (event) => {
         event.preventDefault();
-
-        const uri = 'http://localhost:8080/api/transactions';
-        const transactionDTO = mapper.mapToTransactionDTO(transaction);
-        const successful = await putData(uri, transactionDTO); 
-
-        if (successful) {
-            dataContext.updateTransaction(transaction);
-        } else {
+        
+        const successful = tc.saveSelectedTransactionUpdates();
+        if (!successful) {
             console.log('Failed to update transaction');
         }
     }

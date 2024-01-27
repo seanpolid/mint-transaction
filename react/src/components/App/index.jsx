@@ -11,8 +11,10 @@ import StatusContext from '../../stores/StatusContext'
 import { tabType } from '../../enums' 
 import VerticalNavBar from '../VerticalNavBar'
 import ViewPage from '../ViewPage'
-import { useEffect, useState, useContext, useReducer } from 'react'
+import { useEffect, useState, useContext, useReducer, useCallback } from 'react'
 import { v4 } from 'uuid'
+import TransactionContext from '../../stores/TransactionContext'
+import GoalContext from '../../stores/GoalContext'
 
 const tabsWithPages = [tabType.TRANSACTIONS, tabType.GOALS];
 
@@ -117,9 +119,45 @@ const NetworkError = () => {
 }
 
 const TabWithPages = ({type, onClick}) => {    
+    const tc = useContext(TransactionContext);
+    const gc = useContext(GoalContext);
+    const [selectedId, setSelectedId] = useState(null);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (type === tabType.TRANSACTIONS && tc.selectedTransaction != null) {
+            setSelectedId(tc.selectedTransaction.id);
+        } else if (type === tabType.GOALS && gc.selectedGoal != null) {
+            setSelectedId(gc.selectedGoal.id);
+        }
+    }, [tc.selectedTransaction, gc.selectedGoal]);
+
+    // Necessary to handle selection at this level to prevent unnecessary rerendering of 
+    // log when TransactionContext or GoalContext get updated from AddPage
+    const handleSelection = useCallback((selectedItem, switchToView) => {
+        const setters = {
+            [tabType.TRANSACTIONS]: tc.setSelectedTransaction,
+            [tabType.GOALS]: gc.setSelectedGoal
+        }
+        const viewLinks = {
+            [tabType.TRANSACTIONS]: `${links[tabType.TRANSACTIONS]}/view`,
+            [tabType.GOALS]: `${tabType.GOALS}/view`
+        }
+
+        setters[type](selectedItem);
+
+        if (switchToView) {
+            navigate(viewLinks[type]);
+        }
+    }, [type]);
+
     return (
         <>
-            <Log type={type} />
+            <Log 
+                type={type} 
+                handleSelection={handleSelection}
+                selectedId={selectedId}
+            />
 
             <section>
                 <nav className={style.secondaryNav} aria-label='Secondary Navigation'>

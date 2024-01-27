@@ -1,21 +1,17 @@
 import { createContext } from "react";
 
 const TransactionContext = createContext({
-    categories: [],
-    types: [],
-
-    transactions: [],
-    deleteTransaction: () => {},
-    updateTransaction: () => {},
-    
     selectedTransaction: {},
     setSelectedTransaction: () => {},
+    deleteSelectedTransaction: async () => {},
+    updateSelectedTransaction: (attributeName, value) => {},
+    saveSelectedTransactionUpdates: () => {},
 
     newTransactions: [],
     updateNewTransaction: (attributeName, value, key) => {},
     deleteNewTransaction: (identifier) => {},
     addNewTransaction: () => {},
-    saveNewTransactions: () => {}
+    saveNewTransactions: async () => {}
 })
 
 export default TransactionContext

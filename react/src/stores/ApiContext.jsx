@@ -1,10 +1,10 @@
 import { createContext } from "react";
 
 const ApiContext = createContext({
-    getData: (type) => {},
-    postData: (type, data) => {},
-    deleteData: (type, id) => {},
-    putData: (type, data) => {}
+    getData: async (type) => {},
+    postData: async (type, data) => {},
+    deleteData: async (type, id) => {},
+    putData: async (type, data) => {}
 })
 
 export default ApiContext
