@@ -1,40 +1,36 @@
 /* eslint-disable react/prop-types */
 import { asTitleCase, findParent } from '../../utils/functions';
-import DataContext from "../DataContext";
 import Icon from "../Icon";
-import { iconType, tabType, orderType } from "../../enums";
+import { iconType, tabType, orderType, sortType } from "../../enums";
 import RadioButtonWithLabel from '../RadioButtonWithLabel'
 import Scrollpane from "../Scrollpane";
 import { compareDate, compareString, compareAmount } from "./functions";
 import style from './style.module.css';
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useMemo } from "react";
+import TransactionContext from '../../stores/TransactionContext';
+import GoalContext from '../../stores/GoalContext';
 
-const Log = ({type, handleSelection}) => {
-    const dataContext = useContext(DataContext);
-    const [logs, setLogs] = useState([]);
+const Log = ({type}) => {
     const [searchTerm, setSearchTerm] = useState("");
-    const [sortTerm, setSortTerm] = useState(transactionSortType.DATE);
+    const [sortTerm, setSortTerm] = useState(sortType.DATE);
     const [sortOrder, setSortOrder] = useState(orderType.DESCENDING)
     const [sortWindowVisible, setSortWindowVisible] = useState(false);
+    const tc = useContext(TransactionContext);
+    const gc = useContext(GoalContext);
 
     const items = {
-        [tabType.TRANSACTIONS]: dataContext.transactions,
-        [tabType.GOALS]: dataContext.goals
+        [tabType.TRANSACTIONS]: tc.transactions,
+        [tabType.GOALS]: gc.goals
     };
-    const convertToLog = {
-        [tabType.TRANSACTIONS]: (item) => <Transaction key={item.identifier} transaction={item} handleSelection={handleSelection} />,
-        [tabType.GOALS]: (item) => <Goal goal={item} handleSelection={handleSelection} />
-    }
 
-    useEffect(() => {
+    const preparedItems = useMemo(() => {
         const filteredItems = items[type].filter(item => searchTerm.length == 0 || item.toString().toLowerCase().includes(searchTerm));
-        const sortItems = filteredItems.sort((t1, t2) => compareTransactions(sortTerm, sortOrder, t1, t2));
-        if (sortItems.length > 0) {
-            handleSelection(sortItems[0].identifier, false);
-        }
-        
-        setLogs(sortItems.map(item => convertToLog[type](item)));
-    }, [type, searchTerm, sortTerm, sortOrder, dataContext.transactions]);
+        return filteredItems.sort((t1, t2) => compareTransactions(sortTerm, sortOrder, t1, t2));
+    }, [type, searchTerm, sortTerm, sortOrder, tc.transactions, gc.goals]);
+
+    if (preparedItems.length > 0) {
+        handleSelection(preparedItems[0].identifier, false);
+    }
 
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
@@ -78,7 +74,7 @@ const Log = ({type, handleSelection}) => {
             <Scrollpane className={style.log}>
                 <table>
                     <tbody>
-                        {logs}
+                        {preparedItems.map(item => convertToLog[type](item))}
                     </tbody>
                 </table>
             </Scrollpane>
@@ -86,24 +82,18 @@ const Log = ({type, handleSelection}) => {
     )
 }
 
-const transactionSortType = {
-    CATEGORY: "category",
-    DATE: "date",
-    AMOUNT: "amount"
-}
-
-const compareTransactions = (sortTerm, sortOrder, t1, t2) => {
+function compareTransactions(sortTerm, sortOrder, t1, t2) {
     const multiplier = sortOrder === orderType.ASCENDING ? 1 : -1;
     const compare = {
-        [transactionSortType.CATEGORY]: () => {
+        [sortType.CATEGORY]: () => {
             return compareString(t1.category.name, t2.category.name) * multiplier;
         },
-        [transactionSortType.DATE]: () => {
+        [sortType.DATE]: () => {
             const t1Date = t1.endDate ?? t1.startDate;
             const t2Date = t2.endDate ?? t2.startDate;
             return compareDate(t1Date, t2Date) * multiplier;
         }, 
-        [transactionSortType.AMOUNT]: () => {
+        [sortType.AMOUNT]: () => {
             return compareAmount(t1.amount, t2.amount) * multiplier;
         }
     }
@@ -111,24 +101,33 @@ const compareTransactions = (sortTerm, sortOrder, t1, t2) => {
     return compare[sortTerm](t1, t2);
 }
 
+function convertToLog(type, item) {
+    const logs = {
+        [tabType.TRANSACTIONS]: <Transaction key={item.identifier} transaction={item} handleSelection={handleSelection} />,
+        [tabType.GOALS]: <Goal goal={item} handleSelection={handleSelection} />
+    }
+    
+    return logs[type]
+}
+
 const Transaction = ({transaction, handleSelection}) => {
-    const dataContext = useContext(DataContext);
     const [className, setClassName] = useState(`${style.transaction}`);
+    const tc = useContext(TransactionContext);
 
     useEffect(() => {
-        if (transaction === dataContext.selectedTransaction) {
+        if (transaction === tc.selectedTransaction) {
             setClassName(`${style.transaction} ${style.active}`);
         } else {
             setClassName(`${style.transaction}`);
         }
-    }, [dataContext.selectedTransaction]);
+    }, [tc.selectedTransaction]);
 
     const handleMouseEnter = () => {
         setClassName(`${style.transaction} ${style.active}`);
     }
 
     const handleMouseLeave = () => {
-        if (transaction !== dataContext.selectedTransaction) {
+        if (transaction !== tc.selectedTransaction) {
             setClassName(`${style.transaction}`);
         }
     }
@@ -179,7 +178,7 @@ const SortWindow = ({initialSortTerm, initialSortOrder, type, onChange}) => {
     // The option names should correspond to the attributes of the object 
     // that will be sorted
     const sortOptions = {
-        [tabType.TRANSACTIONS]: Object.values(transactionSortType).sort((t1, t2) => compareString(t1, t2)),
+        [tabType.TRANSACTIONS]: Object.values(sortType).sort((t1, t2) => compareString(t1, t2)),
         [tabType.GOALS]: []
     }
 
