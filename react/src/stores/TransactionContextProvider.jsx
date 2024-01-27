@@ -8,7 +8,7 @@ import { v4 } from "uuid";
 import DataContext from "./DataContext";
 
 /**
- * Manages all transactions that are a work in progess (i.e., not saved).
+ * Manages all transactions that are a work in progess (i.e., not saved or being temporarily updated).
  * @param {*} param0 
  * @returns 
  */
