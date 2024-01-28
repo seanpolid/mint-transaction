@@ -1,7 +1,7 @@
 import ApiContext from "./ApiContext";
 import endpointType from '../enums/endpointType'
 
-const ApiContextProvider = ({children}) => {
+const ApiContextProvider = ({children, value}) => {
     const data = {
         getData: getData,
         postData: postData,
@@ -10,12 +10,17 @@ const ApiContextProvider = ({children}) => {
     }
 
     return (
-        <ApiContext.Provider value={data}>
+        <ApiContext.Provider value={value ? value : data}>
             {children}
         </ApiContext.Provider>
     )
 }
 
+/**
+ * Retrieves all data that matches the provided type.
+ * @param {endpointType} type 
+ * @returns 
+ */
 async function getData(type) {
     try {
         const uri = getUri(type);
@@ -26,6 +31,14 @@ async function getData(type) {
     }
 }
 
+/**
+ * Returns the URI that corresponds to the provided endpoint type and 
+ * the current runtime environment. If an id is provided, it will be appended
+ * to the uri as such: uri/id.
+ * @param {endpointType} type 
+ * @param {Number} id 
+ * @returns 
+ */
 function getUri(type, id) {
     let host;
     if (import.meta.env.DEV) {
@@ -50,6 +63,13 @@ function getUri(type, id) {
     return uri;
 }
 
+/**
+ * Sends a POST request to the appropriate endpoint. Any provided data 
+ * will be JSON serialized prior to sending.
+ * @param {endpointType} type 
+ * @param {object} data 
+ * @returns 
+ */
 async function postData(type, data) {
     try {
         const uri = getUri(type);
@@ -69,6 +89,13 @@ async function postData(type, data) {
     }
 }
 
+/**
+ * Sends a DELETE request to the appropriate endpoint based on
+ * the type and provided id.
+ * @param {endpointType} type 
+ * @param {Number} id 
+ * @returns 
+ */
 async function deleteData(type, id) {
     try {
         const uri = getUri(type, id);
@@ -84,6 +111,13 @@ async function deleteData(type, id) {
     }
 }
 
+/**
+ * Sends a PUT request to the appropriate endpoint. Any
+ * provided data will be JSON serialized prior to sending.
+ * @param {endpointType} type 
+ * @param {object} data 
+ * @returns 
+ */
 async function putData(type, data) {
     try {
         const uri = getUri(type);
@@ -108,3 +142,4 @@ async function putData(type, data) {
 }
 
 export default ApiContextProvider
+export  { getUri }

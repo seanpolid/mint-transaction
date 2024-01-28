@@ -1,5 +1,7 @@
 import { Category, Type } from '../../../models'
-import { expect, describe, test, vi, afterEach } from 'vitest'
+import endpointType from '../../../enums/endpointType'
+import { expect, describe, test, afterEach, beforeEach } from 'vitest'
+import { getUri } from '../../../stores/ApiContextProvider'
 import { renderElement } from '../../../utils/test-functions'
 import { rest } from 'msw'
 import { screen, cleanup, waitFor } from '@testing-library/react'
@@ -7,7 +9,19 @@ import { setupServer } from 'msw/node'
 import TransactionPage from '.'
 import userEvent from '@testing-library/user-event'
 
+const types = [new Type(1, "Income"), new Type(2, "Expense")];
+const category = new Category(1, "Rent", types[1]);
+
 const successHandlers = [
+    rest.get(getUri(endpointType.TYPES), (req, res, ctx) => {
+        return res(ctx.status(200), ctx.json(types))
+    }),
+    rest.get(getUri(endpointType.CATEGORIES), (req, res, ctx) => {
+        return res(ctx.status(200), ctx.json([category]))
+    }),
+    rest.get(getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {
+        return res(ctx.status(200), ctx.json([]))
+    }),
     rest.post("http://localhost:8080/api/transactions", (req, res, ctx) => {
         const savedTransactionDTOs = [
             {
@@ -27,57 +41,69 @@ const successHandlers = [
             }
         ]
         return res(ctx.status(201), ctx.json(savedTransactionDTOs));
-    })
+    }),
 ]
 
 describe('Transaction Add Page', () => {
-    const types = [new Type(1, "Income"), new Type(2, "Expense")];
-    const category = new Category(1, "Rent", types[1]);
-    const data = {
-        categories: [category],
-        types: types
-    }
 
-    afterEach(() => cleanup());
-
-    test('should render empty form', () => {
-        // Act
-        renderElement(<TransactionPage />, data);
-
-        // Assert
-        expect(screen.getByText("Type:")).toBeDefined();
-        expect(screen.getByLabelText("Expense").checked).toBeTruthy();
-        expect(screen.getByLabelText("Category:")).toBeDefined();
-        expect(screen.getByText("Recurs:")).toBeDefined();
-        expect(screen.getByLabelText("Date:")).toBeDefined();
-        expect(screen.getByLabelText("Amount ($):")).toBeDefined();
-        expect(screen.getByLabelText("Notes:")).toBeDefined();
-        expect(screen.getByRole("button", {name: "Add"})).toBeDefined();
-        expect(screen.getByRole("button", {name: "Save"})).toBeDefined();
+    let server = null;
+    beforeEach(() => {
+        server = setupServer(...successHandlers);
+        server.listen();
     })
 
-    test('should handle type change', async () => {
-        // Act
-        const user = userEvent.setup();
-        renderElement(<TransactionPage />, data);
+    afterEach(() => {
+        cleanup();
 
-        const incomeSelectionBeforeClick = screen.getByLabelText("Income").checked;
-        await user.click(screen.getByLabelText("Income"));
-        const incomeSelectionAfterClick = screen.getByLabelText("Income").checked;
+        if (server) {
+            server.close();
+        }
+    });
+
+    test('should render empty form', async () => {
+        // Act
+        renderElement(<TransactionPage />);
+
+        // Assert
+        await waitFor(() => {
+            expect(screen.queryByText("Type:")).not.toBeNull();
+            expect(screen.getByLabelText("Expense").checked).toBeTruthy();
+            expect(screen.queryByLabelText("Category:")).not.toBeNull();
+            expect(screen.queryByText("Recurs:")).not.toBeNull();
+            expect(screen.queryByLabelText("Date:")).not.toBeNull();
+            expect(screen.queryByLabelText("Amount ($):")).not.toBeNull();
+            expect(screen.queryByLabelText("Notes:")).not.toBeNull();
+            expect(screen.queryByRole("button", {name: "Add"})).not.toBeNull();
+            expect(screen.queryByRole("button", {name: "Save"})).not.toBeNull();
+        })
+    })
+    
+    
+    test('should handle type change', async () => {
+        // Arrange
+        const user = userEvent.setup();
+        renderElement(<TransactionPage />);
+
+        // Act
+        const incomeSelectionBeforeClick = (await screen.findByLabelText("Income")).checked;
+        await user.click(await screen.findByLabelText("Income"));
+        const incomeSelectionAfterClick = (await screen.findByLabelText("Income")).checked;
 
         // Assert
         expect(incomeSelectionBeforeClick).toBeFalsy();
         expect(incomeSelectionAfterClick).toBeTruthy();
     })
 
+    
     test('should handle category change', async () => {
-        // Act
+        // Arrange
         const user = userEvent.setup();
-        renderElement(<TransactionPage />, data);
-        
-        const categorySelectionBeforeChange = screen.getByLabelText("Category:").value;
-        await user.selectOptions(screen.getByLabelText("Category:"), '1');
-        const categorySelectionAfterChange = screen.getByLabelText("Category:").selectedOptions[0].textContent;
+        renderElement(<TransactionPage />);
+
+        // Act
+        const categorySelectionBeforeChange = (await screen.findByLabelText("Category:")).value;
+        await user.selectOptions(await screen.findByLabelText("Category:"), '1');
+        const categorySelectionAfterChange = (await screen.findByLabelText("Category:")).selectedOptions[0].textContent;
 
         // Assert
         expect(categorySelectionBeforeChange).toBe("-- Choose option --");
@@ -85,17 +111,18 @@ describe('Transaction Add Page', () => {
     })
 
     test('should handle recurs change', async () => {
-        // Act
+        // Arrange
         const user = userEvent.setup();
-        renderElement(<TransactionPage />, data);
+        renderElement(<TransactionPage />);
 
-        const recursSelectionBeforeClick = screen.getByLabelText("Yes").checked;
+        // Act
+        const recursSelectionBeforeClick = (await screen.findByLabelText("Yes")).checked;
         const endDateInputBeforeClick = screen.queryByLabelText("End Date:");
 
-        await user.click(screen.getByLabelText("Yes"));
+        await user.click(await screen.findByLabelText("Yes"));
 
-        const recursSelectionAfterClick = screen.getByLabelText("Yes").checked;
-        const endDateInputAfterClick = screen.queryAllByLabelText("End Date:");
+        const recursSelectionAfterClick = (await screen.findByLabelText("Yes")).checked;
+        const endDateInputAfterClick = screen.queryByLabelText("End Date:");
 
         // Assert
         expect(recursSelectionBeforeClick).toBeFalsy();
@@ -105,33 +132,38 @@ describe('Transaction Add Page', () => {
     })
 
     test('should handle amount change', async () => {
-        // Act
+        // Arrange
         const user = userEvent.setup();
-        renderElement(<TransactionPage />, data);
-        await user.type(screen.getByLabelText("Amount ($):"), "1.44");
+        renderElement(<TransactionPage />);
+
+        // Act
+        await user.type(await screen.findByLabelText("Amount ($):"), "1.44");
 
         // Assert
         expect(screen.getByLabelText("Amount ($):").value).toBe("1.44");
     })
 
     test('should handle notes change', async () => {
-        // Act
+        // Arrange
         const user = userEvent.setup();
-        renderElement(<TransactionPage />, data);
-        await user.type(screen.getByLabelText("Notes:"), "new notes");
+        renderElement(<TransactionPage />);
+
+        // Act
+        await user.type(await screen.findByLabelText("Notes:"), "new notes");
 
         // Assert
         expect(screen.getByLabelText("Notes:").value).toBe("new notes");
     })
 
     test('should handle add', async () => {
-        // Act
+        // Arrange
         const user = userEvent.setup();
-        renderElement(<TransactionPage />, data);
-        
-        const numFormsBeforeClick  = screen.getAllByText("Type:").length;
-        await user.click(screen.getByRole('button', {name: "Add"}));
-        const numFormsAfterClick = screen.getAllByText("Type:").length;
+        renderElement(<TransactionPage />);
+
+        // Act
+        const numFormsBeforeClick  = (await screen.findAllByText("Type:")).length;
+        await user.click(await screen.findByRole('button', {name: "Add"}));
+        const numFormsAfterClick = (await screen.findAllByText("Type:")).length;
 
         // Assert
         expect(numFormsBeforeClick).toBe(1);
@@ -141,24 +173,18 @@ describe('Transaction Add Page', () => {
     test('should handle save', async () => {
         // Arrange
         const user = userEvent.setup();
-        const server = setupServer(...successHandlers);
-        server.listen();
-        const data = {
-            categories: [category],
-            types: types,
-            addTransactions: () => {}
-        }
-        const spy = vi.spyOn(data, 'addTransactions');
+        renderElement(<TransactionPage />);
 
         // Act
-        renderElement(<TransactionPage />, data);
-        await user.selectOptions(screen.getByLabelText("Category:"), '1');     // save will be rejected if there isn't a valid category
-        await user.click(screen.getByRole('button', {name: 'Save'}));
+        await user.selectOptions(await screen.findByLabelText("Category:"), '1');     // save will be rejected if there isn't a valid category
+        await user.type(await screen.findByLabelText('Date:'), "01012000");
+        await user.click(await screen.findByRole('button', {name: 'Save'}));
 
         // Assert
-        await waitFor(() => expect(spy).toHaveBeenCalledOnce());
-        expect(screen.getByLabelText("Category:").value).toBe("-- Choose option --");   // indicates forms got reset
+        await waitFor(() => {
+            expect(screen.getByLabelText("Category:").value).toBe("-- Choose option --");   // indicates forms got reset which can only happen if save was successful
+        });
         
-        server.close();
     })
+
 })

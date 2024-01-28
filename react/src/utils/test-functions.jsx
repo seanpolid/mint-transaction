@@ -1,13 +1,13 @@
 import { BrowserRouter } from "react-router-dom"
-import DataContext from "../components/DataContext"
+import MainProvider from "../stores/MainProvider"
 import { render } from "@testing-library/react"
 
-const renderElement = (element, data) => {
+const renderElement = (element) => {
     render(
         <BrowserRouter>
-            <DataContext.Provider value={data}>
+            <MainProvider>
                 {element}
-            </DataContext.Provider>
+            </MainProvider>
         </BrowserRouter>
     )
 }
