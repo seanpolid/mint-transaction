@@ -2,10 +2,10 @@ import { BrowserRouter } from "react-router-dom"
 import MainProvider from "../stores/MainProvider"
 import { render } from "@testing-library/react"
 
-const renderElement = (element) => {
+const renderElement = (element, selectedTransaction) => {
     render(
         <BrowserRouter>
-            <MainProvider>
+            <MainProvider selectedTransaction={selectedTransaction}>
                 {element}
             </MainProvider>
         </BrowserRouter>

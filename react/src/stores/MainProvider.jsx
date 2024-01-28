@@ -4,12 +4,12 @@ import GoalContextProvider from './GoalContextProvider';
 import StatusContextProvider from "./StatusContextProvider";
 import TransactionContextProvider from "./TransactionContextProvider";
 
-const MainProvider = ({children}) => {
+const MainProvider = ({children, selectedTransaction}) => {
     return (
         <ApiContextProvider>
             <StatusContextProvider>
                 <DataContextProvider>
-                    <TransactionContextProvider>
+                    <TransactionContextProvider value={selectedTransaction}>
                         <GoalContextProvider>
                             {children}
                         </GoalContextProvider>

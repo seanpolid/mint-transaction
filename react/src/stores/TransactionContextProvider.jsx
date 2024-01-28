@@ -12,8 +12,8 @@ import DataContext from "./DataContext";
  * @param {*} param0 
  * @returns 
  */
-const TransactionContextProvider = ({children}) => {
-    const [selectedTransaction, setSelectedTransaction] = useState(null);
+const TransactionContextProvider = ({children, value}) => {
+    const [selectedTransaction, setSelectedTransaction] = useState(value ? value : null);
     const [newTransactions, setNewTransactions] = useState([]);
     const api = useContext(ApiContext);
     const dc = useContext(DataContext);
@@ -23,23 +23,19 @@ const TransactionContextProvider = ({children}) => {
             setNewTransactions([createTransaction(dc.types)]);
         }
     }, [dc.types]);
-
-    useEffect(() => {
-        if (dc.transactions.length === 0) {
-            setSelectedTransaction(null);
-        }
-    }, [dc.transactions]);
     
     const deleteSelectedTransaction = useCallback(async () => {
         const successful = await api.deleteData(endpointType.TRANSACTIONS, selectedTransaction.id);
 
         if (successful) {
-            dc.setTransactions(prevTransactions => prevTransactions.filter(transaction => transaction.id !== selectedTransaction.id));
+            const filteredTransactions = dc.transactions.filter(transaction => transaction.id !== selectedTransaction.id);
+
+            dc.setTransactions(filteredTransactions);
             setSelectedTransaction(null);
         }
         
         return successful;
-    }, [selectedTransaction]);
+    }, [selectedTransaction, dc.transactions]);
     
     const updateSelectedTransaction = useCallback((attributeName, value) => {
         const clonedSelectedTransaction = selectedTransaction.clone();
