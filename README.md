@@ -23,7 +23,7 @@ Mint Transaction is an app that I've been wanting to make for a while. Here are 
 
 <h1>Current Status (10/01/23)</h1> 
 
-![demo](https://github.com/seanpolid/transaction-tracker-images/blob/main/demo2.gif)
+![demo](https://github.com/seanpolid/transaction-tracker-images/blob/main/demo_012824.gif)
 
 <h3>** If gif above is not visible, it is still downloading</h3>
 
