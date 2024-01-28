@@ -1,217 +1,264 @@
-import { describe, test, expect, afterEach, vi } from 'vitest'
+import { describe, test, expect, afterEach, vi, beforeEach } from 'vitest'
+import endpointType from '../../enums/endpointType';
 import Log from ".";
-import { renderElement } from '../../utils/test-functions';
-import { screen, cleanup } from "@testing-library/react";
+import mapper from '../../utils/mapper';
+import { getUri } from '../../stores/ApiContextProvider';
+import { renderElement } from '../../utils/test-utils';
+import { rest } from 'msw';
+import { screen, cleanup, waitFor } from "@testing-library/react";
+import { setupServer } from 'msw/node';
 import { tabType } from '../../enums/'
 import { Transaction, Type, Category } from '../../models';
 import userEvent from '@testing-library/user-event';
 
+const type = new Type(1, "Income");
+const category = new Category(1, "Job", type);
+const transaction = new Transaction(1, "uuid", type, category, "10/09/2023", "10/09/2023", 2000, "", "uuid");
+
+let successHandlers = [
+    rest.get(getUri(endpointType.TYPES), (req, res, ctx) => {
+        return res(ctx.status(200), ctx.json([type]))
+    }),
+    rest.get(getUri(endpointType.CATEGORIES), (req, res, ctx) => {
+        return res(ctx.status(200), ctx.json([category]))
+    }),
+    rest.get(getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {
+        const savedTransactionDTOs = mapper.mapToTransactionDTO(transaction);
+        return res(ctx.status(200), ctx.json([savedTransactionDTOs]));
+    }),
+]
+
 describe('Log', () => {
-    const type = new Type(1, "Income");
-    const category = new Category(1, "Job", type);
-    const transaction = new Transaction(1, "uuid", type, category, "10/09/2023", "10/09/2023", 2000, "", "uuid");
+    
+    let server = null;
 
-    afterEach(() => cleanup());
+    afterEach(() => {
+        cleanup();
+        server.close();    
+    });
 
-    test('should render with a selected transaction', () => {
+    test('should render with a selected transaction', async () => {
         // Arrange
-        const element = <Log type={tabType.TRANSACTIONS} handleSelection={() => {}}/>
-        const data = {
-            transactions: [
-                transaction
-            ],
-            selectedTransaction: transaction
-        }
+        server = setupServer(...successHandlers);
+        server.listen();
+        const element = <Log type={tabType.TRANSACTIONS} handleSelection={() => {}} selectedId={1} />
+
         // Act
-        renderElement(element, data);
+        renderElement(element);
 
         // Assert
-        expect(screen.getByText("Income")).toBeDefined();
-        expect(screen.getByText("Job")).toBeDefined();
-        expect(screen.getByText("$2000")).toBeDefined();
-        expect(screen.getByText("10/09/2023")).toBeDefined();
-        expect(screen.getByRole("row").className).toContain('active');
+        await waitFor(() => {
+            expect(screen.queryByText("Income")).not.toBeNull();
+            expect(screen.queryByText("Job")).not.toBeNull();
+            expect(screen.queryByText("$2000")).not.toBeNull();
+            expect(screen.queryByText("10/09/2023")).not.toBeNull();
+            expect(screen.getByRole("row").className).toContain('active');
+        })
     })
-
+    
     test('should style transaction row based on mouse', async () => {
         // Arrange
+        server = setupServer(...successHandlers);
+        server.listen();
         const user = userEvent.setup();
         const element = <Log type={tabType.TRANSACTIONS} handleSelection={() => {}}/>
-        const data = {
-            transactions: [
-                transaction
-            ]
-        }
 
         // Act
-        renderElement(element, data);
+        renderElement(element);
 
-        const classBeforeMouseEnter = screen.getByRole('row').className;
-        await user.hover(screen.getByRole('row'));
-        const classAfterMouseEnter = screen.getByRole('row').className;
+        const classBeforeMouseEnter = (await screen.findByRole('row')).className;
+        await user.hover(await screen.findByRole('row'));
+        const classAfterMouseEnter = (await screen.findByRole('row')).className;
 
-        await user.unhover(screen.getByRole('row'));
-        const classAfterMouseLeave = screen.getByRole('row').className;
+        await user.unhover(await screen.findByRole('row'));
+        const classAfterMouseLeave = (await screen.findByRole('row')).className;
 
         // Assert
-        expect(classBeforeMouseEnter).not.toContain('active');
-        expect(classAfterMouseEnter).toContain('active');
-        expect(classAfterMouseLeave).not.toContain('active');
+        await waitFor(() => {
+            expect(classBeforeMouseEnter).not.toContain('active');
+            expect(classAfterMouseEnter).toContain('active');
+            expect(classAfterMouseLeave).not.toContain('active');
+        })
     })
-
+    
     test('should select transaction after click', async () => {
         // Arrange
+        server = setupServer(...successHandlers);
+        server.listen();
         const user = userEvent.setup();
         const mockFunctions = {
             handleSelection: () => {}
         }
         const spy = vi.spyOn(mockFunctions, 'handleSelection')
-        const element = <Log type={tabType.TRANSACTIONS} handleSelection={mockFunctions.handleSelection}/>
-        const data = {
-            transactions: [
-                transaction
-            ]
-        }
+        const element = <Log type={tabType.TRANSACTIONS} handleSelection={mockFunctions.handleSelection} />
 
         // Act
-        renderElement(element, data);
-        await user.click(screen.getByRole('row'));
+        renderElement(element);
+        await user.click(await screen.findByRole('row'));
 
         // Assert
-        expect(spy).toHaveBeenCalledTimes(2);
+        expect(spy).toHaveBeenCalledOnce();
     })
-
+    
     test('should show sort window after click', async () => {
         // Arrange
+        server = setupServer(...successHandlers);
+        server.listen();
         const user = userEvent.setup();
         const element = <Log type={tabType.TRANSACTIONS} handleSelection={() => {}}/>
-        const data = {
-            transactions: [
-                transaction
-            ]
-        }
+        renderElement(element);
 
         // Act
-        renderElement(element, data);
-        await user.click(screen.getByRole('button', {name: 'sort items'}));
+        await user.click(await screen.findByRole('button', {name: 'sort items'}));
 
         // Assert
-        expect(screen.getByText("Ascending")).toBeDefined();
+        expect(screen.queryByText("Ascending")).not.toBeNull();
     })
-
+    
     test('should show active sort options', async () => {
         // Arrange
+        server = setupServer(...successHandlers);
+        server.listen();
         const user = userEvent.setup();
         const element = <Log type={tabType.TRANSACTIONS} handleSelection={() => {}}/>
-        const data = {
-            transactions: [
-                transaction
-            ]
-        }
+        renderElement(element);
 
         // Act
-        renderElement(element, data);
-        await user.click(screen.getByRole('button', {name: 'sort items'}));
+        await user.click(await screen.findByRole('button', {name: 'sort items'}));
 
         // Assert
-        expect(screen.getByLabelText("Descending").checked).toBeTruthy();
-        expect(screen.getByText("Date").className).toContain("active");
+        await waitFor(() => {
+            expect(screen.getByLabelText("Descending").checked).toBeTruthy();
+            expect(screen.getByText("Date").className).toContain("active");
+        })
     })
-
-    test('should sort in descending order', () => {
+    
+    test('should sort in descending order', async () => {
         // Arrange
         const element = <Log type={tabType.TRANSACTIONS} handleSelection={() => {}}/>
-        const data = {
-            transactions: [
+        successHandlers = successHandlers.toSpliced(2, 1);
+
+        const transactions = [
                 new Transaction(1, "uuid", type, category, "10/09/2023", "10/09/2023", 2000, "", "uuid"),
                 new Transaction(2, "uuid1", type, category, "10/08/2023", null, 2000, "", "uuid1"),
                 new Transaction(3, "uuid2", type, category, "10/07/2023", null, 2000, "", "uuid2"),
-            ]
-        }
+        ];
+        const transactionDTOS = transactions.map(transaction => mapper.mapToTransactionDTO(transaction));
+        successHandlers.push(rest.get(getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {
+            return res(ctx.status(200), ctx.json(transactionDTOS));
+        }));
+
+        server = setupServer(...successHandlers);
+        server.listen();
+
+        renderElement(element);
 
         // Act
-        renderElement(element, data);
-        const transactions = screen.getAllByRole("row");
+        const transactionRows = await screen.findAllByRole("row");
 
         // Assert
-        expect(transactions.length).toBe(3);
-        expect(transactions[0].textContent).toContain("10/09/2023");
-        expect(transactions[transactions.length - 1].textContent).toContain("10/07/2023");
+        expect(transactionRows.length).toBe(3);
+        expect(transactionRows[0].textContent).toContain("10/09/2023");
+        expect(transactionRows[transactionRows.length - 1].textContent).toContain("10/07/2023");
     })
-
+    
     test('should sort in ascending order', async () => {
         // Arrange
         const user = userEvent.setup();
         const element = <Log type={tabType.TRANSACTIONS} handleSelection={() => {}}/>
-        const data = {
-            transactions: [
-                new Transaction(1, "uuid", type, category, "10/09/2023", null, 2000, "", "uuid"),
+        successHandlers = successHandlers.toSpliced(2, 1);
+
+        const transactions = [
+                new Transaction(1, "uuid", type, category, "10/09/2023", "10/09/2023", 2000, "", "uuid"),
                 new Transaction(2, "uuid1", type, category, "10/08/2023", null, 2000, "", "uuid1"),
                 new Transaction(3, "uuid2", type, category, "10/07/2023", null, 2000, "", "uuid2"),
-            ]
-        }
+        ];
+        const transactionDTOS = transactions.map(transaction => mapper.mapToTransactionDTO(transaction));
+        successHandlers.push(rest.get(getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {
+            return res(ctx.status(200), ctx.json(transactionDTOS));
+        }));
+
+        server = setupServer(...successHandlers);
+        server.listen();
+
+        renderElement(element);
 
         // Act
-        renderElement(element, data);
-        await user.click(screen.getByRole('button', {name: 'sort items'}));
-        await user.click(screen.getByLabelText('Ascending'));
+        await user.click(await screen.findByRole('button', {name: 'sort items'}));
+        await user.click(await screen.findByLabelText('Ascending'));
         await user.click(document.getElementById('overlay'));
-        const transactions = screen.getAllByRole("row");
+        const transactionRows = await screen.findAllByRole("row");
 
         // Assert
-        expect(transactions.length).toBe(3);
-        expect(transactions[0].textContent).toContain("10/07/2023");
-        expect(transactions[transactions.length - 1].textContent).toContain("10/09/2023");
+        expect(transactionRows.length).toBe(3);
+        expect(transactionRows[0].textContent).toContain("10/07/2023");
+        expect(transactionRows[transactionRows.length - 1].textContent).toContain("10/09/2023");
     })
-
+    
     test('should sort by amount', async () => {
         // Arrange
         const user = userEvent.setup();
         const element = <Log type={tabType.TRANSACTIONS} handleSelection={() => {}}/>
-        const data = {
-            transactions: [
-                new Transaction(1, "uuid", type, category, "10/09/2023", null, 1000, "", "uuid"),
-                new Transaction(2, "uuid1", type, category, "10/09/2023", null, 2000, "", "uuid1"),
-                new Transaction(3, "uuid2", type, category, "10/09/2023", null, 3000, "", "uuid2"),
-            ]
-        }
+        successHandlers = successHandlers.toSpliced(2, 1);
+
+        const transactions = [
+                new Transaction(1, "uuid", type, category, "10/09/2023", "10/09/2023", 1000, "", "uuid"),
+                new Transaction(2, "uuid1", type, category, "10/08/2023", null, 2000, "", "uuid1"),
+                new Transaction(3, "uuid2", type, category, "10/07/2023", null, 3000, "", "uuid2"),
+        ];
+        const transactionDTOS = transactions.map(transaction => mapper.mapToTransactionDTO(transaction));
+        successHandlers.push(rest.get(getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {
+            return res(ctx.status(200), ctx.json(transactionDTOS));
+        }));
+
+        server = setupServer(...successHandlers);
+        server.listen();
+
+        renderElement(element);
 
         // Act
-        renderElement(element, data);
-        await user.click(screen.getByRole('button', {name: 'sort items'}));
-        await user.click(screen.getByText('Amount'));
+        await user.click(await screen.findByRole('button', {name: 'sort items'}));
+        await user.click(await screen.findByText('Amount'));
         await user.click(document.getElementById('overlay'));
-        const transactions = screen.getAllByRole("row");
+        const transactionRows = await screen.findAllByRole("row");
 
         // Assert
-        expect(transactions.length).toBe(3);
-        expect(transactions[0].textContent).toContain("3000");
-        expect(transactions[transactions.length - 1].textContent).toContain("1000");
+        expect(transactionRows.length).toBe(3);
+        expect(transactionRows[0].textContent).toContain("3000");
+        expect(transactionRows[transactionRows.length - 1].textContent).toContain("1000");
     })
-
+    
     test('should sort by category', async () => {
         // Arrange
         const user = userEvent.setup();
         const element = <Log type={tabType.TRANSACTIONS} handleSelection={() => {}}/>
-        const data = {
-            transactions: [
+        successHandlers = successHandlers.toSpliced(2, 1);
+
+        const transactions = [
                 new Transaction(1, "uuid", type, new Category(1, "Groceries", type), "10/09/2023", null, 1000, "", "uuid"),
                 new Transaction(2, "uuid1", type, new Category(2, "Rent", type), "10/09/2023", null, 1000, "", "uuid1"),
                 new Transaction(3, "uuid2", type, new Category(3, "Other", type), "10/09/2023", null, 1000, "", "uuid2"),
-            ]
-        }
+        ]
+        const transactionDTOS = transactions.map(transaction => mapper.mapToTransactionDTO(transaction));
+        successHandlers.push(rest.get(getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {
+            return res(ctx.status(200), ctx.json(transactionDTOS));
+        }));
+
+        server = setupServer(...successHandlers);
+        server.listen();
+
+        renderElement(element);
 
         // Act
-        renderElement(element, data);
-        await user.click(screen.getByRole('button', {name: 'sort items'}));
-        await user.click(screen.getByText('Category'));
+        await user.click(await screen.findByRole('button', {name: 'sort items'}));
+        await user.click(await screen.findByText('Category'));
         await user.click(document.getElementById('overlay'));
-        const transactions = screen.getAllByRole("row");
+        const transactionRows = await screen.findAllByRole("row");
 
         // Assert
-        expect(transactions.length).toBe(3);
-        expect(transactions[0].textContent).toContain("Rent");
-        expect(transactions[transactions.length - 1].textContent).toContain("Groceries");
+        expect(transactionRows.length).toBe(3);
+        expect(transactionRows[0].textContent).toContain("Rent");
+        expect(transactionRows[transactionRows.length - 1].textContent).toContain("Groceries");
     })
-
+    
 })
