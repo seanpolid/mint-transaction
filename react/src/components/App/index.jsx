@@ -125,10 +125,10 @@ const TabWithPages = ({type, onClick}) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (type === tabType.TRANSACTIONS && tc.selectedTransaction) {
-            setSelectedId(tc.selectedTransaction.id);
-        } else if (type === tabType.GOALS && gc.selectedGoal) {
-            setSelectedId(gc.selectedGoal.id);
+        if (type === tabType.TRANSACTIONS) {
+            setSelectedId(tc.selectedTransaction ? tc.selectedTransaction.id : null);
+        } else if (type === tabType.GOALS) {
+            setSelectedId(gc.selectedGoal ? gc.selectedGoal.id : null);
         }
     }, [tc.selectedTransaction, gc.selectedGoal]);
 
