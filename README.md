@@ -9,7 +9,7 @@ Mint Transaction is an app that I've been wanting to make for a while. Here are 
 
 <h1>Target Stack</h1>
 <ol>
-  <li>React U+2705</li>
+  <li>React 0xE2</li>
   <li>Selenium</li>
   <li>Spring Boot</li>
   <li>Spring Data JPA</li>
