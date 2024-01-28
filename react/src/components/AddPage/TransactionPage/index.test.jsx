@@ -177,7 +177,6 @@ describe('Transaction Add Page', () => {
 
         // Act
         await user.selectOptions(await screen.findByLabelText("Category:"), '1');     // save will be rejected if there isn't a valid category
-        await user.type(await screen.findByLabelText('Date:'), "01012000");
         await user.click(await screen.findByRole('button', {name: 'Save'}));
 
         // Assert
