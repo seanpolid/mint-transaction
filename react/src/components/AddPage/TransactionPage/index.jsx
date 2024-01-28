@@ -96,6 +96,10 @@ const Form = ({transaction, onButtonClick}) => {
         tc.updateNewTransaction(attributeName, value, key);
     }, [categories, types]);
 
+    const handleWheel = (event) => {
+        event.target.blur();
+    }
+
     return (
         <>
             <form className={style.transactionForm}>
@@ -130,6 +134,9 @@ const Form = ({transaction, onButtonClick}) => {
                         text='Amount ($):'
                         value={transaction.amount}
                         onChange={handleChange}
+                        step={"0.01"}
+                        onWheel={handleWheel}
+                        min="0"
                     />
                 </div>
                 

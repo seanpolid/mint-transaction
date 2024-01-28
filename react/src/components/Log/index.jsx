@@ -31,7 +31,7 @@ const Log = ({type, handleSelection, selectedId}) => {
         }
 
         setPreparedItems(sortedItems);
-    }, [type, searchTerm, sortTerm, sortOrder, dc.transactions, dc.goals]);
+    }, [type, searchTerm, sortTerm, sortOrder, dc.transactions, dc.goals, selectedId]);
 
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
