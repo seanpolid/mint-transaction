@@ -35,3 +35,6 @@ build/
 ### Logs ###
 *.log
 *.log.*
+
+## DS STORE ##
+**/.DS_STORE

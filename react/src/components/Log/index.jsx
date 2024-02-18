@@ -23,7 +23,8 @@ const Log = ({type, handleSelection, selectedId}) => {
     };
 
     useEffect(() => {
-        const filteredItems = items[type].filter(item => searchTerm.length == 0 || item.toString().toLowerCase().includes(searchTerm));
+        const loweredSearchTerm = searchTerm.toLowerCase();
+        const filteredItems = items[type].filter(item => searchTerm.length == 0 || item.toString().toLowerCase().includes(loweredSearchTerm));
         const sortedItems = filteredItems.sort((t1, t2) => compareTransactions(sortTerm, sortOrder, t1, t2));
 
         if (sortedItems.length > 0 && selectedId === null) {

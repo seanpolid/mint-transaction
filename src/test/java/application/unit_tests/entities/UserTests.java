@@ -26,8 +26,8 @@ public class UserTests {
 	@Test
 	public void hashCode_sameFields_sameHash() {
 		// Arrange
-		User user1 = new User(1, "email", "username", "name", "password", date, phone);
-		User user2 = new User(1, "email", "username", "name", "password", date, phone);
+		User user1 = new User(1, "email", "username", "password", date, phone);
+		User user2 = new User(1, "email", "username", "password", date, phone);
 		
 		// Act
 		int user1Hash = user1.hashCode();
@@ -40,8 +40,8 @@ public class UserTests {
 	@Test
 	public void hashCode_differentFields_differentHash() {
 		// Arrange
-		User user1 = new User(1, "email", "username", "name", "password", date, phone);
-		User user2 = new User(2, "email", "username", "name", "password", date, phone);
+		User user1 = new User(1, "email", "username", "password", date, phone);
+		User user2 = new User(2, "email", "username", "password", date, phone);
 		
 		// Act
 		int user1Hash = user1.hashCode();
@@ -54,8 +54,8 @@ public class UserTests {
 	@Test
 	public void equals_sameFields_true() {
 		// Arrange
-		User user1 = new User(1, "email", "username", "name", "password", date, phone);
-		User user2 = new User(1, "email", "username", "name", "password", date, phone);
+		User user1 = new User(1, "email", "username", "password", date, phone);
+		User user2 = new User(1, "email", "username", "password", date, phone);
 				
 		// Act and Assert
 		assertTrue(user1.equals(user2));
@@ -64,8 +64,8 @@ public class UserTests {
 	@Test
 	public void equals_differentFields_false() {
 		// Arrange
-		User user1 = new User(1, "email", "username", "name", "password", date, phone);
-		User user2 = new User(2, "email", "username", "name", "password", date, phone);
+		User user1 = new User(1, "email", "username", "password", date, phone);
+		User user2 = new User(2, "email", "username", "password", date, phone);
 		
 		// Act and Assert
 		assertFalse(user1.equals(user2));

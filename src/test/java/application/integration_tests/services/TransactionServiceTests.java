@@ -68,7 +68,7 @@ public class TransactionServiceTests {
 	
 	@BeforeEach
 	public void setup() {
-		User user = new User(0, "email", "username", "firstName", "password", date, Long.valueOf(123456789));
+		User user = new User(0, "email", "username", "password", date, Long.valueOf(123456789));
 		this.user = userRepository.save(user);
 		
 		Type type = new Type(0, "name");

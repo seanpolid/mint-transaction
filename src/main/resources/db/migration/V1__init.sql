@@ -2,10 +2,9 @@ create table user (
 	id int auto_increment not null primary key,
     email varchar(50) not null,
     username varchar(50) not null,
-    first_name varchar(15) not null,
-    password varchar(25) not null,
+    password varchar(100) not null,
     date_created date not null,
-    phone int null
+    phone bigint null
 );
 
 create table goal (
@@ -46,8 +45,8 @@ create table transaction (
 
 insert into type (name) values ('income'), ('expense');
 
-insert into user (email, username, password, first_name, date_created) 
-values ('test-user@gmail.com', 'testUser', 'password', 'name', "2023-09-11");
+insert into user (email, username, password, date_created) 
+values ('test-user@gmail.com', 'testUser', 'password', "2023-09-11");
 
 insert into category (name, type_id)
 values 	('gift', 1),

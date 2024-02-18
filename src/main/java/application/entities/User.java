@@ -6,11 +6,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import application.models.RegistrationForm;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,8 +32,6 @@ public class User implements UserDetails {
 	private String email;
 	
 	private String username;
-	
-	private String firstName;
 	
 	private String password;
 	
@@ -54,13 +54,11 @@ public class User implements UserDetails {
 		this.username = username;
 	}
 
-	public User(int id, String email, String username, String firstName, String password, LocalDate dateCreated,
-			Long phone) {
+	public User(int id, String email, String username, String password, LocalDate dateCreated, Long phone) {
 		super();
 		this.id = id;
 		this.email = email;
 		this.username = username;
-		this.firstName = firstName;
 		this.password = password;
 		this.dateCreated = dateCreated;
 		this.phone = phone;
@@ -84,14 +82,6 @@ public class User implements UserDetails {
 	
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
 	}
 
 	public String getPassword() {
@@ -174,7 +164,7 @@ public class User implements UserDetails {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(dateCreated, email, firstName, id, password, phone, username);
+		return Objects.hash(dateCreated, email, id, password, phone, username);
 	}
 
 	@Override
@@ -187,8 +177,13 @@ public class User implements UserDetails {
 			return false;
 		User other = (User) obj;
 		return Objects.equals(dateCreated, other.dateCreated) && Objects.equals(email, other.email)
-				&& Objects.equals(firstName, other.firstName) && id == other.id
-				&& Objects.equals(password, other.password) && phone == other.phone
-				&& Objects.equals(username, other.username);
+				&& id == other.id && Objects.equals(password, other.password) 
+				&& phone == other.phone && Objects.equals(username, other.username);
+	}
+	
+	static User create(RegistrationForm form) {
+		Pattern pattern = Pattern.compile("[0-9]");
+		
+		return new User(0, form.getEmail(), form.getUsername(), form.getPassword(), LocalDate.now(), 0L);
 	}
 }

@@ -1,0 +1,137 @@
+:root {
+    padding: 0;
+    max-width: 100%;
+    --primary-color: rgb(242, 243, 245);
+    --secondary-color: rgb(208, 208, 208);
+    --accent-color: rgb(242, 243, 245);
+    --active-color: rgb(153, 238, 255);
+    --primary-nav-width: 4.75rem;
+    --secondary-nav-height: 3em;
+}
+
+body, main, div, input, button {
+	box-sizing: border-box;
+}
+
+body {
+    background: var(--primary-color);
+    font-family: 'Times New Roman', Times, serif;
+}
+
+main {
+	height: 96vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+}
+
+input, select, textarea, button {
+    padding: 0.5em 2em;
+    background: white;
+    border-radius: 5px;
+    border: 1px solid rgb(236, 236, 236);
+    box-sizing: border-box;
+}
+
+input[type="submit"], button {
+	cursor: pointer;
+}
+
+.login {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1em;
+	width: 25em;
+	border-bottom: 1px solid gray;
+	padding: 2em;
+}
+
+.login input[type="text"], .login input[type="password"] {
+	grid-column: 1/3;
+	font-size: 18px;
+	padding: 10px;
+}
+
+.login input[type="submit"] {
+	height: fit-content;
+	width: fit-content;
+	justify-self: right;
+	grid-column: 2/3;
+	background: #0277bd;
+	color: white;
+}
+
+.login input[type="submit"], button {
+	font-size: 20px;
+}
+
+.forgotRegion {
+	display: flex;
+	flex-direction: column;
+	gap: 0.4em;
+}
+
+.forgotRegion a {
+	color: #00b0ff;
+}
+
+button {
+	margin-top: 2em;
+	background: #388e3c;
+	color: white;
+}
+
+.oauthOptions {
+	padding-top: 2em;
+	display: flex;
+	justify-content: center;
+	gap: 1em;
+}
+
+.icon {
+	width: 2em;
+	aspect-ratio: 1;
+}
+
+main .hidden {
+	display: none;
+}
+
+.modal {
+	z-index: 20;
+	background: white;
+	position: absolute;
+	left: 50vw - 10em;
+	width: 25em;
+	border-radius: 5px;
+	padding: 1.5em;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.5em;
+	border: 1px solid var(--primary-color);
+}
+
+.modal input {
+	width: 100%;
+	font-size: 18px;
+}
+
+.modal input[type="submit"] {
+	width: fit-content;
+	color: white ;
+	background: #388e3c;
+}
+
+.overlay {
+	z-index: 10;
+	height: 100vh;
+	width: 100vw;
+	background: rgba(117, 117, 117, 0.5);
+	position: absolute;
+}
+
+
+
