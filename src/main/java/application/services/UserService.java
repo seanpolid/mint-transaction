@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
+import application.dtos.UserDTO;
 import application.entities.User;
 import application.models.RegistrationForm;
 import application.security.SecurityUser;
@@ -49,6 +50,25 @@ public class UserService {
 		}
 		
 		return Long.valueOf(builder.toString());
+	}
+	
+	public void registerUser(UserDTO userDTO) {
+		User user = convertToUser(userDTO);
+		SecurityUser userDetails = new SecurityUser(user);
+		userDetailsManager.createUser(userDetails);
+	}
+
+	private User convertToUser(UserDTO userDTO) {
+		User user = new User();
+		user.setUsername(userDTO.getUsername());
+		user.setPassword(userDTO.getPassword());
+		user.setEmail(userDTO.getEmail());
+		user.setDateCreated(LocalDate.now());
+		
+		Long phone = extractPhoneNumber(userDTO.getPhone());
+		user.setPhone(phone);
+		
+		return user;
 	}
 
 }

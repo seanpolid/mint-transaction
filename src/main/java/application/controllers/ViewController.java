@@ -18,7 +18,7 @@ public class ViewController {
 	
 	@GetMapping("/")
 	public String app() {
-		return "index.html";
+		return "app/index.html";
 	}
 	
 	@GetMapping("/home")
@@ -28,7 +28,7 @@ public class ViewController {
 	
 	@GetMapping("/login")
 	public String login() {
-		return "login.html";
+		return "login/login.html";
 	}
 	
 	@PostMapping("/register") 
