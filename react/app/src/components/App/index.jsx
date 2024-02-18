@@ -21,12 +21,6 @@ const tabsWithPages = [tabType.TRANSACTIONS, tabType.GOALS];
 const App = () => {
     const [pageState, dispatch] = useReducer(pageReducer, initialPageState);
     const sc = useContext(StatusContext);
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        const landingPage = `${links[tabType.TRANSACTIONS]}/${initialPageState[tabType.TRANSACTIONS]}`;
-        navigate(landingPage);
-    }, []);
 
     const handleClick = (event) => {
         const target = event.target;

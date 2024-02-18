@@ -1,5 +1,6 @@
 package application.controllers;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,9 +17,19 @@ public class ViewController {
 		this.userService = userService;
 	}
 	
-	@GetMapping("/")
+	@GetMapping(value = {"/transactions", "/"})
+	public String transactionsRedirect() {
+		return "redirect:/transactions/add";
+	}
+	
+	@GetMapping(value = {"/goals"})
+	public String goalsRedirect() {
+		return "redirect:/goals/add";
+	}
+	
+	@GetMapping(value = {"/transactions/add", "/transactions/view", "/dashboard", "/goals/add", "/goals/view", "/profile"})
 	public String app() {
-		return "app/index.html";
+		return "/app/index.html";
 	}
 	
 	@GetMapping("/home")
@@ -27,8 +38,12 @@ public class ViewController {
 	}
 	
 	@GetMapping("/login")
-	public String login() {
-		return "login/login.html";
+	public String login(Authentication authentication) {
+		if (authentication != null && authentication.isAuthenticated()) {
+			return "redirect:/transactions/add";
+		}
+		
+		return "login/index.html";
 	}
 	
 	@PostMapping("/register") 

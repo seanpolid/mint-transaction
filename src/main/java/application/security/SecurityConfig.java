@@ -20,15 +20,15 @@ public class SecurityConfig {
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		return http.authorizeHttpRequests((customizer) -> {
-			customizer.requestMatchers("/api/**", "/").authenticated()
-					  .anyRequest().permitAll();
+			customizer.requestMatchers("/login/**").permitAll()
+					  .anyRequest().authenticated();
 		}).csrf((customizer) -> {
 			customizer.disable();
 		}).cors((customizer) -> {
 			customizer.disable();
 		}).oauth2Login((customizer) -> {
 			customizer.loginPage("/login")
-					  .defaultSuccessUrl("/");
+					  .defaultSuccessUrl("/transactions/add");
 		}).formLogin((customizer) -> {
 			customizer.loginPage("/login");
 		}).logout((customizer) -> {
