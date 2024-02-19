@@ -45,9 +45,6 @@ create table transaction (
 
 insert into type (name) values ('income'), ('expense');
 
-insert into user (email, username, password, date_created) 
-values ('test-user@gmail.com', 'testUser', 'password', "2023-09-11");
-
 insert into category (name, type_id)
 values 	('gift', 1),
 		('job', 1),
