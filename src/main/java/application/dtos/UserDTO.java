@@ -2,7 +2,6 @@ package application.dtos;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Pattern;
 
 public class UserDTO {

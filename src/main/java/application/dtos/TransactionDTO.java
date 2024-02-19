@@ -1,12 +1,9 @@
 package application.dtos;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Objects;
 
-import application.entities.Category;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
