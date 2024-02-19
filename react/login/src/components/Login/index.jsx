@@ -180,7 +180,7 @@ function isValid(body, emailRef) {
     if (body.email.length === 0 || !emailRef.current.validity.valid) {
         return "Please provide a valid email.";
     }
-    if (body.phone.length > 0 && !isValidPhoneNumber(body.phone)) {
+    if (body.phone && body.phone.length > 0 && !isValidPhoneNumber(body.phone)) {
         return "Please provide a valid phone number.";
     }
 

@@ -150,7 +150,7 @@ main .hidden {
   width: 100%;
   text-align: center;
   padding: 5px 0;
-  animation: fadeOut 5s;
+  animation: fadeOut 8s;
 }
 
 @keyframes fadeOut {
