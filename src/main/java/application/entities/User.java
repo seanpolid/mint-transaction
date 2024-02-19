@@ -12,7 +12,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import application.models.RegistrationForm;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -180,10 +179,5 @@ public class User implements UserDetails {
 				&& id == other.id && Objects.equals(password, other.password) 
 				&& phone == other.phone && Objects.equals(username, other.username);
 	}
-	
-	static User create(RegistrationForm form) {
-		Pattern pattern = Pattern.compile("[0-9]");
-		
-		return new User(0, form.getEmail(), form.getUsername(), form.getPassword(), LocalDate.now(), 0L);
-	}
+
 }

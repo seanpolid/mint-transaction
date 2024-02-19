@@ -15,7 +15,7 @@ import application.entities.User;
 import application.repositories.IUserRepository;
 
 @Component
-public class JPAUserDetailsManager implements UserDetailsManager {
+public class JPAUserDetailsManager implements IJPAUserDetailsManager {
 
 	private final IUserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
@@ -62,6 +62,12 @@ public class JPAUserDetailsManager implements UserDetailsManager {
 	@Override
 	public boolean userExists(String username) {
 		Optional<User> user = userRepository.findByUsername(username);
+		return user.isPresent();
+	}
+
+	@Override
+	public boolean userEmailInUse(String email) {
+		Optional<User> user = userRepository.findByEmail(email);
 		return user.isPresent();
 	}
 

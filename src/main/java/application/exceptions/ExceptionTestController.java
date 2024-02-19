@@ -1,38 +1,49 @@
 package application.exceptions;
 
 import org.springframework.context.annotation.Profile;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Profile("test")
 @RestController
-@RequestMapping("exceptions")
+@RequestMapping("/exceptions")
 public class ExceptionTestController {
 
-	@GetMapping("runtime")
+	@GetMapping("/runtime")
 	public void throwsRuntimeException() {
 		throw new RuntimeException();
 	}
 	
-	@GetMapping("checked") 
+	@GetMapping("/checked") 
 	public void throwsCheckedException() throws Exception {
 		throw new Exception();
 	}
 	
-	@GetMapping("category")
+	@GetMapping("/category-not-found")
 	public void throwsCategoryNotFoundException_categoryNull() throws CategoryNotFoundException {
 		throw new CategoryNotFoundException();
 	}
 	
-	@GetMapping("transaction-not-found")
+	@GetMapping("/transaction-not-found")
 	public void throwsTransactionNotFoundException() throws TransactionNotFoundException {
 		throw new TransactionNotFoundException(1);
 	}
 	
-	@GetMapping("invalid-transaction-identifier")
+	@GetMapping("/invalid-transaction-identifier")
 	public void throwsInvalidTransactionIdentifierException() throws InvalidTransactionIdentifierException {
 		throw new InvalidTransactionIdentifierException("original identifier", "provided identifier");
+	}
+	
+	@GetMapping("/email-in-use")
+	public void throwsEmailInUseException() throws EmailInUseException {
+		throw new EmailInUseException("");
+	}
+	
+	@GetMapping("/username-in-use")
+	public void throwsUsernameInUseException() throws UsernameInUseException {
+		throw new UsernameInUseException("");
 	}
 	
 }

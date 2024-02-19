@@ -2,6 +2,7 @@ package application.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
@@ -19,13 +20,13 @@ public class SecurityConfig {
 	
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		return http.authorizeHttpRequests((customizer) -> {
-			customizer.requestMatchers("/login/**").permitAll()
-					  .anyRequest().authenticated();
-		}).csrf((customizer) -> {
+		return http.csrf((customizer) -> {
 			customizer.disable();
 		}).cors((customizer) -> {
 			customizer.disable();
+		}).authorizeHttpRequests((customizer) -> {
+			customizer.requestMatchers("/login/**", "/api/user", "/home*", "/exceptions/**").permitAll()
+			  		  .anyRequest().authenticated();
 		}).oauth2Login((customizer) -> {
 			customizer.loginPage("/login")
 					  .defaultSuccessUrl("/transactions/add");

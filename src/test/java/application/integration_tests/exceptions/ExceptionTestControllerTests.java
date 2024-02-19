@@ -23,35 +23,49 @@ public class ExceptionTestControllerTests {
 	public void throwsRuntimeException_statusInternalServerError() throws Exception {
 		mockMvc.perform(get("/exceptions/runtime"))
 			   .andExpectAll(status().isInternalServerError(),
-					   		 content().contentType("text/plain;charset=UTF-8"));
+					   		 content().contentType("application/json"));
 	}
 	
 	@Test
 	public void throwsCheckedException_statusInternalServerError() throws Exception {
 		mockMvc.perform(get("/exceptions/checked"))
 			   .andExpectAll(status().isInternalServerError(),
-					   		 content().contentType("text/plain;charset=UTF-8"));
+					   		 content().contentType("application/json"));
 	}
 	
 	@Test
 	public void throwsCategoryNotFoundException_idInvalid_statusBadRequest() throws Exception {
-		mockMvc.perform(get("/exceptions/category"))
+		mockMvc.perform(get("/exceptions/category-not-found"))
 			   .andExpectAll(status().isBadRequest(),
-					   		 content().contentType("text/plain;charset=UTF-8"));
+					   		 content().contentType("application/json"));
 	}
 	
 	@Test
 	public void throwsTransactionNotFoundException_statusNotFound() throws Exception {
 		mockMvc.perform(get("/exceptions/transaction-not-found"))
 			   .andExpectAll(status().isNotFound(),
-					   		 content().contentType("text/plain;charset=UTF-8"));
+					   		 content().contentType("application/json"));
 	}
 	
 	@Test
 	public void throwsInvalidTransactionIdentifierException_statusBadRequest() throws Exception {
 		mockMvc.perform(get("/exceptions/invalid-transaction-identifier"))
 			   .andExpectAll(status().isBadRequest(),
-					   		 content().contentType("text/plain;charset=UTF-8"));
+					   		 content().contentType("application/json"));
+	}
+	
+	@Test
+	public void throwsEmailInUseException_statusBadRequest() throws Exception {
+		mockMvc.perform(get("/exceptions/email-in-use"))
+			   .andExpectAll(status().isBadRequest(),
+					   		 content().contentType("application/json"));
+	}
+	
+	@Test
+	public void throwsUsernameInUseException_statusBadRequest() throws Exception {
+		mockMvc.perform(get("/exceptions/username-in-use"))
+			   .andExpectAll(status().isBadRequest(),
+					   		 content().contentType("application/json"));
 	}
 	
 }

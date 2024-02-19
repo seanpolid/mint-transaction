@@ -11,6 +11,7 @@ import application.entities.User;
 public interface IUserRepository extends ListCrudRepository<User, Integer> {
 
 	public Optional<User> findByUsername(String username);
+	public Optional<User> findByEmail(String email);
 	public void deleteByUsername(String username);
 	
 	@Query("UPDATE User SET password = :newPassword WHERE username = :username")
