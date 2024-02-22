@@ -3,7 +3,6 @@ package application.services.interfaces;
 import java.util.List;
 
 import application.dtos.TransactionDTO;
-import application.entities.User;
 import application.exceptions.CategoryNotFoundException;
 import application.exceptions.InvalidTransactionIdentifierException;
 import application.exceptions.TransactionNotFoundException;
