@@ -1,6 +1,6 @@
 create table user (
 	id int auto_increment not null primary key,
-    email varchar(50) not null,
+    email varchar(50) null,
     username varchar(25) not null,
     auth_provider varchar(15) not null,
     password varchar(100) null,
