@@ -26,11 +26,11 @@ import jakarta.servlet.http.HttpServletResponse;
  * to allow for uniform use of the Authentication object in downstream processes.
  */
 @Component
-public class AuthenticationHomogenizerFilter extends OncePerRequestFilter {
+public class OAuthConversionFilter extends OncePerRequestFilter {
 	
 	private IJPAUserDetailsManager userDetailsManager;
 	
-	public AuthenticationHomogenizerFilter(IJPAUserDetailsManager userDetailsManager) {
+	public OAuthConversionFilter(IJPAUserDetailsManager userDetailsManager) {
 		this.userDetailsManager = userDetailsManager;
 	}
 

@@ -38,7 +38,7 @@ public class SecurityConfig {
 	}
 	
 	@Bean
-	SecurityFilterChain filterChain(HttpSecurity http, AuthenticationHomogenizerFilter authenticationHomogenizerFilter) throws Exception {
+	SecurityFilterChain filterChain(HttpSecurity http, OAuthConversionFilter oauthConversionFilter) throws Exception {
 		return http.csrf((customizer) -> {
 			customizer.disable();
 		}).cors((customizer) -> {
@@ -53,7 +53,7 @@ public class SecurityConfig {
 			customizer.loginPage("/login");
 		}).logout((customizer) -> {
 			customizer.logoutSuccessUrl("/home");
-		}).addFilterAfter(authenticationHomogenizerFilter, OAuth2LoginAuthenticationFilter.class).build();
+		}).addFilterAfter(oauthConversionFilter, OAuth2LoginAuthenticationFilter.class).build();
 	}
 	
 }
