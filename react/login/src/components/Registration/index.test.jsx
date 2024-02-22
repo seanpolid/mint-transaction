@@ -5,18 +5,6 @@ import { setupServer } from 'msw/node';
 import { screen, render, cleanup, waitFor  } from "@testing-library/react";
 import userEvent from '@testing-library/user-event';
 
-const successHandlers = [
-    rest.post('http://localhost:8080/api/user', (req, res, ctx) => {
-        return res(ctx.status(204), null);
-    })
-]
-
-const failureHandlers = [
-    rest.post('http://localhost:8080/api/user', (req, res, ctx) => {
-        return res(ctx.status(400), {message: ""})
-    })
-]
-
 describe('Registration', () => {
 
     let registration;
