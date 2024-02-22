@@ -78,6 +78,7 @@ input[type="submit"], button {
 
 .forgotRegion a {
   color: #00b0ff;
+  width: fit-content;
 }
 
 button {

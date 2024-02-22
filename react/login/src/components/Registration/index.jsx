@@ -63,7 +63,6 @@ const Registration = ({handleRegistration}) => {
         
         if (response.status >= 400) {
             const responseBody = await response.json();
-            console.log(responseBody);
             setError(responseBody.message);
             return;
         }

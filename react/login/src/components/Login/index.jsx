@@ -71,10 +71,10 @@ const Login = () => {
             
             <div className="oauthOptions">
                 <a href={`${host}/oauth2/authorization/github`}>
-                    <img className="icon" src={githubIcon} />
+                    <img className="icon" src={githubIcon} alt='GitHub login'/>
                 </a>
                 <a href={`${host}/oauth2/authorization/google`}>
-                    <img className="icon" src={googleIcon} />
+                    <img className="icon" src={googleIcon} alt='Google login'/>
                 </a>
             </div>
 
