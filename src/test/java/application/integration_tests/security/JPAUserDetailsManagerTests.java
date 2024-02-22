@@ -10,8 +10,6 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import application.repositories.IUserRepository;
 import application.security.JPAUserDetailsManager;
@@ -24,9 +22,8 @@ public class JPAUserDetailsManagerTests {
 	@BeforeEach
 	public void setup() {
 		userRepository = mock(IUserRepository.class);
-		PasswordEncoder passwordEncoder = NoOpPasswordEncoder.getInstance();
 		
-		jpaUserDetailsManager = new JPAUserDetailsManager(userRepository, passwordEncoder);
+		jpaUserDetailsManager = new JPAUserDetailsManager(userRepository);
 	}
 	
 	@Test

@@ -11,8 +11,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import application.enums.AuthProvider;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,6 +36,9 @@ public class User implements UserDetails {
 	private String username;
 	
 	private String password;
+	
+	@Enumerated(EnumType.STRING)
+	private AuthProvider authProvider = AuthProvider.NONE;
 	
 	private LocalDate dateCreated;
 	
@@ -88,6 +95,14 @@ public class User implements UserDetails {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public AuthProvider getAuthProvider() {
+		return authProvider;
+	}
+
+	public void setAuthProvider(AuthProvider authProvider) {
+		this.authProvider = authProvider;
 	}
 
 	public LocalDate getDateCreated() {

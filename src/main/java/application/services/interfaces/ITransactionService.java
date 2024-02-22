@@ -10,7 +10,7 @@ import application.exceptions.TransactionNotFoundException;
 
 public interface ITransactionService {
 
-	public List<TransactionDTO> saveTransactions(List<TransactionDTO> transactionDTOs, User user) throws CategoryNotFoundException;
+	public List<TransactionDTO> saveTransactions(List<TransactionDTO> transactionDTOs, int i) throws CategoryNotFoundException;
 	public List<TransactionDTO> getTransactions(int userId);
 	public void deleteTransaction(int id) throws TransactionNotFoundException;
 	public void updateTransaction(TransactionDTO transactionDTO) throws TransactionNotFoundException, InvalidTransactionIdentifierException, CategoryNotFoundException;

@@ -4,16 +4,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import application.services.UserService;
-
 @Controller
 public class ViewController {
-	
-	private final UserService userService;
-	
-	public ViewController(UserService userService) {
-		this.userService = userService;
-	}
 	
 	@GetMapping(value = {"/transactions", "/"})
 	public String transactionsRedirect() {

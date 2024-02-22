@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import application.dtos.TransactionDTO;
+import application.entities.User;
 import application.exceptions.CategoryNotFoundException;
 import application.exceptions.InvalidTransactionIdentifierException;
 import application.exceptions.TransactionNotFoundException;
@@ -38,27 +39,33 @@ public class TransactionController {
 	
 	@PostMapping
 	public ResponseEntity<Object> saveTransactions(@RequestBody @Valid List<TransactionDTO> transactionDTOs, Authentication authentication) throws CategoryNotFoundException {
-		logger.info("Saving transactions for user: " + authentication.getName());
-		transactionDTOs = transactionService.saveTransactions(transactionDTOs, null);
-		logger.info("Transactions successfully saved for user: " + authentication.getName() + ". Sending them back to client.");
+		User user = (User) authentication.getPrincipal();
+		
+		logger.info("Saving transactions for user: " + user.getId());
+		transactionDTOs = transactionService.saveTransactions(transactionDTOs, user.getId());
+		logger.info("Transactions successfully saved for user: " + user.getId() + ". Sending them back to client.");
 
 		return new ResponseEntity<Object>(transactionDTOs, HttpStatus.CREATED);
 	}
 	
 	@GetMapping
 	public ResponseEntity<Object> getTransactions(Authentication authentication) {
-		logger.info("Retrieving transactions for user: " + authentication.getName());
-		List<TransactionDTO> transactions = transactionService.getTransactions(1);
-		logger.info("Successfully retrieved transactions for user: " + authentication.getName());
+		User user = (User) authentication.getPrincipal();
+		
+		logger.info("Retrieving transactions for user: " + user.getId());
+		List<TransactionDTO> transactions = transactionService.getTransactions(user.getId());
+		logger.info("Successfully retrieved transactions for user: " + user.getId());
 		
 		return new ResponseEntity<Object>(transactions, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("{id}")
 	public ResponseEntity<Object> deleteTransaction(@PathVariable int id, Authentication authentication) throws TransactionNotFoundException {
-		logger.info("Deleting transaction %d for user: %d", id, authentication.getName());
+		User user = (User) authentication.getPrincipal();
+		
+		logger.info("Deleting transaction %d for user: %d", id, user.getId());
 		transactionService.deleteTransaction(id);
-		logger.info("Successfully deleted transanction %d for user: %d", id, authentication.getName());
+		logger.info("Successfully deleted transanction %d for user: %d", id, user.getId());
 		
 		return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
 	}
@@ -67,9 +74,11 @@ public class TransactionController {
 	public ResponseEntity<Object> updateTransaction(@RequestBody @Valid TransactionDTO transactionDTO, Authentication authentication) throws TransactionNotFoundException, 
 																							   												 InvalidTransactionIdentifierException, 
 																							   												 CategoryNotFoundException {
-		logger.info("Updating transaction %d for user: %d", transactionDTO.getId(), authentication.getName());
+		User user = (User) authentication.getPrincipal();
+		
+		logger.info("Updating transaction %d for user: %d", transactionDTO.getId(), user.getId());
 		transactionService.updateTransaction(transactionDTO);
-		logger.info("Successfully updated transaction %d for user: %d", transactionDTO.getId(), authentication.getName());
+		logger.info("Successfully updated transaction %d for user: %d", transactionDTO.getId(), user.getId());
 		
 		return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
 	}

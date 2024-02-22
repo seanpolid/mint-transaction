@@ -29,6 +29,7 @@ import application.exceptions.InvalidTransactionIdentifierException;
 import application.exceptions.TransactionNotFoundException;
 import application.repositories.ICategoryRepository;
 import application.repositories.ITransactionRepository;
+import application.repositories.IUserRepository;
 import application.services.TransactionService;
 import application.utilities.IMapper;
 
@@ -36,6 +37,7 @@ public class TransactionServiceTests {
 
 	private ITransactionRepository mockTransactionRepository;
 	private ICategoryRepository mockCategoryRepository;
+	private IUserRepository mockUserRepository;
 	private IMapper mockMapper;
 	private TransactionService transactionService;
 	
@@ -43,9 +45,11 @@ public class TransactionServiceTests {
 	public void setup() {
 		mockTransactionRepository = mock(ITransactionRepository.class);
 		mockCategoryRepository = mock(ICategoryRepository.class);
+		mockUserRepository = mock(IUserRepository.class);
 		mockMapper = mock(IMapper.class);
 		transactionService = new TransactionService(mockTransactionRepository, 
 													mockCategoryRepository,
+													mockUserRepository,
 													mockMapper);
 	}
 	
@@ -65,10 +69,11 @@ public class TransactionServiceTests {
 		when(mockCategoryRepository.findById(anyInt())).thenReturn(Optional.of(new Category()));
 		when(mockMapper.map(any(TransactionDTO.class))).thenReturn(new Transaction());
 		when(mockTransactionRepository.saveAll(any())).thenReturn(transactions);
+		when(mockUserRepository.findById(anyInt())).thenReturn(Optional.of(new User()));
 		when(mockMapper.map(any(Transaction.class))).thenReturn(new TransactionDTO(1));
 		
 		// Act
-		List<TransactionDTO> savedTransactionDTOs = transactionService.saveTransactions(transactionDTOs, new User());
+		List<TransactionDTO> savedTransactionDTOs = transactionService.saveTransactions(transactionDTOs, 0);
 		
 		// Assert
 		assertEquals(savedTransactionDTOs.size(), transactions.size());
@@ -94,7 +99,7 @@ public class TransactionServiceTests {
 		when(mockCategoryRepository.findById(anyInt())).thenReturn(optionalCategory);
 		
 		// Act and Assert
-		assertThrows(CategoryNotFoundException.class, () -> transactionService.saveTransactions(transactionDTOs, new User()));
+		assertThrows(CategoryNotFoundException.class, () -> transactionService.saveTransactions(transactionDTOs, 0));
 	}
 	
 	@Test

@@ -7,28 +7,27 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import application.entities.User;
+import application.enums.AuthProvider;
+import application.exceptions.UserNotFoundException;
 import application.repositories.IUserRepository;
 
 @Component
 public class JPAUserDetailsManager implements IJPAUserDetailsManager {
 
 	private final IUserRepository userRepository;
-	private final PasswordEncoder passwordEncoder;
 	
-	public JPAUserDetailsManager(IUserRepository userRepository, PasswordEncoder passwordEncoder) {
+	public JPAUserDetailsManager(IUserRepository userRepository) {
 		this.userRepository = userRepository;
-		this.passwordEncoder = passwordEncoder;
 	}
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Optional<User> optionalUser = userRepository.findByUsername(username);
 		if (optionalUser.isPresent()) {
-			return optionalUser.get();
+			return new SecurityUser(optionalUser.get());
 		}
 		
 		throw new UsernameNotFoundException(username + " does not exist.");
@@ -68,6 +67,22 @@ public class JPAUserDetailsManager implements IJPAUserDetailsManager {
 	public boolean userEmailInUse(String email) {
 		Optional<User> user = userRepository.findByEmail(email);
 		return user.isPresent();
+	}
+
+	@Override
+	public boolean userExists(String username, AuthProvider authProviderType) {
+		Optional<User> optionalUser = userRepository.findByUsernameAndAuthProvider(username, authProviderType);
+		return optionalUser.isPresent();
+	}
+
+	@Override
+	public UserDetails loadUserByUsernameAndAuthProvider(String username, AuthProvider authProvider) throws UserNotFoundException {
+		Optional<User> optionalUser = userRepository.findByUsernameAndAuthProvider(username, authProvider);
+		if (optionalUser.isPresent()) {
+			return new SecurityUser(optionalUser.get());
+		}
+		
+		throw new UserNotFoundException(username, authProvider);
 	}
 
 }

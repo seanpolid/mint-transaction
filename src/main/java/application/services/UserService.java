@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import application.dtos.UserDTO;
 import application.entities.User;
+import application.enums.AuthProvider;
 import application.exceptions.EmailInUseException;
 import application.exceptions.UsernameInUseException;
 import application.security.IJPAUserDetailsManager;
@@ -42,6 +43,7 @@ public class UserService implements IUserService {
 		user.setUsername(userDTO.getUsername());		
 		user.setEmail(userDTO.getEmail());
 		user.setDateCreated(LocalDate.now());
+		user.setAuthProvider(AuthProvider.NONE);
 		
 		String password = passwordEncoder.encode(userDTO.getPassword());
 		user.setPassword(password);

@@ -16,6 +16,7 @@ import application.exceptions.InvalidTransactionIdentifierException;
 import application.exceptions.TransactionNotFoundException;
 import application.repositories.ICategoryRepository;
 import application.repositories.ITransactionRepository;
+import application.repositories.IUserRepository;
 import application.services.interfaces.ITransactionService;
 import application.utilities.IMapper;
 
@@ -24,22 +25,25 @@ public class TransactionService implements ITransactionService {
 
 	private final ITransactionRepository transactionRepository;
 	private final ICategoryRepository categoryRepository;
+	private final IUserRepository userRepository;
 	private final IMapper mapper;
 	
 	public TransactionService(ITransactionRepository transactionRepository, 
 							  ICategoryRepository categoryRepository,
+							  IUserRepository userRepository,
 							  IMapper mapper) {
 		this.transactionRepository = transactionRepository;
 		this.categoryRepository = categoryRepository;
+		this.userRepository = userRepository;
 		this.mapper = mapper;
 	}
 
 	@Override
 	@Transactional
-	public List<TransactionDTO> saveTransactions(List<TransactionDTO> transactionDTOs, User user) throws CategoryNotFoundException {
+	public List<TransactionDTO> saveTransactions(List<TransactionDTO> transactionDTOs, int userId) throws CategoryNotFoundException {
 		List<Transaction> transactions = new ArrayList<>();
 		for (TransactionDTO transactionDTO : transactionDTOs) {
-			Transaction transaction = mapToTransaction(transactionDTO, user);
+			Transaction transaction = mapToTransaction(transactionDTO, userId);
 			transactions.add(transaction);
 		}
 		
@@ -47,12 +51,13 @@ public class TransactionService implements ITransactionService {
 		
 		return mapAllToTransactionDTO(savedTransactions);
 	}
-	
-	private Transaction mapToTransaction(TransactionDTO transactionDTO, User user) throws CategoryNotFoundException {
+
+	private Transaction mapToTransaction(TransactionDTO transactionDTO, int userId) throws CategoryNotFoundException {
 		Category category = retrieveCategory(transactionDTO.getCategory().getId());
 		
 		// Initialize collection
-		user.getTransactions();		
+		User user = userRepository.findById(userId).get();
+		user.getTransactions().size();		
 		
 		Transaction transaction = mapper.map(transactionDTO);
 		transaction.setCategory(category);

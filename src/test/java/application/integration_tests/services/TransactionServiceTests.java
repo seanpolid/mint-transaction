@@ -102,7 +102,7 @@ public class TransactionServiceTests {
 		);
 		
 		// Act
-		List<TransactionDTO> savedTransactionDTOs = transactionService.saveTransactions(transactionDTOs, user);
+		List<TransactionDTO> savedTransactionDTOs = transactionService.saveTransactions(transactionDTOs, user.getId());
 		
 		// Assert
 		assertEquals(savedTransactionDTOs.size(), transactionDTOs.size());
