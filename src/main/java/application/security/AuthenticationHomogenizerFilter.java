@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
+import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -57,8 +58,7 @@ public class AuthenticationHomogenizerFilter extends OncePerRequestFilter {
 		UserInfo userInfo = getUserInfo(authorities);
 		SecurityUser securityUser = null;
 		
-		String email = userInfo.getEmail();
-		String username = email.substring(0, email.indexOf("@"));
+		String username = userInfo.getUsername();
 		AuthProvider authProvider = userInfo.getAuthProvider();
 		
 		if (userDetailsManager.userExists(username, authProvider)) {
@@ -66,7 +66,6 @@ public class AuthenticationHomogenizerFilter extends OncePerRequestFilter {
 		} else {
 			User user = new User();
 			user.setUsername(username);
-			user.setEmail(email);
 			user.setAuthProvider(authProvider);
 			user.setDateCreated(LocalDate.now());
 			
@@ -86,60 +85,49 @@ public class AuthenticationHomogenizerFilter extends OncePerRequestFilter {
 	}
 
 	private UserInfo getUserInfo(Collection<GrantedAuthority> authorities) {
-		String email = null;
+		String username = null;
 		AuthProvider authProvider = null;
 		
 		for (GrantedAuthority authority : authorities) {
+			// Represents OAuth through Google
 			if (authority instanceof OidcUserAuthority) {
 				OidcUserAuthority userAuthority = (OidcUserAuthority) authority;
 				
-				email = (String) userAuthority.getAttributes().get("email");
+				String email = (String) userAuthority.getAttributes().get("email");
+				username = email.substring(0, email.indexOf("@"));
+				authProvider = AuthProvider.GOOGLE;
+				break;
 			}
-			if (authority.getAuthority().contains("SCOPE") && authProvider == null) {
-				authProvider = getAuthProvider(authority.getAuthority());
+			
+			// Represents OAuth through GitHub
+			if (authority instanceof OAuth2UserAuthority) {
+				OAuth2UserAuthority userAuthority = (OAuth2UserAuthority) authority;
+				username = (String) userAuthority.getAttributes().get("login");
+				authProvider = AuthProvider.GITHUB;
+				break;
 			}
 		}
 		
-		return new UserInfo(email, authProvider);
-	}
-	
-	private AuthProvider getAuthProvider(String authority) {
-		authority = authority.toLowerCase();
-		
-		if (authority.contains("google")) {
-			return AuthProvider.GOOGLE;
-		}
-		if (authority.contains("github")) {
-			return AuthProvider.GITHUB;
-		}
-		
-		return null;
+		return new UserInfo(username, authProvider);
 	}
 
 	class UserInfo {
-		private String email;
+		private String username;
 		private AuthProvider authProvider;
 		
-		public UserInfo(String email, AuthProvider authProvider) {
-			this.email = email;
+		public UserInfo(String username, AuthProvider authProvider) {
+			this.username = username;
 			this.authProvider = authProvider;
 		}
 
-		public String getEmail() {
-			return email;
-		}
-
-		public void setEmail(String email) {
-			this.email = email;
+		public String getUsername() {
+			return username;
 		}
 
 		public AuthProvider getAuthProvider() {
 			return authProvider;
 		}
 
-		public void setAuthProvider(AuthProvider authProvider) {
-			this.authProvider = authProvider;
-		}
 	}
 
 }
