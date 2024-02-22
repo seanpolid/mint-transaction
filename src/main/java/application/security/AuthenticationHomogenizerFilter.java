@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collection;
 
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -22,6 +21,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * Converts all Spring OAuth Authentication objects to a native OAuth Authentication object
+ * to allow for uniform use of the Authentication object in downstream processes.
+ */
 @Component
 public class AuthenticationHomogenizerFilter extends OncePerRequestFilter {
 	
@@ -47,7 +50,7 @@ public class AuthenticationHomogenizerFilter extends OncePerRequestFilter {
 				filterChain.doFilter(request, response);
 			}
 			
-			var usernamePasswordToken = new UsernamePasswordAuthenticationToken(securityUser.getUser(), null, securityUser.getAuthorities());
+			var usernamePasswordToken = new OAuthAuthenticationToken(securityUser.getUser(), null, securityUser.getAuthorities());
 			securityContext.setAuthentication(usernamePasswordToken);
 		}
 		
@@ -74,14 +77,6 @@ public class AuthenticationHomogenizerFilter extends OncePerRequestFilter {
 		}
 		
 		return securityUser;
-	}
-	
-	private SecurityUser loadSecurityUser(String username, AuthProvider authProvider) {
-		try {
-			return (SecurityUser) userDetailsManager.loadUserByUsernameAndAuthProvider(username, authProvider);
-		} catch (Exception ex) {
-			return null;
-		}
 	}
 
 	private UserInfo getUserInfo(Collection<GrantedAuthority> authorities) {
@@ -110,6 +105,14 @@ public class AuthenticationHomogenizerFilter extends OncePerRequestFilter {
 		
 		return new UserInfo(username, authProvider);
 	}
+	
+	private SecurityUser loadSecurityUser(String username, AuthProvider authProvider) {
+		try {
+			return (SecurityUser) userDetailsManager.loadUserByUsernameAndAuthProvider(username, authProvider);
+		} catch (Exception ex) {
+			return null;
+		}
+	}
 
 	class UserInfo {
 		private String username;
@@ -127,7 +130,6 @@ public class AuthenticationHomogenizerFilter extends OncePerRequestFilter {
 		public AuthProvider getAuthProvider() {
 			return authProvider;
 		}
-
 	}
 
 }
