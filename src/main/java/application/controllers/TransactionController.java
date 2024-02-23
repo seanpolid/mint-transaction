@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -37,7 +38,7 @@ public class TransactionController {
 		this.transactionService = transactionService;
 	}
 	
-	@PostMapping
+	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> saveTransactions(@RequestBody @Valid List<TransactionDTO> transactionDTOs, Authentication authentication) throws CategoryNotFoundException {
 		User user = (User) authentication.getPrincipal();
 		
@@ -70,7 +71,7 @@ public class TransactionController {
 		return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
 	}
 	
-	@PutMapping
+	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> updateTransaction(@RequestBody @Valid TransactionDTO transactionDTO, Authentication authentication) throws TransactionNotFoundException, 
 																							   												 InvalidTransactionIdentifierException, 
 																							   												 CategoryNotFoundException {
