@@ -1,4 +1,4 @@
-import ApiContext from "./ApiContext";
+import apiService from "../services/ApiService";
 import endpointType from "../enums/endpointType";
 import mapper from "../utils/mapper";
 import TransactionContext from "./TransactionContext";
@@ -15,7 +15,6 @@ import DataContext from "./DataContext";
 const TransactionContextProvider = ({children, value}) => {
     const [selectedTransaction, setSelectedTransaction] = useState(value ? value : null);
     const [newTransactions, setNewTransactions] = useState([]);
-    const api = useContext(ApiContext);
     const dc = useContext(DataContext);
 
     useEffect(() => {
@@ -25,7 +24,7 @@ const TransactionContextProvider = ({children, value}) => {
     }, [dc.types]);
     
     const deleteSelectedTransaction = useCallback(async () => {
-        const successful = await api.deleteData(endpointType.TRANSACTIONS, selectedTransaction.id);
+        const successful = await apiService.deleteData(endpointType.TRANSACTIONS, selectedTransaction.id);
 
         if (successful) {
             const filteredTransactions = dc.transactions.filter(transaction => transaction.id !== selectedTransaction.id);
@@ -44,9 +43,9 @@ const TransactionContextProvider = ({children, value}) => {
         setSelectedTransaction(clonedSelectedTransaction);
     }, [selectedTransaction]);
 
-    const saveSelectedTransactionUpdates = useCallback(() => {
+    const saveSelectedTransactionUpdates = useCallback(async () => {
         const selectedTransactionDTO = mapper.mapToTransactionDTO(selectedTransaction);
-        const successful = api.putData(endpointType.TRANSACTIONS, selectedTransactionDTO);
+        const successful = await apiService.putData(endpointType.TRANSACTIONS, selectedTransactionDTO);
 
         if (successful) {
             dc.setTransactions(prevTransactions => prevTransactions.map(transaction => {
@@ -84,7 +83,7 @@ const TransactionContextProvider = ({children, value}) => {
 
     const saveNewTransactions = useCallback(async () => {
         const newTransactionDTOs = newTransactions.map(newTransaction => mapper.mapToTransactionDTO(newTransaction));
-        const savedTransactionDTOs = await api.postData(endpointType.TRANSACTIONS, newTransactionDTOs);
+        const savedTransactionDTOs = await apiService.postData(endpointType.TRANSACTIONS, newTransactionDTOs);
         
         if (savedTransactionDTOs.length > 0) {
             const savedTransactions = savedTransactionDTOs.map(savedTransactionDTO => mapper.mapToTransaction(savedTransactionDTO));

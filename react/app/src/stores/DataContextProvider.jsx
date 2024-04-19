@@ -1,4 +1,4 @@
-import ApiContext from "./ApiContext";
+import apiService from "../services/ApiService";
 import DataContext from "./DataContext";
 import endpointType from "../enums/endpointType";
 import mapper from "../utils/mapper";
@@ -17,15 +17,14 @@ const DataContextProvider = ({children}) => {
     const [transactions, setTransactions] = useState([]);
     const [goals, setGoals] = useState([]);
     const sc = useContext(StatusContext);
-    const api = useContext(ApiContext);
 
     useEffect(() => {
         const loadData = async () => {
             sc.incrementLoadingData();
 
-            const loadedTransactions = await getTransactions(api);
-            const loadedTypes = await getTypes(api);
-            const loadedCategories = await getCategories(api);
+            const loadedTransactions = await getTransactions();
+            const loadedTypes = await getTypes();
+            const loadedCategories = await getCategories();
 
             setTransactions(loadedTransactions);
             setTypes(loadedTypes);
@@ -55,8 +54,8 @@ const DataContextProvider = ({children}) => {
     )
 }
 
-async function getTransactions(api) {
-    const transactionDTOs = await api.getData(endpointType.TRANSACTIONS);
+async function getTransactions() {
+    const transactionDTOs = await apiService.getData(endpointType.TRANSACTIONS);
     
     const transactions = [];
     for (const transactionDTO of transactionDTOs) {
@@ -67,8 +66,8 @@ async function getTransactions(api) {
     return transactions;
 }
 
-async function getTypes(api) {
-    const typeDTOs = await api.getData(endpointType.TYPES);
+async function getTypes() {
+    const typeDTOs = await apiService.getData(endpointType.TYPES);
 
     const types = [];
     for (const typeDTO of typeDTOs) {
@@ -79,8 +78,8 @@ async function getTypes(api) {
     return types;
 }
 
-async function getCategories(api) {
-    const categoryDTOs = await api.getData(endpointType.CATEGORIES);
+async function getCategories() {
+    const categoryDTOs = await apiService.getData(endpointType.CATEGORIES);
 
     const categories = [];
     for (const categoryDTO of categoryDTOs) {

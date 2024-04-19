@@ -1,6 +1,6 @@
 import { expect, test, describe, vi, afterEach, beforeEach } from "vitest";
 import endpointType from "../../../enums/endpointType";
-import { getUri } from "../../../stores/ApiContextProvider";
+import apiService from "../../../services/ApiService";
 import mapper from "../../../utils/mapper";
 import { renderElement } from '../../../utils/test-utils'
 import { screen, cleanup, waitFor, fireEvent } from "@testing-library/react";
@@ -15,13 +15,13 @@ const categories = [new Category(1, "Job", types[0]), new Category(2, "Gift", ty
 const transaction = new Transaction(1, "uuid", types[0], categories[0], "2023-10-09", "2023-10-25", 2000, "notes", "uuid");
 
 const successHandlers = [
-    rest.get(getUri(endpointType.TYPES), (req, res, ctx) => {
+    rest.get(apiService.getUri(endpointType.TYPES), (req, res, ctx) => {
         return res(ctx.status(200), ctx.json(types))
     }),
-    rest.get(getUri(endpointType.CATEGORIES), (req, res, ctx) => {
+    rest.get(apiService.getUri(endpointType.CATEGORIES), (req, res, ctx) => {
         return res(ctx.status(200), ctx.json(categories))
     }),
-    rest.get(getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {
+    rest.get(apiService.getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {
         const transactionDTO = mapper.mapToTransactionDTO(transaction);
         return res(ctx.status(200), ctx.json([transactionDTO]))
     }),

@@ -1,20 +1,4 @@
-import ApiContext from "./ApiContext";
 import endpointType from '../enums/endpointType'
-
-const ApiContextProvider = ({children, value}) => {
-    const data = {
-        getData: getData,
-        postData: postData,
-        deleteData: deleteData,
-        putData: putData
-    }
-
-    return (
-        <ApiContext.Provider value={value ? value : data}>
-            {children}
-        </ApiContext.Provider>
-    )
-}
 
 /**
  * Retrieves all data that matches the provided type.
@@ -24,7 +8,9 @@ const ApiContextProvider = ({children, value}) => {
 async function getData(type) {
     try {
         const uri = getUri(type);
-        const response = await fetch(uri);
+        const response = await fetch(uri, {
+            credentials: 'include'
+        });
         return await response.json();
     } catch (exception) {
         console.log("exception:", exception);
@@ -77,9 +63,10 @@ async function postData(type, data) {
             method: 'POST', 
             headers: {
                 "Accept": "application/json",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
+            credentials: 'include'
         })
 
         return await response.json();
@@ -99,7 +86,11 @@ async function postData(type, data) {
 async function deleteData(type, id) {
     try {
         const uri = getUri(type, id);
-        const response = await fetch(uri, {method: 'DELETE'});
+        const response = await fetch(uri, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+
         if (response.status >= 200 && response.status < 300) {
             return true;
         } else {
@@ -127,7 +118,8 @@ async function putData(type, data) {
                 "Accept": "application/json",
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
+            credentials: 'include'
         });
 
         if (response.status >= 200 && response.status < 300) {
@@ -141,5 +133,10 @@ async function putData(type, data) {
     }
 }
 
-export default ApiContextProvider
-export  { getUri }
+export default {
+    getData: getData,
+    postData: postData,
+    deleteData: deleteData,
+    putData: putData,
+    getUri: getUri
+}
