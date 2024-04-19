@@ -7,24 +7,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class ViewController {
 	
-	@GetMapping(value = {"/transactions", "/"})
-	public String transactionsRedirect() {
-		return "redirect:/transactions/add";
-	}
+	@GetMapping(value = "/**/{path:[^\\.]*}")
+    public String getIndex() {
+        return "forward:/";
+    }
 	
-	@GetMapping(value = {"/goals"})
-	public String goalsRedirect() {
-		return "redirect:/goals/add";
-	}
-	
-	@GetMapping(value = {"/transactions/add", "/transactions/view", "/dashboard", "/goals/add", "/goals/view", "/profile"})
-	public String app() {
-		return "/app/index.html";
-	}
-	
-	@GetMapping("/home")
-	public String home() {
-		return "home.html";
+	@GetMapping("/")
+	public String index() {
+		return "/index.html";
 	}
 	
 	@GetMapping("/login")

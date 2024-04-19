@@ -5,9 +5,9 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
     plugins: [react()],
     build: {
-        outDir: "../../src/main/resources/static/app"
+        outDir: "../../src/main/resources/static/"
     },
-    base: '/app',
+    base: '/',
     test: {
         environment: 'jsdom',
         css: true

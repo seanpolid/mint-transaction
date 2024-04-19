@@ -12,6 +12,7 @@ import { tabType } from '../../enums'
 import VerticalNavBar from '../VerticalNavBar'
 import ViewPage from '../ViewPage'
 import { useEffect, useState, useContext, useReducer, useCallback } from 'react'
+import { useLocation } from 'react-router-dom'
 import { v4 } from 'uuid'
 import TransactionContext from '../../stores/TransactionContext'
 import GoalContext from '../../stores/GoalContext'
@@ -21,6 +22,14 @@ const tabsWithPages = [tabType.TRANSACTIONS, tabType.GOALS];
 const App = () => {
     const [pageState, dispatch] = useReducer(pageReducer, initialPageState);
     const sc = useContext(StatusContext);
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (location.pathname === "/") {
+            navigate("/transactions/add");
+        }
+    }, []);
 
     const handleClick = (event) => {
         const target = event.target;

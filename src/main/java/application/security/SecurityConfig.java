@@ -9,6 +9,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import application.repositories.IUserRepository;
 
@@ -38,11 +41,27 @@ public class SecurityConfig {
 	}
 	
 	@Bean
-	SecurityFilterChain filterChain(HttpSecurity http, OAuthConversionFilter oauthConversionFilter) throws Exception {
+	CorsConfigurationSource corsConfigurationSource() {
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		
+		CorsConfiguration config = new CorsConfiguration();
+		config.addAllowedHeader("*");
+		config.addAllowedMethod("*");
+		config.addAllowedOrigin("http://localhost:5173/");
+		config.setAllowCredentials(true);
+		source.registerCorsConfiguration("/**", config);
+		
+		return source;
+	}
+	
+	@Bean
+	SecurityFilterChain filterChain(HttpSecurity http, OAuthConversionFilter oauthConversionFilter, CorsConfigurationSource corsConfigurationSource) throws Exception {
 		return http.csrf((customizer) -> {
 			customizer.disable();
 		}).cors((customizer) -> {
 			customizer.disable();
+		}).cors((customizer) -> {
+			customizer.configurationSource(corsConfigurationSource);
 		}).authorizeHttpRequests((customizer) -> {
 			customizer.requestMatchers("/login/**", "/api/user", "/home*", "/exceptions/**").permitAll()
 			  		  .anyRequest().authenticated();
