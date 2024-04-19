@@ -87,10 +87,16 @@ const Form = ({transaction, onButtonClick}) => {
         
         if (attributeName === "type") {
             value = types.filter(type => type.id === Number.parseInt(value))[0];
+            tc.updateNewTransaction('category', null, key);
+            tc.updateNewTransaction('recurs', false, key);
         }
 
         if (attributeName === "category") {
             value = categories.filter(category => category.id === Number.parseInt(value))[0];
+            
+            if (value.name === 'Job') {
+                tc.updateNewTransaction('recurs', true, key);
+            }
         }
 
         tc.updateNewTransaction(attributeName, value, key);
