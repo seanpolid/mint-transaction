@@ -2,7 +2,7 @@ import { describe, test, expect, afterEach, vi, beforeEach } from 'vitest'
 import endpointType from '../../enums/endpointType';
 import Log from ".";
 import mapper from '../../utils/mapper';
-import { getUri } from '../../stores/ApiContextProvider';
+import apiService from '../../services/ApiService';
 import { renderElement } from '../../utils/test-utils';
 import { rest } from 'msw';
 import { screen, cleanup, waitFor } from "@testing-library/react";
@@ -16,13 +16,13 @@ const category = new Category(1, "Job", type);
 const transaction = new Transaction(1, "uuid", type, category, "10/09/2023", "10/09/2023", 2000, "", "uuid");
 
 let successHandlers = [
-    rest.get(getUri(endpointType.TYPES), (req, res, ctx) => {
+    rest.get(apiService.getUri(endpointType.TYPES), (req, res, ctx) => {
         return res(ctx.status(200), ctx.json([type]))
     }),
-    rest.get(getUri(endpointType.CATEGORIES), (req, res, ctx) => {
+    rest.get(apiService.getUri(endpointType.CATEGORIES), (req, res, ctx) => {
         return res(ctx.status(200), ctx.json([category]))
     }),
-    rest.get(getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {
+    rest.get(apiService.getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {
         const savedTransactionDTOs = mapper.mapToTransactionDTO(transaction);
         return res(ctx.status(200), ctx.json([savedTransactionDTOs]));
     }),
@@ -144,7 +144,7 @@ describe('Log', () => {
                 new Transaction(3, "uuid2", type, category, "10/07/2023", null, 2000, "", "uuid2"),
         ];
         const transactionDTOS = transactions.map(transaction => mapper.mapToTransactionDTO(transaction));
-        successHandlers.push(rest.get(getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {
+        successHandlers.push(rest.get(apiService.getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {
             return res(ctx.status(200), ctx.json(transactionDTOS));
         }));
 
@@ -174,7 +174,7 @@ describe('Log', () => {
                 new Transaction(3, "uuid2", type, category, "10/07/2023", null, 2000, "", "uuid2"),
         ];
         const transactionDTOS = transactions.map(transaction => mapper.mapToTransactionDTO(transaction));
-        successHandlers.push(rest.get(getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {
+        successHandlers.push(rest.get(apiService.getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {
             return res(ctx.status(200), ctx.json(transactionDTOS));
         }));
 
@@ -207,7 +207,7 @@ describe('Log', () => {
                 new Transaction(3, "uuid2", type, category, "10/07/2023", null, 3000, "", "uuid2"),
         ];
         const transactionDTOS = transactions.map(transaction => mapper.mapToTransactionDTO(transaction));
-        successHandlers.push(rest.get(getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {
+        successHandlers.push(rest.get(apiService.getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {
             return res(ctx.status(200), ctx.json(transactionDTOS));
         }));
 
@@ -240,7 +240,7 @@ describe('Log', () => {
                 new Transaction(3, "uuid2", type, new Category(3, "Other", type), "10/09/2023", null, 1000, "", "uuid2"),
         ]
         const transactionDTOS = transactions.map(transaction => mapper.mapToTransactionDTO(transaction));
-        successHandlers.push(rest.get(getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {
+        successHandlers.push(rest.get(apiService.getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {
             return res(ctx.status(200), ctx.json(transactionDTOS));
         }));
 

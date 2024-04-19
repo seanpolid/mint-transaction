@@ -1,7 +1,7 @@
 import { Category, Type } from '../../../models'
 import endpointType from '../../../enums/endpointType'
 import { expect, describe, test, afterEach, beforeEach } from 'vitest'
-import { getUri } from '../../../stores/ApiContextProvider'
+import apiService from '../../../services/ApiService'
 import { renderElement } from '../../../utils/test-utils'
 import { rest } from 'msw'
 import { screen, cleanup, waitFor } from '@testing-library/react'
@@ -13,13 +13,13 @@ const types = [new Type(1, "Income"), new Type(2, "Expense")];
 const category = new Category(1, "Rent", types[1]);
 
 const successHandlers = [
-    rest.get(getUri(endpointType.TYPES), (req, res, ctx) => {
+    rest.get(apiService.getUri(endpointType.TYPES), (req, res, ctx) => {
         return res(ctx.status(200), ctx.json(types))
     }),
-    rest.get(getUri(endpointType.CATEGORIES), (req, res, ctx) => {
+    rest.get(apiService.getUri(endpointType.CATEGORIES), (req, res, ctx) => {
         return res(ctx.status(200), ctx.json([category]))
     }),
-    rest.get(getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {
+    rest.get(apiService.getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {
         return res(ctx.status(200), ctx.json([]))
     }),
     rest.post("http://localhost:8080/api/transactions", (req, res, ctx) => {
