@@ -1,8 +1,8 @@
 const tabType = {
     TRANSACTIONS: "transactions",
     DASHBOARD: "dashboard",
-    GOALS: "goals",
-    PROFILE: "profile"
+    PROFILE: "profile",
+    FORECASTS: "forecasts"
 };
 
 export default tabType

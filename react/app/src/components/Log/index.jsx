@@ -19,7 +19,7 @@ const Log = ({type, handleSelection, selectedId}) => {
 
     const items = {
         [tabType.TRANSACTIONS]: dc.transactions,
-        [tabType.GOALS]: dc.goals
+        [tabType.FORECASTS]: dc.forecasts
     };
 
     useEffect(() => {
@@ -32,7 +32,7 @@ const Log = ({type, handleSelection, selectedId}) => {
         }
 
         setPreparedItems(sortedItems);
-    }, [type, searchTerm, sortTerm, sortOrder, dc.transactions, dc.goals, selectedId]);
+    }, [type, searchTerm, sortTerm, sortOrder, dc.transactions, dc.forecasts, selectedId]);
 
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
@@ -113,10 +113,10 @@ function convertToLog(type, item, onClick, selectedId) {
                 selectedId={selectedId}
             />
         ),
-        [tabType.GOALS]: (
-            <Goal 
+        [tabType.FORECASTS]: (
+            <Forecast 
                 key={item.id} 
-                goal={item} 
+                forecast={item} 
                 onClick={onClick} 
                 selectedId={selectedId}
             />
@@ -188,7 +188,7 @@ const SortWindow = ({initialSortTerm, initialSortOrder, type, onChange}) => {
     // that will be sorted
     const sortOptions = {
         [tabType.TRANSACTIONS]: Object.values(sortType).sort((t1, t2) => compareString(t1, t2)),
-        [tabType.GOALS]: []
+        [tabType.FORECASTS]: []
     }
 
     useEffect(() => {
@@ -233,7 +233,7 @@ const SortWindow = ({initialSortTerm, initialSortOrder, type, onChange}) => {
     )
 }
 
-const Goal = () => {
+const Forecast = () => {
     return (
         <>
         

@@ -1,4 +1,4 @@
-class Goal {
+class Forecast {
     id;
     name;
     amount;
@@ -7,4 +7,4 @@ class Goal {
     notes;
 }
 
-export default Goal
+export default Forecast

@@ -15,7 +15,7 @@ const DataContextProvider = ({children}) => {
     const [categories, setCategories] = useState([]);
     const [types, setTypes] = useState([]);
     const [transactions, setTransactions] = useState([]);
-    const [goals, setGoals] = useState([]);
+    const [forecasts, setForecasts] = useState([]);
     const sc = useContext(StatusContext);
 
     useEffect(() => {
@@ -43,8 +43,8 @@ const DataContextProvider = ({children}) => {
         transactions: transactions,
         setTransactions: setTransactions,
 
-        goals: goals,
-        setGoals: setGoals
+        forecasts: forecasts,
+        setForecasts: setForecasts
     }
 
     return (

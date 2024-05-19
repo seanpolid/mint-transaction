@@ -22,7 +22,7 @@ const VerticalNavBar = ({pageState}) => {
 
         switch (type) {
             case tabType.TRANSACTIONS:
-            case tabType.GOALS:
+            case tabType.FORECASTS:
                 navigate(`${links[type]}/${pageState[type]}`);
                 break;
             case tabType.DASHBOARD:
@@ -61,7 +61,7 @@ const VerticalNavBar = ({pageState}) => {
 const tabIconMapping = {
     [tabType.TRANSACTIONS]: iconType.LOG,
     [tabType.DASHBOARD]: iconType.GRAPH,
-    [tabType.GOALS]: iconType.TARGET,
+    [tabType.FORECASTS]: iconType.TARGET,
     [tabType.PROFILE]: iconType.USER
 }
 

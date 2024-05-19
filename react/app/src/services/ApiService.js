@@ -35,7 +35,7 @@ function getUri(type, id) {
 
     const endpoints = {
         [endpointType.CATEGORIES]:  "/api/categories",
-        [endpointType.GOALS]: "/api/goals",
+        [endpointType.FORECASTS]: "/api/forecasts",
         [endpointType.TRANSACTIONS]: '/api/transactions',
         [endpointType.TYPES]: "/api/types",
         [endpointType.USERS]: "/api/users"

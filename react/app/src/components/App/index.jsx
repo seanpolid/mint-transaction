@@ -2,6 +2,7 @@
 import AddPage from '../AddPage'
 import { Routes, Route, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import Dashboard from '../Dashboard'
+import ForecastContext from '../../stores/ForecastContext'
 import Log from '../Log'
 import links from '../../config/links'
 import Profile from '../Profile'
@@ -9,15 +10,14 @@ import pageType from '../../enums/pageType'
 import style from './style.module.css'
 import StatusContext from '../../stores/StatusContext'
 import { tabType } from '../../enums' 
+import TransactionContext from '../../stores/TransactionContext'
 import VerticalNavBar from '../VerticalNavBar'
 import ViewPage from '../ViewPage'
 import { useEffect, useState, useContext, useReducer, useCallback } from 'react'
 import { useLocation } from 'react-router-dom'
 import { v4 } from 'uuid'
-import TransactionContext from '../../stores/TransactionContext'
-import GoalContext from '../../stores/GoalContext'
 
-const tabsWithPages = [tabType.TRANSACTIONS, tabType.GOALS];
+const tabsWithPages = [tabType.TRANSACTIONS, tabType.FORECASTS];
 
 const App = () => {
     const [pageState, dispatch] = useReducer(pageReducer, initialPageState);
@@ -73,7 +73,7 @@ const App = () => {
 
 const initialPageState = {
     [tabType.TRANSACTIONS]: pageType.ADD,
-    [tabType.GOALS]: pageType.ADD
+    [tabType.FORECASTS]: pageType.ADD
 }
 
 function pageReducer(state, action) {
@@ -123,28 +123,28 @@ const NetworkError = () => {
 
 const TabWithPages = ({type, onClick}) => {    
     const tc = useContext(TransactionContext);
-    const gc = useContext(GoalContext);
-    const [selectedId, setSelectedId] = useState(getSelectedId(type, tc, gc));
+    const fc = useContext(ForecastContext);
+    const [selectedId, setSelectedId] = useState(getSelectedId(type, tc, fc));
     const navigate = useNavigate();
 
     useEffect(() => {
         if (type === tabType.TRANSACTIONS) {
             setSelectedId(tc.selectedTransaction ? tc.selectedTransaction.id : null);
-        } else if (type === tabType.GOALS) {
-            setSelectedId(gc.selectedGoal ? gc.selectedGoal.id : null);
+        } else if (type === tabType.FORECASTS) {
+            setSelectedId(fc.selectedForecast ? fc.selectedForecast.id : null);
         }
-    }, [tc.selectedTransaction, gc.selectedGoal]);
+    }, [tc.selectedTransaction, fc.selectedForecast]);
 
     // Necessary to handle selection at this level to prevent unnecessary rerendering of 
-    // log when TransactionContext or GoalContext get updated from AddPage
+    // log when TransactionContext or ForecastContext get updated from AddPage
     const handleSelection = useCallback((selectedItem, switchToView) => {
         const setters = {
             [tabType.TRANSACTIONS]: tc.setSelectedTransaction,
-            [tabType.GOALS]: gc.setSelectedGoal
+            [tabType.FORECASTS]: fc.setSelectedForecast
         }
         const viewLinks = {
             [tabType.TRANSACTIONS]: `${links[tabType.TRANSACTIONS]}/view`,
-            [tabType.GOALS]: `${tabType.GOALS}/view`
+            [tabType.FORECASTS]: `${links[tabType.FORECASTS]}/view`
         }
 
         setters[type](selectedItem);
@@ -194,10 +194,10 @@ const TabWithPages = ({type, onClick}) => {
     )
 }
 
-function getSelectedId(type, tc, gc) {
+function getSelectedId(type, tc, fc) {
     const selectedItem = {
         [tabType.TRANSACTIONS]: tc.selectedTransaction,
-        [tabType.GOALS]: gc.selectedGoal
+        [tabType.FORECASTS]: fc.selectedForecast
     }
 
     if (!selectedItem[type]) {

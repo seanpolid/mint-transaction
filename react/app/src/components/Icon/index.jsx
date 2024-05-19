@@ -74,7 +74,7 @@ const Graph = () => {
 const Target = () => {
     return (
         <>
-            <div className={style.ring} aria-label='goals'>
+            <div className={style.ring} aria-label='forecasts'>
                 <div className={style.ring}>
                     <div className={style.ring}></div>
                 </div>

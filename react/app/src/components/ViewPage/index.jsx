@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import GoalPage from './GoalPage'
+import ForecastPage from './ForecastPage'
 import style from './style.module.css'
 import { tabType } from '../../enums'
 import TransactionPage from './TransactionPage'
@@ -7,7 +7,7 @@ import TransactionPage from './TransactionPage'
 const ViewPage = ({type}) => {
     const page = {
         [tabType.TRANSACTIONS]: <TransactionPage />,
-        [tabType.GOALS]: <GoalPage />
+        [tabType.FORECASTS]: <ForecastPage />
     }
 
     return (

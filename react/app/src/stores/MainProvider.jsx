@@ -1,5 +1,5 @@
 import DataContextProvider from "./DataContextProvider";
-import GoalContextProvider from './GoalContextProvider';
+import ForecastContextProvider from './ForecastContextProvider'
 import StatusContextProvider from "./StatusContextProvider";
 import TransactionContextProvider from "./TransactionContextProvider";
 
@@ -8,9 +8,9 @@ const MainProvider = ({children, selectedTransaction}) => {
         <StatusContextProvider>
             <DataContextProvider>
                 <TransactionContextProvider value={selectedTransaction}>
-                    <GoalContextProvider>
+                    <ForecastContextProvider>
                         {children}
-                    </GoalContextProvider>
+                    </ForecastContextProvider>
                 </TransactionContextProvider>
             </DataContextProvider>
         </StatusContextProvider>

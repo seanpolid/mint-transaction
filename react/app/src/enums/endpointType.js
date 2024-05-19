@@ -1,6 +1,6 @@
 const endpointType = {
     CATEGORIES: "categories",
-    GOALS: "goals",
+    FORECASTS: "forecasts",
     TRANSACTIONS: "transactions",
     TYPES: "types",
     USERS: "users"
