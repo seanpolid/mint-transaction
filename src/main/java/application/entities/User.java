@@ -46,9 +46,6 @@ public class User implements UserDetails {
 	@OneToMany(mappedBy="user", cascade=CascadeType.ALL)
 	private List<Transaction> transactions = new ArrayList<>();
 	
-	@OneToMany(mappedBy="user", cascade=CascadeType.ALL)
-	private List<Goal> goals = new ArrayList<>();
-	
 	public User() {
 	}
 	
@@ -130,18 +127,6 @@ public class User implements UserDetails {
 	
 	public void addTransaction(Transaction transaction) {
 		transactions.add(transaction);
-	}
-
-	public List<Goal> getGoals() {
-		return goals;
-	}
-
-	public void setGoals(List<Goal> goals) {
-		this.goals = goals;
-	}
-	
-	public void addGoal(Goal goal) {
-		goals.add(goal);
 	}
 
 	@Override
