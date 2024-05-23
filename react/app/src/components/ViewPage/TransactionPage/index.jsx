@@ -1,11 +1,15 @@
 /* eslint-disable react/prop-types */
+
+import { useContext } from "react";
+
+import { extractCurrency } from "../../../utils/functions";
+import TransactionContext from "../../../stores/TransactionContext";
+import DataContext from "../../../stores/DataContext";
 import InputWithLabel from "../../InputWithLabel";
 import SelectWithLabel from "../../SelectWithLabel"
-import { useContext } from "react";
 import TextAreaWithLabel from "../../TextAreaWithLabel";
-import TransactionContext from "../../../stores/TransactionContext";
+
 import style from "../style.module.css";
-import DataContext from "../../../stores/DataContext";
 
 const TransactionPage = () => {
     const tc = useContext(TransactionContext);
@@ -27,13 +31,11 @@ const TransactionPage = () => {
         let value = target.value;
 
         if (attributeName === "amount") {
-            const digits = /[0-9]+[.]*[0-9]{0,2}/;
-            const match = value.match(digits);
-
-            if (match === null) {
+            const currency = extractCurrency(value);
+            if (!currency) {
                 value = "0"
             } else {
-                value = match[0];
+                value = currency;
                 if (value[0] === "0" && (value.length == 1 || value[1] != ".")) {
                     value = value.substring(1);
                 }

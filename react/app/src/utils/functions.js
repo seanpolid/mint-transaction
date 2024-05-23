@@ -4,7 +4,7 @@
  * @param {*} options 
  * @returns 
  */
-const findParent = (element, options = {}) => {
+export function findParent(element, options = {}) {
     const { elementLimit, className, id, nodeName} = options;
     if (!className && !id && !nodeName) {
         throw Error('Please provide a className or an id');
@@ -32,7 +32,7 @@ const findParent = (element, options = {}) => {
  * @param {*} string 
  * @returns 
  */
-const asTitleCase = (string) => {
+export function asTitleCase(string) {
     if (string[0] >= 'a' && string[0] <= 'z') {
         string = string[0].toUpperCase() + string.substring(1);
     }
@@ -40,7 +40,7 @@ const asTitleCase = (string) => {
     return string;
 }
 
-const getData = async (uri) => {
+export async function getData(uri) {
     try {
         const response = await fetch(uri);
         return await response.json();
@@ -49,7 +49,7 @@ const getData = async (uri) => {
     }
 }
 
-const postData = async (uri, data) => {
+export async function postData (uri, data) {
     try {
         const response = await fetch(uri, {
             method: 'POST', 
@@ -67,7 +67,7 @@ const postData = async (uri, data) => {
     }
 }
 
-const deleteData = async (uri) => {
+export async function deleteData (uri) {
     try {
         const response = await fetch(uri, {method: 'DELETE'});
         if (response.status >= 200 && response.status < 300) {
@@ -81,7 +81,7 @@ const deleteData = async (uri) => {
     }
 }
 
-const putData = async (uri, data) => {
+export async function putData (uri, data) {
     try {
         const response = await fetch(uri, {
             method: 'PUT',
@@ -103,4 +103,15 @@ const putData = async (uri, data) => {
     }
 }
 
-export { findParent, asTitleCase, getData, postData, deleteData, putData}
+export function extractCurrency(string) {
+    const currencyPattern = /[0-9]+[.]*[0-9]{0,2}/;
+    const match = string.match(currencyPattern);
+    return match ? match[0] : null;
+}
+
+export function isBlank(string) {
+    if (string.length === 0) return true;
+
+    const emptyPattern = /^[ ]*$/;
+    return emptyPattern.test(string);
+}
