@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import application.dtos.TransactionDTO;
 import application.entities.User;
 import application.exceptions.CategoryNotFoundException;
-import application.exceptions.InvalidTransactionIdentifierException;
 import application.exceptions.TransactionNotFoundException;
+import application.exceptions.TypeNotFoundException;
 import application.services.interfaces.ITransactionService;
 import jakarta.validation.Valid;
 
@@ -39,7 +39,7 @@ public class TransactionController {
 	}
 	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> saveTransactions(@RequestBody @Valid List<TransactionDTO> transactionDTOs, Authentication authentication) throws CategoryNotFoundException {
+	public ResponseEntity<Object> saveTransactions(@RequestBody @Valid List<TransactionDTO> transactionDTOs, Authentication authentication) throws CategoryNotFoundException, TypeNotFoundException {
 		User user = (User) authentication.getPrincipal();
 		
 		logger.info("Saving transactions for user: " + user.getId());
@@ -72,9 +72,7 @@ public class TransactionController {
 	}
 	
 	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> updateTransaction(@RequestBody @Valid TransactionDTO transactionDTO, Authentication authentication) throws TransactionNotFoundException, 
-																							   												 InvalidTransactionIdentifierException, 
-																							   												 CategoryNotFoundException {
+	public ResponseEntity<Object> updateTransaction(@RequestBody @Valid TransactionDTO transactionDTO, Authentication authentication) throws Exception {
 		User user = (User) authentication.getPrincipal();
 		
 		logger.info("Updating transaction %d for user: %d", transactionDTO.getId(), user.getId());

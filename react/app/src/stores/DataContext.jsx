@@ -2,6 +2,8 @@ import { createContext } from "react";
 
 const DataContext = createContext({
     categories: [],
+    addNewCategories: () => {},
+    
     types: [],
 
     transactions: [],

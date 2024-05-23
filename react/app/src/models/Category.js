@@ -8,6 +8,14 @@ class Category {
         this.name = name;
         this.type = type;
     }
+
+    clone() {
+        const category = new Category();
+        category.id = this.id;
+        category.name = this.name;
+        category.type = this.type;
+        return category;
+    }
 }
 
 export default Category;

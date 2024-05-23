@@ -38,6 +38,12 @@ public class Category {
 		this.id = id;
 	}
 	
+	public Category(String name, Type type) {
+		super();
+		this.name = name;
+		this.type = type;
+	}
+
 	public Category(int id, String name, Type type) {
 		this.id = id;
 		this.name = name;

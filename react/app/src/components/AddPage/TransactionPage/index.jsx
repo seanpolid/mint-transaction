@@ -1,13 +1,16 @@
 /* eslint-disable react/prop-types */
+
+import { isBlank } from '../../../utils/functions';
+import Category from '../../../models/Category';
 import InputWithLabel from '../../InputWithLabel';
 import RadioButtonWithLabel from '../../RadioButtonWithLabel';
 import Scrollpane from '../../Scrollpane';
-import SelectWithLabel from '../../SelectWithLabel';
 import style from './style.module.css'
 import TransactionContext from '../../../stores/TransactionContext'
 import TextAreaWithLabel from '../../TextAreaWithLabel';
 import { useCallback, useContext } from 'react';
 import DataContext from '../../../stores/DataContext';
+import { DatalistWithLabel } from '../../DatalistWithLabel';
 
 const TransactionPage = () => {
     const tc = useContext(TransactionContext);
@@ -37,7 +40,7 @@ const TransactionPage = () => {
                 <ul>
                     {tc.newTransactions.map(transaction => (
                         <li key={transaction.identifier} data-key={transaction.identifier}>
-                            <Form 
+                            <Transaction 
                                 transaction={transaction} 
                                 onButtonClick={handleDelete}
                             />   
@@ -54,7 +57,7 @@ const TransactionPage = () => {
     )
 }
 
-const Form = ({transaction, onButtonClick}) => {
+const Transaction = ({transaction, onButtonClick}) => {
     const tc = useContext(TransactionContext);
     const dc = useContext(DataContext);
     const categories = dc.categories;
@@ -71,41 +74,76 @@ const Form = ({transaction, onButtonClick}) => {
         ['notes']: `notes_${identifier}`
     }
 
-    const handleChange = useCallback((event) => {
+    const handleTypeChange = useCallback((event) => {
         const target = event.target;
-        const [attributeName, key] = target.name.split('_');
+        const value = types.filter(type => type.id === Number.parseInt(target.value))[0];
+
+        const [attributeName, key] = getAttributeNameAndKey(target.name);
+        tc.updateNewTransaction('category', null, key);
+        tc.updateNewTransaction('recurs', false, key);
+        tc.updateNewTransaction(attributeName, value, key);
+    }, [types])
+
+    const handleCategoryChange = useCallback((event) => {
+        const target = event.target;
+        const [attributeName, key] = getAttributeNameAndKey(target.name);
         let value = target.value;
+
+        if (value === '') {
+            tc.updateNewTransaction(attributeName, null, key);
+            return
+        }
+
+        const matchingCategory = categories.filter(category => category.name === value)[0];
+        console.log('matching category', matchingCategory);
+        if (!matchingCategory) {
+            value = new Category(0, target.value, transaction.type);
+        } else {
+            value = matchingCategory;
+        }
+    
         
+        if (value.name === 'Job') {
+            tc.updateNewTransaction('recurs', true, key);
+        }
+
+        tc.updateNewTransaction(attributeName, value, key);
+    }, [categories, transaction])
+
+    const handleRecursChange = (event) => {
+        const target = event.target;
+        const [attributeName, key] = getAttributeNameAndKey(target.name);
+
+        if (attributeName === 'recurs') {
+            tc.updateNewTransaction(attributeName, target.value === 'true', key);
+        } else {
+            tc.updateNewTransaction(attributeName, target.value, key);
+        }
+    };
+
+    const handleAmountChange = (event) => {
+        const target = event.target;
+        let value = target.value;
+
         const pattern = /^[0-9]+$/;
         if (pattern.test(value)) {
             value = Number.parseInt(value);
         }
 
-        if (value === "true" || value === "false") {
-            value = value === "true";
-        }
-        
-        if (attributeName === "type") {
-            value = types.filter(type => type.id === Number.parseInt(value))[0];
-            tc.updateNewTransaction('category', null, key);
-            tc.updateNewTransaction('recurs', false, key);
-        }
-
-        if (attributeName === "category") {
-            value = categories.filter(category => category.id === Number.parseInt(value))[0];
-            
-            if (value.name === 'Job') {
-                tc.updateNewTransaction('recurs', true, key);
-            }
-        }
-
+        const [attributeName, key] = getAttributeNameAndKey(target.name);
         tc.updateNewTransaction(attributeName, value, key);
-    }, [categories, types]);
+    }
+
+    const handleNotesChange = (event) => {
+        const target = event.target;
+        const [attributeName, key] = getAttributeNameAndKey(target.name);
+        tc.updateNewTransaction(attributeName, target.value, key);
+    }
 
     const handleWheel = (event) => {
         event.target.blur();
     }
-
+  
     return (
         <>
             <form className={style.transactionForm}>
@@ -113,24 +151,23 @@ const Form = ({transaction, onButtonClick}) => {
                     <TypeSelection
                         name={names['type']}
                         transaction={transaction}
-                        onChange={handleChange}
+                        onChange={handleTypeChange}
                         types={types}
                     />
 
-                    <SelectWithLabel 
+                    <DatalistWithLabel 
                         id={names['category']}
                         name={names['category']}
                         text='Category:'
                         items={categories.filter(category => category.type.id === transaction.type.id)}
-                        value={transaction.category ? transaction.category.id : null}
-                        onChange={handleChange}
-                        wrapped={false}
+                        value={transaction.category ? transaction.category.name : null}
+                        onChange={handleCategoryChange}
                     />
 
                     <RecursSelection 
                         names={names}
                         transaction={transaction}
-                        onChange={handleChange}
+                        onChange={handleRecursChange}
                     />
 
                     <InputWithLabel
@@ -139,7 +176,7 @@ const Form = ({transaction, onButtonClick}) => {
                         type='number'
                         text='Amount ($):'
                         value={transaction.amount}
-                        onChange={handleChange}
+                        onChange={handleAmountChange}
                         step={"0.01"}
                         onWheel={handleWheel}
                         min="0"
@@ -153,7 +190,7 @@ const Form = ({transaction, onButtonClick}) => {
                         text="Notes:"
                         className={style.textarea}
                         value={transaction.notes}
-                        onChange={handleChange}
+                        onChange={handleNotesChange}
                     />
                 </div>
 
@@ -165,6 +202,10 @@ const Form = ({transaction, onButtonClick}) => {
             </form>
         </>
     )
+}
+
+function getAttributeNameAndKey(attribute) {
+    return attribute.split("_");
 }
 
 const TypeSelection = ({name, transaction, onChange, types}) => {

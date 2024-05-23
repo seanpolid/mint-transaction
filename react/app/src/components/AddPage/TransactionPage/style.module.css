@@ -66,6 +66,10 @@
         grid-template-columns: 100px auto;
         gap: 1em;
     }
+
+    .transactionForm input[list] {
+        width: 100%;
+    }
     
     .transactionForm .secondColumn {
         display: flex;

@@ -7,15 +7,19 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import application.dtos.CategoryDTO;
 import application.dtos.TransactionDTO;
 import application.entities.Category;
 import application.entities.Transaction;
+import application.entities.Type;
 import application.entities.User;
 import application.exceptions.CategoryNotFoundException;
 import application.exceptions.InvalidTransactionIdentifierException;
 import application.exceptions.TransactionNotFoundException;
+import application.exceptions.TypeNotFoundException;
 import application.repositories.ICategoryRepository;
 import application.repositories.ITransactionRepository;
+import application.repositories.ITypeRepository;
 import application.repositories.IUserRepository;
 import application.services.interfaces.ITransactionService;
 import application.utilities.IMapper;
@@ -27,20 +31,23 @@ public class TransactionService implements ITransactionService {
 	private final ICategoryRepository categoryRepository;
 	private final IUserRepository userRepository;
 	private final IMapper mapper;
+	private final ITypeRepository typeRepository;
 	
 	public TransactionService(ITransactionRepository transactionRepository, 
 							  ICategoryRepository categoryRepository,
 							  IUserRepository userRepository,
-							  IMapper mapper) {
+							  IMapper mapper,
+							  ITypeRepository typeRepository) {
 		this.transactionRepository = transactionRepository;
 		this.categoryRepository = categoryRepository;
 		this.userRepository = userRepository;
 		this.mapper = mapper;
+		this.typeRepository = typeRepository;
 	}
 
 	@Override
 	@Transactional
-	public List<TransactionDTO> saveTransactions(List<TransactionDTO> transactionDTOs, int userId) throws CategoryNotFoundException {
+	public List<TransactionDTO> saveTransactions(List<TransactionDTO> transactionDTOs, int userId) throws CategoryNotFoundException, TypeNotFoundException {
 		List<Transaction> transactions = new ArrayList<>();
 		for (TransactionDTO transactionDTO : transactionDTOs) {
 			Transaction transaction = mapToTransaction(transactionDTO, userId);
@@ -52,8 +59,8 @@ public class TransactionService implements ITransactionService {
 		return mapAllToTransactionDTO(savedTransactions);
 	}
 
-	private Transaction mapToTransaction(TransactionDTO transactionDTO, int userId) throws CategoryNotFoundException {
-		Category category = retrieveCategory(transactionDTO.getCategory().getId());
+	private Transaction mapToTransaction(TransactionDTO transactionDTO, int userId) throws CategoryNotFoundException, TypeNotFoundException {
+		Category category = retrieveCategory(transactionDTO.getCategory());
 		
 		// Initialize collection
 		User user = userRepository.findById(userId).get();
@@ -66,7 +73,17 @@ public class TransactionService implements ITransactionService {
 		return transaction;
 	}
 	
-	private Category retrieveCategory(int categoryId) throws CategoryNotFoundException {
+	private Category retrieveCategory(CategoryDTO categoryDTO) throws CategoryNotFoundException, TypeNotFoundException {
+		if (categoryDTO.getId() == 0) {
+			Optional<Type> optionalType = typeRepository.findById(categoryDTO.getType().getId());
+			if (!optionalType.isPresent()) {
+				throw new TypeNotFoundException();
+			}
+			
+			return new Category(categoryDTO.getName(), optionalType.get());
+		}
+		
+		int categoryId = categoryDTO.getId();
 		Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
 		if (optionalCategory.isEmpty()) {
 			throw new CategoryNotFoundException(categoryId);
@@ -104,9 +121,7 @@ public class TransactionService implements ITransactionService {
 
 	@Override
 	@Transactional
-	public void updateTransaction(TransactionDTO transactionDTO) throws TransactionNotFoundException, 
-																		InvalidTransactionIdentifierException, 
-																		CategoryNotFoundException {
+	public void updateTransaction(TransactionDTO transactionDTO) throws Exception {
 		Transaction updatedTransaction = mapper.map(transactionDTO);
 		
 		Optional<Transaction> optionalTransaction = transactionRepository.findById(updatedTransaction.getId());
@@ -119,7 +134,7 @@ public class TransactionService implements ITransactionService {
 			throw new InvalidTransactionIdentifierException(transactionToUpdate.getIdentifier(), updatedTransaction.getIdentifier());
 		}
 		
-		Category category = retrieveCategory(transactionDTO.getCategory().getId());
+		Category category = retrieveCategory(transactionDTO.getCategory());
 		overwrite(transactionToUpdate, updatedTransaction, category);
 		
 		transactionRepository.save(transactionToUpdate);

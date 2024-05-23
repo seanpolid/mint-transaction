@@ -84,9 +84,24 @@ const TransactionContextProvider = ({children, value}) => {
     const saveNewTransactions = useCallback(async () => {
         const newTransactionDTOs = newTransactions.map(newTransaction => mapper.mapToTransactionDTO(newTransaction));
         const savedTransactionDTOs = await apiService.postData(endpointType.TRANSACTIONS, newTransactionDTOs);
-        
+
+        const newCategories = newTransactionDTOs.filter(newTransactionDTO => newTransactionDTO.category.id === 0)
+                                                .map(newTransactionDTO => newTransactionDTO.category); 
         if (savedTransactionDTOs.length > 0) {
             const savedTransactions = savedTransactionDTOs.map(savedTransactionDTO => mapper.mapToTransaction(savedTransactionDTO));
+
+            const newSavedCategories = [];
+            if (newCategories.length > 0) {
+                for (const transaction of savedTransactions) {
+                    const newSavedCategory = newCategories.find(category => category.name === transaction.category.name);
+
+                    if (newSavedCategory) {
+                        newSavedCategories.push(transaction.category);
+                    }
+                }
+
+                dc.addNewCategories(newSavedCategories);
+            }
 
             setNewTransactions([createTransaction(dc.types)]);
             dc.setTransactions(prevTransactions => savedTransactions.concat(prevTransactions));

@@ -36,8 +36,14 @@ const DataContextProvider = ({children}) => {
         loadData();
     }, []);
 
+    const addNewCategories = (newCategories) => {
+        setCategories(prevCategories => prevCategories.concat(newCategories));
+    }
+
     const data = {
         categories: categories,
+        addNewCategories: addNewCategories,
+
         types: types,
 
         transactions: transactions,
