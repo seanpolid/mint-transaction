@@ -29,6 +29,7 @@ import application.exceptions.InvalidTransactionIdentifierException;
 import application.exceptions.TransactionNotFoundException;
 import application.repositories.ICategoryRepository;
 import application.repositories.ITransactionRepository;
+import application.repositories.ITypeRepository;
 import application.repositories.IUserRepository;
 import application.services.TransactionService;
 import application.utilities.IMapper;
@@ -39,6 +40,7 @@ public class TransactionServiceTests {
 	private ICategoryRepository mockCategoryRepository;
 	private IUserRepository mockUserRepository;
 	private IMapper mockMapper;
+	private ITypeRepository mockTypeRepository;
 	private TransactionService transactionService;
 	
 	@BeforeEach
@@ -47,10 +49,12 @@ public class TransactionServiceTests {
 		mockCategoryRepository = mock(ICategoryRepository.class);
 		mockUserRepository = mock(IUserRepository.class);
 		mockMapper = mock(IMapper.class);
+		mockTypeRepository = mock(ITypeRepository.class);
 		transactionService = new TransactionService(mockTransactionRepository, 
 													mockCategoryRepository,
 													mockUserRepository,
-													mockMapper);
+													mockMapper,
+													mockTypeRepository);
 	}
 	
 	@Test
@@ -159,7 +163,7 @@ public class TransactionServiceTests {
 	}
 	
 	@Test
-	public void updateTransaction_transactionFound_success() throws TransactionNotFoundException, InvalidTransactionIdentifierException, CategoryNotFoundException {
+	public void updateTransaction_transactionFound_success() throws Exception {
 		// Arrange
 		Transaction transaction = mock(Transaction.class);
 		when(transaction.getId()).thenReturn(1);

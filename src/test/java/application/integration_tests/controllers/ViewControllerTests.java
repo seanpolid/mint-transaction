@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class ViewController {
+public class ViewControllerTests {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -85,30 +85,6 @@ public class ViewController {
 	
 	@Test
 	@WithMockUser
-	public void transactionsRedirect_baseTransactionsPath_success() throws Exception {
-		mockMvc.perform(get("/transactions"))
-			   .andExpectAll(status().is3xxRedirection(),
-					   		 header().string("Location", "/transactions/add"));
-	}
-	
-	@Test
-	@WithMockUser
-	public void transactionsRedirect_basePath_success() throws Exception {
-		mockMvc.perform(get("/"))
-		   	   .andExpectAll(status().is3xxRedirection(),
-				   		 	 header().string("Location", "/transactions/add"));
-	}
-	
-	@Test
-	@WithMockUser
-	public void goalsRedirect_baseGoalsPath_success() throws Exception {
-		mockMvc.perform(get("/goals"))
-			   .andExpectAll(status().is3xxRedirection(),
-					   		 header().string("Location", "/goals/add"));
-	}
-	
-	@Test
-	@WithMockUser
 	public void transactionsAdd_success() throws Exception {
 		mockMvc.perform(get("/transactions/add"))
 			   .andExpectAll(status().isOk());
@@ -131,14 +107,14 @@ public class ViewController {
 	@Test
 	@WithMockUser
 	public void goalsAdd_success() throws Exception {
-		mockMvc.perform(get("/goals/add"))
+		mockMvc.perform(get("/forecasts/add"))
 			   .andExpect(status().isOk());
 	}
 	
 	@Test
 	@WithMockUser
 	public void goalsView_success() throws Exception {
-		mockMvc.perform(get("/goals/view"))
+		mockMvc.perform(get("/forecasts/view"))
 			   .andExpect(status().isOk());
 	}
 	

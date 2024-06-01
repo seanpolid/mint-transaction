@@ -22,9 +22,6 @@ import application.entities.Category;
 import application.entities.Transaction;
 import application.entities.Type;
 import application.entities.User;
-import application.exceptions.CategoryNotFoundException;
-import application.exceptions.InvalidTransactionIdentifierException;
-import application.exceptions.TransactionNotFoundException;
 import application.repositories.ICategoryRepository;
 import application.repositories.ITransactionRepository;
 import application.repositories.ITypeRepository;
@@ -143,7 +140,7 @@ public class TransactionServiceTests {
 	}
 	
 	@Test
-	public void deleteTransaction_sucess() {
+	public void deleteTransaction_success() {
 		// Arrange
 		Transaction transaction = new Transaction(0, "guid", bigDecimal, date, date, "notes", category, user);
 		transactionRepository.save(transaction);
@@ -158,7 +155,7 @@ public class TransactionServiceTests {
 	}
 	
 	@Test
-	public void updateTransaction_success() throws TransactionNotFoundException, InvalidTransactionIdentifierException, CategoryNotFoundException {
+	public void updateTransaction_success() throws Exception {
 		// Arrange
 		Transaction transaction = new Transaction(0, "guid", bigDecimal, date, null, "notes", category, user);
 		transactionRepository.save(transaction);
