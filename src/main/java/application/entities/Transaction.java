@@ -29,9 +29,11 @@ public class Transaction {
 	
 	private LocalDate endDate;
 	
+	private boolean paidInAdvance;
+	
 	private String notes;
 	
-	@ManyToOne(cascade=CascadeType.PERSIST)
+	@ManyToOne
 	@JoinColumn(name="category_id")
 	private Category category;
 	
@@ -109,6 +111,14 @@ public class Transaction {
 
 	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
+	}
+
+	public boolean isPaidInAdvance() {
+		return paidInAdvance;
+	}
+
+	public void setPaidInAdvance(boolean paidInAdvance) {
+		this.paidInAdvance = paidInAdvance;
 	}
 
 	public String getNotes() {
