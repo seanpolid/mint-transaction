@@ -13,7 +13,7 @@ import userEvent from '@testing-library/user-event';
 
 const type = new Type(1, "Income");
 const category = new Category(1, "Job", type);
-const transaction = new Transaction(1, "uuid", type, category, "10/09/2023", "10/09/2023", 2000, "", "uuid");
+const transaction = new Transaction(1, "uuid", type, category, "10/09/2023", "10/09/2023", true, 2000, "", "uuid");
 
 let successHandlers = [
     rest.get(apiService.getUri(endpointType.TYPES), (req, res, ctx) => {
@@ -139,9 +139,9 @@ describe('Log', () => {
         successHandlers = successHandlers.toSpliced(2, 1);
 
         const transactions = [
-                new Transaction(1, "uuid", type, category, "10/09/2023", "10/09/2023", 2000, "", "uuid"),
-                new Transaction(2, "uuid1", type, category, "10/08/2023", null, 2000, "", "uuid1"),
-                new Transaction(3, "uuid2", type, category, "10/07/2023", null, 2000, "", "uuid2"),
+                new Transaction(1, "uuid", type, category, "10/09/2023", "10/09/2023", true, 2000, "", "uuid"),
+                new Transaction(2, "uuid1", type, category, "10/08/2023", null, null, 2000, "", "uuid1"),
+                new Transaction(3, "uuid2", type, category, "10/07/2023", null, null, 2000, "", "uuid2"),
         ];
         const transactionDTOS = transactions.map(transaction => mapper.mapToTransactionDTO(transaction));
         successHandlers.push(rest.get(apiService.getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {
@@ -169,9 +169,9 @@ describe('Log', () => {
         successHandlers = successHandlers.toSpliced(2, 1);
 
         const transactions = [
-                new Transaction(1, "uuid", type, category, "10/09/2023", "10/09/2023", 2000, "", "uuid"),
-                new Transaction(2, "uuid1", type, category, "10/08/2023", null, 2000, "", "uuid1"),
-                new Transaction(3, "uuid2", type, category, "10/07/2023", null, 2000, "", "uuid2"),
+                new Transaction(1, "uuid", type, category, "10/09/2023", "10/09/2023", true, 2000, "", "uuid"),
+                new Transaction(2, "uuid1", type, category, "10/08/2023", null, null, 2000, "", "uuid1"),
+                new Transaction(3, "uuid2", type, category, "10/07/2023", null, null, 2000, "", "uuid2"),
         ];
         const transactionDTOS = transactions.map(transaction => mapper.mapToTransactionDTO(transaction));
         successHandlers.push(rest.get(apiService.getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {
@@ -202,9 +202,9 @@ describe('Log', () => {
         successHandlers = successHandlers.toSpliced(2, 1);
 
         const transactions = [
-                new Transaction(1, "uuid", type, category, "10/09/2023", "10/09/2023", 1000, "", "uuid"),
-                new Transaction(2, "uuid1", type, category, "10/08/2023", null, 2000, "", "uuid1"),
-                new Transaction(3, "uuid2", type, category, "10/07/2023", null, 3000, "", "uuid2"),
+                new Transaction(1, "uuid", type, category, "10/09/2023", "10/09/2023", true, 1000, "", "uuid"),
+                new Transaction(2, "uuid1", type, category, "10/08/2023", null, null, 2000, "", "uuid1"),
+                new Transaction(3, "uuid2", type, category, "10/07/2023", null, null, 3000, "", "uuid2"),
         ];
         const transactionDTOS = transactions.map(transaction => mapper.mapToTransactionDTO(transaction));
         successHandlers.push(rest.get(apiService.getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {
@@ -235,9 +235,9 @@ describe('Log', () => {
         successHandlers = successHandlers.toSpliced(2, 1);
 
         const transactions = [
-                new Transaction(1, "uuid", type, new Category(1, "Groceries", type), "10/09/2023", null, 1000, "", "uuid"),
-                new Transaction(2, "uuid1", type, new Category(2, "Rent", type), "10/09/2023", null, 1000, "", "uuid1"),
-                new Transaction(3, "uuid2", type, new Category(3, "Other", type), "10/09/2023", null, 1000, "", "uuid2"),
+                new Transaction(1, "uuid", type, new Category(1, "Groceries", type), "10/09/2023", null, null, 1000, "", "uuid"),
+                new Transaction(2, "uuid1", type, new Category(2, "Rent", type), "10/09/2023", null, null, 1000, "", "uuid1"),
+                new Transaction(3, "uuid2", type, new Category(3, "Other", type), "10/09/2023", null, null, 1000, "", "uuid2"),
         ]
         const transactionDTOS = transactions.map(transaction => mapper.mapToTransactionDTO(transaction));
         successHandlers.push(rest.get(apiService.getUri(endpointType.TRANSACTIONS), (req, res, ctx) => {

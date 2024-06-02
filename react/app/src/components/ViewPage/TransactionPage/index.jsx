@@ -8,6 +8,8 @@ import DataContext from "../../../stores/DataContext";
 import InputWithLabel from "../../InputWithLabel";
 import SelectWithLabel from "../../SelectWithLabel"
 import TextAreaWithLabel from "../../TextAreaWithLabel";
+import RadioButtonWithLabel from "../../RadioButtonWithLabel";
+import { v4 } from "uuid";
 
 import style from "../style.module.css";
 
@@ -22,7 +24,8 @@ const TransactionPage = () => {
         startDate: "startDate",
         endDate: "endDate",
         amount: "amount",
-        notes: "notes"
+        notes: "notes",
+        paidInAdvance: 'paidInAdvance'
     };
 
     const handleChange = (event) => {
@@ -45,6 +48,10 @@ const TransactionPage = () => {
         if (attributeName === "category") {
             value = Number.parseInt(value);
             value = categories.filter(category => category.id === value)[0];
+        }
+
+        if (attributeName === "paidInAdvance") {
+            value = target.checked;
         }
 
         tc.updateSelectedTransaction(attributeName, value);
@@ -98,14 +105,25 @@ const TransactionPage = () => {
                                 onChange={handleChange}
                             />
                             {transaction.endDate === null ? null : (
-                                <InputWithLabel
-                                    id={names.endDate}
-                                    name={names.endDate}
-                                    type="date"
-                                    text="End Date:"
-                                    value={transaction.endDate}
-                                    onChange={handleChange}
-                                />
+                                <>
+                                    <InputWithLabel
+                                        id={names.endDate}
+                                        name={names.endDate}
+                                        type="date"
+                                        text="End Date:"
+                                        value={transaction.endDate}
+                                        onChange={handleChange}
+                                    />
+                                    <InputWithLabel 
+                                        id={names.paidInAdvance}
+                                        name={names.paidInAdvance}
+                                        type='checkbox'
+                                        text="Paid in advance:"
+                                        value={transaction.paidInAdvance ? true : false}
+                                        onChange={handleChange}
+                                    />
+                                </>
+                                
                             )}
                         </div>
                         

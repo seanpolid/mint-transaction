@@ -38,8 +38,8 @@ public class TransactionDTOTests {
 	@Test
 	public void hashCode_sameFields_sameHash() {
 		// Arrange
-		TransactionDTO transactionDTO1 = new TransactionDTO(1, identifier, bigDecimal, date, date, "notes", category);
-		TransactionDTO transactionDTO2 = new TransactionDTO(1, identifier, bigDecimal, date, date, "notes", category);
+		TransactionDTO transactionDTO1 = new TransactionDTO(1, identifier, bigDecimal, date, date, false, "notes", category);
+		TransactionDTO transactionDTO2 = new TransactionDTO(1, identifier, bigDecimal, date, date, false, "notes", category);
 		
 		// Act
 		int transactionDTO1Hash = transactionDTO1.hashCode();
@@ -52,8 +52,8 @@ public class TransactionDTOTests {
 	@Test
 	public void hashCode_differentFields_differentHash() {
 		// Arrange
-		TransactionDTO transactionDTO1 = new TransactionDTO(1, identifier, bigDecimal, date, date, "notes", category);
-		TransactionDTO transactionDTO2 = new TransactionDTO(2, identifier, bigDecimal, date, date, "notes", category);
+		TransactionDTO transactionDTO1 = new TransactionDTO(1, identifier, bigDecimal, date, date, false, "notes", category);
+		TransactionDTO transactionDTO2 = new TransactionDTO(2, identifier, bigDecimal, date, date, null, "notes", category);
 		
 		// Act
 		int transactionDTO1Hash = transactionDTO1.hashCode();
@@ -66,8 +66,8 @@ public class TransactionDTOTests {
 	@Test
 	public void equals_sameFields_true() {
 		// Arrange
-		TransactionDTO transactionDTO1 = new TransactionDTO(1, identifier, bigDecimal, date, date, "notes", category);
-		TransactionDTO transactionDTO2 = new TransactionDTO(1, identifier, bigDecimal, date, date, "notes", category);
+		TransactionDTO transactionDTO1 = new TransactionDTO(1, identifier, bigDecimal, date, date, false, "notes", category);
+		TransactionDTO transactionDTO2 = new TransactionDTO(1, identifier, bigDecimal, date, date, false, "notes", category);
 		
 		// Act and Assert
 		assertTrue(transactionDTO1.equals(transactionDTO2));
@@ -76,8 +76,8 @@ public class TransactionDTOTests {
 	@Test
 	public void equals_differentFields_false() {
 		// Arrange
-		TransactionDTO transactionDTO1 = new TransactionDTO(1, identifier, bigDecimal, date, date, "notes", category);
-		TransactionDTO transactionDTO2 = new TransactionDTO(2, identifier, bigDecimal, date, date, "notes", category);
+		TransactionDTO transactionDTO1 = new TransactionDTO(1, identifier, bigDecimal, date, date, false, "notes", category);
+		TransactionDTO transactionDTO2 = new TransactionDTO(2, identifier, bigDecimal, date, date, null, "notes", category);
 		
 		// Act and Assert
 		assertFalse(transactionDTO1.equals(transactionDTO2));
@@ -87,7 +87,7 @@ public class TransactionDTOTests {
 	public void categoryId_null_violationRaised() {
 		// Arrange
 		category.setId(null);
-		TransactionDTO transactionDTO = new TransactionDTO(1, identifier, bigDecimal, date, date, "notes", category);
+		TransactionDTO transactionDTO = new TransactionDTO(1, identifier, bigDecimal, date, date, false, "notes", category);
 	
 		// Act
 		Set<ConstraintViolation<TransactionDTO>> violations = validator.validate(transactionDTO);
@@ -100,7 +100,7 @@ public class TransactionDTOTests {
 	public void categoryId_lessThan1_violationRaised() {
 		// Arrange
 		category.setId(0);
-		TransactionDTO transactionDTO = new TransactionDTO(1, identifier, bigDecimal, date, date, "notes", category);
+		TransactionDTO transactionDTO = new TransactionDTO(1, identifier, bigDecimal, date, date, false, "notes", category);
 	
 		// Act
 		Set<ConstraintViolation<TransactionDTO>> violations = validator.validate(transactionDTO);
@@ -112,7 +112,7 @@ public class TransactionDTOTests {
 	@Test 
 	public void id_null_violationRaised() {
 		// Arrange
-		TransactionDTO transactionDTO = new TransactionDTO(null, identifier, bigDecimal, date, date, "notes", category);
+		TransactionDTO transactionDTO = new TransactionDTO(null, identifier, bigDecimal, date, date, false, "notes", category);
 	
 		// Act
 		Set<ConstraintViolation<TransactionDTO>> violations = validator.validate(transactionDTO);
@@ -124,7 +124,7 @@ public class TransactionDTOTests {
 	@Test 
 	public void id_lessThan1_violationRaised() {
 		// Arrange
-		TransactionDTO transactionDTO = new TransactionDTO(-5, identifier, bigDecimal, date, date, "notes", category);
+		TransactionDTO transactionDTO = new TransactionDTO(-5, identifier, bigDecimal, date, date, false, "notes", category);
 	
 		// Act
 		Set<ConstraintViolation<TransactionDTO>> violations = validator.validate(transactionDTO);
@@ -136,7 +136,7 @@ public class TransactionDTOTests {
 	@Test
 	public void identifier_wrongSize_violationRaised() {
 		// Arrange
-		TransactionDTO transactionDTO = new TransactionDTO(1, "identifier", bigDecimal, date, date, "notes", category);
+		TransactionDTO transactionDTO = new TransactionDTO(1, "identifier", bigDecimal, date, date, false, "notes", category);
 	
 		// Act
 		Set<ConstraintViolation<TransactionDTO>> violations = validator.validate(transactionDTO);
@@ -148,7 +148,7 @@ public class TransactionDTOTests {
 	@Test
 	public void amount_negative_violationRaised() {
 		// Arrange
-		TransactionDTO transactionDTO = new TransactionDTO(1, identifier, new BigDecimal("-100.00"), date, date, "notes", category);
+		TransactionDTO transactionDTO = new TransactionDTO(1, identifier, new BigDecimal("-100.00"), date, date, false, "notes", category);
 	
 		// Act
 		Set<ConstraintViolation<TransactionDTO>> violations = validator.validate(transactionDTO);
@@ -160,7 +160,7 @@ public class TransactionDTOTests {
 	@Test
 	public void startDate_null_violationRaised() {
 		// Arrange
-		TransactionDTO transactionDTO = new TransactionDTO(1, identifier, bigDecimal, null, date, "notes", category);
+		TransactionDTO transactionDTO = new TransactionDTO(1, identifier, bigDecimal, null, date, false, "notes", category);
 	
 		// Act
 		Set<ConstraintViolation<TransactionDTO>> violations = validator.validate(transactionDTO);
@@ -172,7 +172,7 @@ public class TransactionDTOTests {
 	@Test
 	public void category_null_violationRaised() {
 		// Arrange
-		TransactionDTO transactionDTO = new TransactionDTO(1, identifier, bigDecimal, date, date, "notes", null);
+		TransactionDTO transactionDTO = new TransactionDTO(1, identifier, bigDecimal, date, date, false, "notes", null);
 		
 		// Act
 		Set<ConstraintViolation<TransactionDTO>> violations = validator.validate(transactionDTO);
@@ -185,7 +185,7 @@ public class TransactionDTOTests {
 	public void category_invalid_violationRaised() {
 		// Arrange
 		category.setId(null);
-		TransactionDTO transactionDTO = new TransactionDTO(1, identifier, bigDecimal, date, date, "notes", category);
+		TransactionDTO transactionDTO = new TransactionDTO(1, identifier, bigDecimal, date, date, false, "notes", category);
 	
 		// Act
 		Set<ConstraintViolation<TransactionDTO>> violations = validator.validate(transactionDTO);

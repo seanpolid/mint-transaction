@@ -54,13 +54,14 @@ describe('Mapper', () => {
                 }
             },
             startDate: "date",
-                endDate: "date",
-                amount: 10.22,
-                notes: "notes",
+            endDate: "date",
+            paidInAdvance: true,
+            amount: 10.22,
+            notes: "notes",
         }
         const type = new Type(1, "Name");
         const category = new Category(1, "Name", type);
-        const expected = new Transaction(1, "uuid", type, category, "date", "date", 10.22, "notes", "uuid");
+        const expected = new Transaction(1, "uuid", type, category, "date", "date", true, 10.22, "notes", "uuid");
         
         // Act
         const actual = mapper.mapToTransaction(transactionDTO);
@@ -73,8 +74,8 @@ describe('Mapper', () => {
         // Arrange
         const type = new Type(1, "Name");
         const category = new Category(1, "Name", type);
-        const transaction = new Transaction(1, "uuid", type, category, "date", "date", 10.22, "notes", "uuid");
-        const expected = new TransactionDTO(1, "uuid", 10.22, "date", "date", "notes", category);
+        const transaction = new Transaction(1, "uuid", type, category, "date", "date", false, 10.22, "notes", "uuid");
+        const expected = new TransactionDTO(1, "uuid", 10.22, "date", "date", false, "notes", category);
 
         // Act
         const actual = mapper.mapToTransactionDTO(transaction);

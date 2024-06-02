@@ -29,7 +29,7 @@ public class Transaction {
 	
 	private LocalDate endDate;
 	
-	private boolean paidInAdvance;
+	private Boolean paidInAdvance;
 	
 	private String notes;
 	
@@ -48,13 +48,14 @@ public class Transaction {
 		this.id = id;
 	}
 
-	public Transaction(int id, String identifier, BigDecimal amount, LocalDate startDate, LocalDate endDate, String notes) {
+	public Transaction(int id, String identifier, BigDecimal amount, LocalDate startDate, LocalDate endDate, Boolean paidInAdvance, String notes) {
 		super();
 		this.id = id;
 		this.identifier = identifier;
 		this.amount = amount;
 		this.startDate = startDate;
 		this.endDate = endDate;
+		this.paidInAdvance = paidInAdvance;
 		this.notes = notes;
 	}
 
@@ -113,11 +114,11 @@ public class Transaction {
 		this.endDate = endDate;
 	}
 
-	public boolean isPaidInAdvance() {
+	public Boolean getPaidInAdvance() {
 		return paidInAdvance;
 	}
 
-	public void setPaidInAdvance(boolean paidInAdvance) {
+	public void setPaidInAdvance(Boolean paidInAdvance) {
 		this.paidInAdvance = paidInAdvance;
 	}
 

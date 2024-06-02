@@ -5,18 +5,20 @@ class Transaction {
     category
     recurs;
     startDate;
-    endDate
+    endDate;
+    paidInAdvance;
     amount;
     notes;
     key;
 
-    constructor(id, identifier, type, category, startDate, endDate, amount, notes, key) {
+    constructor(id, identifier, type, category, startDate, endDate, paidInAdvance, amount, notes, key) {
         this.id = id;
         this.identifier = identifier;
         this.type = type;
         this.category = category;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.paidInAdvance = paidInAdvance;
         this.amount = amount;
         this.notes = notes;
         this.key = key;
@@ -31,6 +33,7 @@ class Transaction {
         transaction.recurs = this.recurs;
         transaction.startDate = this.startDate;
         transaction.endDate = this.endDate;
+        transaction.paidInAdvance = this.paidInAdvance;
         transaction.amount = this.amount;
         transaction.notes = this.notes;
         transaction.key = this.key;

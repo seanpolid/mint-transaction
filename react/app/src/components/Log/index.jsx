@@ -91,8 +91,8 @@ function compareTransactions(sortTerm, sortOrder, t1, t2) {
             return compareString(t1.category.name, t2.category.name) * multiplier;
         },
         [sortType.DATE]: () => {
-            const t1Date = t1.endDate ?? t1.startDate;
-            const t2Date = t2.endDate ?? t2.startDate;
+            const t1Date = t1.endDate && !t1.paidInAdvance ? t1.endDate : t1.startDate;
+            const t2Date = t2.endDate && !t2.paidInAdvance ? t2.endDate : t2.startDate;
             return compareDate(t1Date, t2Date) * multiplier;
         }, 
         [sortType.AMOUNT]: () => {
@@ -158,12 +158,20 @@ const Transaction = ({transaction, onClick, selectedId}) => {
                 <span className={style.type}>{transaction.category.type.name}</span>
                 <span className={style.category}>{transaction.category.name}</span>
                 <span className={style.date}>
-                    {transaction.endDate ? transaction.endDate : transaction.startDate}
+                    {getDateToDisplay(transaction)}
                 </span>
             </td>
             <td className={style.amount}>${transaction.amount}</td>
         </tr>
     )
+}
+
+function getDateToDisplay(transaction) {
+    if (!transaction.paidInAdvance && transaction.endDate) {
+        return transaction.endDate;
+    }
+
+    return transaction.startDate;
 }
 
 const SearchBar = ({onChange}) => {

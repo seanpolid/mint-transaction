@@ -80,7 +80,8 @@ public class TransactionService implements ITransactionService {
 				throw new TypeNotFoundException();
 			}
 			
-			return new Category(categoryDTO.getName(), optionalType.get());
+			Category newCategory = new Category(categoryDTO.getName(), optionalType.get());
+			return categoryRepository.save(newCategory);
 		}
 		
 		int categoryId = categoryDTO.getId();
@@ -144,6 +145,7 @@ public class TransactionService implements ITransactionService {
 		transactionToUpdate.setAmount(updatedTransaction.getAmount());
 		transactionToUpdate.setStartDate(updatedTransaction.getStartDate());
 		transactionToUpdate.setEndDate(updatedTransaction.getEndDate());
+		transactionToUpdate.setPaidInAdvance(updatedTransaction.getPaidInAdvance());
 		transactionToUpdate.setNotes(updatedTransaction.getNotes());
 		transactionToUpdate.setCategory(category);
 	}

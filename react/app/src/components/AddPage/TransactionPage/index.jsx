@@ -35,25 +35,23 @@ const TransactionPage = () => {
     }, [tc.saveNewTransactions]);
 
     return (
-        <>
-            <Scrollpane className={style.transactionContainer}>
-                <ul>
-                    {tc.newTransactions.map(transaction => (
-                        <li key={transaction.identifier} data-key={transaction.identifier}>
-                            <Transaction 
-                                transaction={transaction} 
-                                onButtonClick={handleDelete}
-                            />   
-                        </li>
-                    ))}
-                </ul>
+        <Scrollpane className={style.transactionContainer}>
+            <ul>
+                {tc.newTransactions.map(transaction => (
+                    <li key={transaction.identifier} data-key={transaction.identifier}>
+                        <Transaction 
+                            transaction={transaction} 
+                            onButtonClick={handleDelete}
+                        />   
+                    </li>
+                ))}
+            </ul>
 
-                <div className={style.options}>
-                    <button className="button" onClick={handleAdd}>Add</button>
-                    <button className="button" onClick={handleSave}>Save</button>
-                </div>
-            </Scrollpane>
-        </>
+            <div className={style.options}>
+                <button className="button" onClick={handleAdd}>Add</button>
+                <button className="button" onClick={handleSave}>Save</button>
+            </div>
+        </Scrollpane>
     )
 }
 
@@ -67,6 +65,7 @@ const Transaction = ({transaction, onButtonClick}) => {
     const names = {
         ['startDate']: `startDate_${identifier}`,
         ['endDate']: `endDate_${identifier}`,
+        ['paidInAdvance']: `paidInAdvance_${identifier}`,
         ['type']: `type_${identifier}`,
         ['category']: `category_${identifier}`,
         ['recurs']: `recurs_${identifier}`,
@@ -95,7 +94,6 @@ const Transaction = ({transaction, onButtonClick}) => {
         }
 
         const matchingCategory = categories.filter(category => category.name === value)[0];
-        console.log('matching category', matchingCategory);
         if (!matchingCategory) {
             value = new Category(0, target.value, transaction.type);
         } else {
@@ -114,7 +112,7 @@ const Transaction = ({transaction, onButtonClick}) => {
         const target = event.target;
         const [attributeName, key] = getAttributeNameAndKey(target.name);
 
-        if (attributeName === 'recurs') {
+        if (attributeName === 'recurs' || attributeName === 'paidInAdvance') {
             tc.updateNewTransaction(attributeName, target.value === 'true', key);
         } else {
             tc.updateNewTransaction(attributeName, target.value, key);
@@ -257,6 +255,28 @@ const RecursSelection = ({names, transaction, onChange}) => {
             
             {transaction.recurs ? (
                 <>
+                    <fieldset>
+                        <legend>Paid in advance:</legend>
+                        <div>
+                            <RadioButtonWithLabel
+                                name={names['paidInAdvance']}
+                                value={true}
+                                text='Yes'
+                                onChange={onChange}
+                                checked={transaction.paidInAdvance}
+                                wrapped
+                            />
+
+                            <RadioButtonWithLabel
+                                name={names['paidInAdvance']}
+                                value={false}
+                                text='No'
+                                onChange={onChange}
+                                checked={!transaction.paidInAdvance}
+                                wrapped
+                            />
+                        </div>
+                    </fieldset>
                     <InputWithLabel 
                         id={names['startDate']}
                         name={names['startDate']}

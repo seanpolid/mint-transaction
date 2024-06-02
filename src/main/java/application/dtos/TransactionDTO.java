@@ -28,6 +28,8 @@ public class TransactionDTO {
 	
 	private LocalDate endDate;
 	
+	private Boolean paidInAdvance;
+	
 	private String notes;
 	
 	@NotNull
@@ -42,13 +44,14 @@ public class TransactionDTO {
 	}
 
 	public TransactionDTO(Integer id, String identifier, BigDecimal amount, LocalDate startDate, LocalDate endDate, 
-			String notes, CategoryDTO category) {
+			Boolean paidInAdvance, String notes, CategoryDTO category) {
 		super();
 		this.id = id;
 		this.identifier = identifier;
 		this.amount = amount;
 		this.startDate = startDate;
 		this.endDate = endDate;
+		this.paidInAdvance = paidInAdvance;
 		this.notes = notes;
 		this.category = category;
 	}
@@ -93,6 +96,14 @@ public class TransactionDTO {
 		this.endDate = endDate;
 	}
 
+	public Boolean getPaidInAdvance() {
+		return paidInAdvance;
+	}
+
+	public void setPaidInAdvance(Boolean paidInAdvance) {
+		this.paidInAdvance = paidInAdvance;
+	}
+
 	public String getNotes() {
 		return notes;
 	}
@@ -111,7 +122,7 @@ public class TransactionDTO {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(amount, category, endDate, id, identifier, notes, startDate);
+		return Objects.hash(amount, category, endDate, id, identifier, notes, paidInAdvance, startDate);
 	}
 
 	@Override
@@ -124,9 +135,9 @@ public class TransactionDTO {
 			return false;
 		TransactionDTO other = (TransactionDTO) obj;
 		return Objects.equals(amount, other.amount) && Objects.equals(category, other.category)
-				&& Objects.equals(endDate, other.endDate) && id.equals(other.id)
+				&& Objects.equals(endDate, other.endDate) && Objects.equals(id, other.id)
 				&& Objects.equals(identifier, other.identifier) && Objects.equals(notes, other.notes)
-				&& Objects.equals(startDate, other.startDate);
+				&& Objects.equals(paidInAdvance, other.paidInAdvance) && Objects.equals(startDate, other.startDate);
 	}
 
 	@Override

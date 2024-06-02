@@ -35,8 +35,8 @@ public class MapperTests {
 	public void map_transactionDTO2Transaction_success() {
 		// Arrange
 		LocalDate date = LocalDate.now();
-		TransactionDTO transactionDTO = new TransactionDTO(1, "identifier", bigDecimal, date, date, "notes", categoryDTO);
-		Transaction expected = new Transaction(1, "identifier", bigDecimal, date, date, "notes");
+		TransactionDTO transactionDTO = new TransactionDTO(1, "identifier", bigDecimal, date, date, false, "notes", categoryDTO);
+		Transaction expected = new Transaction(1, "identifier", bigDecimal, date, date, false,"notes");
 		
 		// Act
 		Transaction actual = mapper.map(transactionDTO);
@@ -49,9 +49,9 @@ public class MapperTests {
 	public void map_transaction2TransactionDTO_success() {
 		// Arrange
 		LocalDate date = LocalDate.now();
-		Transaction transaction = new Transaction(1, "identifier", bigDecimal, date, date, "notes");
+		Transaction transaction = new Transaction(1, "identifier", bigDecimal, date, date, false, "notes");
 		transaction.setCategory(category);
-		TransactionDTO expected = new TransactionDTO(1, "identifier", bigDecimal, date, date, "notes", categoryDTO);
+		TransactionDTO expected = new TransactionDTO(1, "identifier", bigDecimal, date, date, false, "notes", categoryDTO);
 		
 		// Act
 		TransactionDTO actual = mapper.map(transaction);

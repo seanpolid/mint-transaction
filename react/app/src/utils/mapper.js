@@ -12,6 +12,7 @@ const mapToTransaction = (transactionDTO) => {
         category,
         transactionDTO.startDate,
         transactionDTO.endDate,
+        transactionDTO.paidInAdvance,
         transactionDTO.amount,
         transactionDTO.notes,
         transactionDTO.identifier
@@ -25,6 +26,7 @@ const mapToTransactionDTO = (transaction) => {
         transaction.amount,
         transaction.startDate,
         transaction.endDate,
+        transaction.paidInAdvance,
         transaction.notes,
         transaction.category
     );

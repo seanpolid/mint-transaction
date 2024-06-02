@@ -94,8 +94,8 @@ public class TransactionServiceTests {
 	public void saveTransactions_twoNewTransactions_success() throws Exception {
 		// Arrange
 		List<TransactionDTO> transactionDTOs = List.of(
-				new TransactionDTO(0, uuid1, bigDecimal, date, date, "notes", categoryDTO),
-				new TransactionDTO(0, uuid2, bigDecimal, date, date, "notes", categoryDTO)
+				new TransactionDTO(0, uuid1, bigDecimal, date, date, false, "notes", categoryDTO),
+				new TransactionDTO(0, uuid2, bigDecimal, date, date, false, "notes", categoryDTO)
 		);
 		
 		// Act
@@ -165,7 +165,7 @@ public class TransactionServiceTests {
 		
 		BigDecimal newAmount = new BigDecimal("1000.00");
 		TransactionDTO transactionDTO = new TransactionDTO(transaction.getId(), transaction.getIdentifier(), 
-				newAmount, LocalDate.now(), LocalDate.now(), "new notes", categoryDTO2);
+				newAmount, LocalDate.now(), LocalDate.now(), transaction.getPaidInAdvance(), "new notes", categoryDTO2);
 		
 		// Act
 		transactionService.updateTransaction(transactionDTO);

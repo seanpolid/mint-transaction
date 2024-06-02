@@ -19,6 +19,7 @@ public class Mapper implements IMapper {
 				transactionDTO.getAmount(),
 				transactionDTO.getStartDate(),
 				transactionDTO.getEndDate(),
+				transactionDTO.getPaidInAdvance(),
 				transactionDTO.getNotes());
 	}
 	
@@ -30,6 +31,7 @@ public class Mapper implements IMapper {
 				transaction.getAmount(),
 				transaction.getStartDate(),
 				transaction.getEndDate(),
+				transaction.getPaidInAdvance(),
 				transaction.getNotes(),
 				category);
 	}

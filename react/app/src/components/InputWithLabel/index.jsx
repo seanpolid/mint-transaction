@@ -16,6 +16,7 @@ const InputWithLabel = ({id, name, type, text, value, onChange, step, onWheel, m
                         step={step}
                         onWheel={onWheel}
                         min={min}
+                        checked={type === 'checkbox' ? value : null}
                     />
                 </label>
             ) : (
@@ -30,6 +31,7 @@ const InputWithLabel = ({id, name, type, text, value, onChange, step, onWheel, m
                         step={step}
                         onWheel={onWheel}
                         min={min}
+                        checked={type === 'checkbox' ? value : null}
                     />
                 </>
             )}

@@ -4,7 +4,7 @@ import { expect, describe, test, afterEach, beforeEach } from 'vitest'
 import apiService from '../../../services/ApiService'
 import { renderElement } from '../../../utils/test-utils'
 import { rest } from 'msw'
-import { screen, cleanup, waitFor } from '@testing-library/react'
+import { screen, cleanup, waitFor, within } from '@testing-library/react'
 import { setupServer } from 'msw/node'
 import TransactionPage from '.'
 import userEvent from '@testing-library/user-event'
@@ -101,13 +101,10 @@ describe('Transaction Add Page', () => {
         renderElement(<TransactionPage />);
 
         // Act
-        const categorySelectionBeforeChange = (await screen.findByLabelText("Category:")).value;
-        await user.selectOptions(await screen.findByLabelText("Category:"), '1');
-        const categorySelectionAfterChange = (await screen.findByLabelText("Category:")).selectedOptions[0].textContent;
+        await user.type(await screen.findByLabelText("Category:"), 'Rent');
 
         // Assert
-        expect(categorySelectionBeforeChange).toBe("-- Choose option --");
-        expect(categorySelectionAfterChange).toBe("Rent");
+        expect((await screen.findByLabelText("Category:")).value).toBe("Rent");
     })
 
     test('should handle recurs change', async () => {
@@ -116,12 +113,14 @@ describe('Transaction Add Page', () => {
         renderElement(<TransactionPage />);
 
         // Act
-        const recursSelectionBeforeClick = (await screen.findByLabelText("Yes")).checked;
+        const recursSection = (await screen.findByText('Recurs:')).parentNode;
+        const recursSelectionBeforeClick = (await within(recursSection).findByLabelText("Yes")).checked;
         const endDateInputBeforeClick = screen.queryByLabelText("End Date:");
 
         await user.click(await screen.findByLabelText("Yes"));
 
-        const recursSelectionAfterClick = (await screen.findByLabelText("Yes")).checked;
+        const recursSection2 = (await screen.findByText('Recurs:')).parentNode;
+        const recursSelectionAfterClick = (await within(recursSection2).findByLabelText("Yes")).checked;
         const endDateInputAfterClick = screen.queryByLabelText("End Date:");
 
         // Assert
@@ -176,12 +175,12 @@ describe('Transaction Add Page', () => {
         renderElement(<TransactionPage />);
 
         // Act
-        await user.selectOptions(await screen.findByLabelText("Category:"), '1');     // save will be rejected if there isn't a valid category
+        await user.type(await screen.findByLabelText("Category:"), 'Rent');     // save will be rejected if there isn't a valid category
         await user.click(await screen.findByRole('button', {name: 'Save'}));
 
         // Assert
         await waitFor(() => {
-            expect(screen.getByLabelText("Category:").value).toBe("-- Choose option --");   // indicates forms got reset which can only happen if save was successful
+            expect(screen.getByLabelText("Category:").value).toBe("");   // indicates forms got reset which can only happen if save was successful
         });
         
     })

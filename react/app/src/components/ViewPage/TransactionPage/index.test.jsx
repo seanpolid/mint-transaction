@@ -12,7 +12,7 @@ import userEvent from "@testing-library/user-event";
 
 const types = [new Type(1, "Income"), new Type(2, "Expense")];
 const categories = [new Category(1, "Job", types[0]), new Category(2, "Gift", types[0])];
-const transaction = new Transaction(1, "uuid", types[0], categories[0], "2023-10-09", "2023-10-25", 2000, "notes", "uuid");
+const transaction = new Transaction(1, "uuid", types[0], categories[0], "2023-10-09", "2023-10-25", true, 2000, "notes", "uuid");
 
 const successHandlers = [
     rest.get(apiService.getUri(endpointType.TYPES), (req, res, ctx) => {
