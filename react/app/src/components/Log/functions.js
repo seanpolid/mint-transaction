@@ -40,4 +40,12 @@ const compareAmount = (amount1, amount2) => {
     return amount1 - amount2;
 }
 
+export function getDateToDisplay(transaction) {
+    if (!transaction.paidInAdvance && transaction.endDate) {
+        return transaction.endDate;
+    }
+
+    return transaction.startDate;
+}
+
 export { compareDate, compareString, compareAmount }

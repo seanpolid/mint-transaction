@@ -4,7 +4,7 @@ import Icon from "../Icon";
 import { iconType, tabType, orderType, sortType } from "../../enums";
 import RadioButtonWithLabel from '../RadioButtonWithLabel'
 import Scrollpane from "../Scrollpane";
-import { compareDate, compareString, compareAmount } from "./functions";
+import { compareDate, compareString, compareAmount, getDateToDisplay } from "./functions";
 import style from './style.module.css';
 import { useContext, useEffect, useState, memo, useCallback, useRef } from "react";
 import DataContext from '../../stores/DataContext';
@@ -164,14 +164,6 @@ const Transaction = ({transaction, onClick, selectedId}) => {
             <td className={style.amount}>${transaction.amount}</td>
         </tr>
     )
-}
-
-function getDateToDisplay(transaction) {
-    if (!transaction.paidInAdvance && transaction.endDate) {
-        return transaction.endDate;
-    }
-
-    return transaction.startDate;
 }
 
 const SearchBar = ({onChange}) => {

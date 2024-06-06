@@ -1,0 +1,8 @@
+.container {
+    height: 90vh;
+    width: 100%;
+}
+
+.container svg {
+    width: 100% !important;
+}

@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 
-const InputWithLabel = ({id, name, type, text, value, onChange, step, onWheel, min, wrapped=false}) => {
+const InputWithLabel = ({id, name, type, text, value, onChange, step, onWheel, min, max, wrapped=false}) => {
     value = value === undefined ? '' : value;
     return (
         <>
@@ -16,6 +16,7 @@ const InputWithLabel = ({id, name, type, text, value, onChange, step, onWheel, m
                         step={step}
                         onWheel={onWheel}
                         min={min}
+                        max={max}
                         checked={type === 'checkbox' ? value : null}
                     />
                 </label>
@@ -31,6 +32,7 @@ const InputWithLabel = ({id, name, type, text, value, onChange, step, onWheel, m
                         step={step}
                         onWheel={onWheel}
                         min={min}
+                        max={max}
                         checked={type === 'checkbox' ? value : null}
                     />
                 </>
