@@ -12,7 +12,7 @@ export const NetGraph = ({data}) => {
                 xScale={{ type: 'point' }}
                 yScale={{
                     type: 'linear',
-                    min: 'auto',
+                    min: '0',
                     max: 'auto',
                     stacked: false,
                     reverse: false

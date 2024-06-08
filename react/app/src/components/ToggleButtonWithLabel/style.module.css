@@ -1,0 +1,25 @@
+.container {
+    border: 1px solid rgb(177, 177, 177);
+    border-radius: 0.75em;
+    background: rgb(229, 229, 229);
+    display: flex;
+    padding: 0 0.3em;
+    width: 3em;
+    cursor: pointer;
+}
+
+.active {
+    background: rgb(152, 186, 200);
+}
+
+.container .button {
+    border-radius: 100%;
+    padding: 0.5em;
+    border: 1px solid gray;
+    width: fit-content;
+    background: white;
+}
+
+.active {
+    justify-content: end;
+}
