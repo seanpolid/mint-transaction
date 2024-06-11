@@ -24,7 +24,7 @@ const DataContextProvider = ({children}) => {
 
             const loadedTransactions = await getTransactions();
             const loadedTypes = await getTypes();
-            const loadedCategories = await getCategories();
+            const loadedCategories = (await getCategories()).sort((c1, c2) => c1.name.localeCompare(c2.name));
 
             setTransactions(loadedTransactions);
             setTypes(loadedTypes);

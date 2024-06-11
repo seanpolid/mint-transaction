@@ -3,18 +3,20 @@ import InputWithLabel from "../InputWithLabel";
 import { NetGraph } from "./NetGraph";
 import RadioButtonWithLabel from "../RadioButtonWithLabel";
 import style from './style.module.css'
-import { useContext, useMemo, useState } from "react"
+import { useContext, useEffect, useMemo, useState } from "react"
 import { processNetData } from "./helpers";
 import { ToggleButtonWithLabel } from "../ToggleButtonWithLabel";
 
-const defaultStartDate = new Date();
-defaultStartDate.setDate(new Date().getDate() - 7);
+const DEFAULT_END_DATE = new Date();
+
+const DEFAULT_START_DATE = new Date();
+DEFAULT_START_DATE.setDate(DEFAULT_END_DATE.getDate() - 7);
 
 const Dashboard = () => {
     const dc = useContext(DataContext);
     const [currentGraph, setCurrentGraph] = useState('1');
-    const [startDate, setStartDate] = useState(defaultStartDate);
-    const [endDate, setEndDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(DEFAULT_START_DATE);
+    const [endDate, setEndDate] = useState(DEFAULT_END_DATE);
     
     const startDateString = getDateString(startDate);
     const endDateString = getDateString(endDate);
@@ -86,6 +88,10 @@ const Options = ({startDate, endDate, onChange}) => {
     const [displayNet, setDisplayNet] = useState(false);
     const [currentIncomeDisplayType, setCurrentIncomeDisplayType] = useState(displayTypeOptions[0]);
     const [currentExpenseDisplayType, setCurrentExpenseDisplayType] = useState(displayTypeOptions[0]);
+
+    useEffect(() => {
+        console.log(displayNet, currentIncomeDisplayType, currentExpenseDisplayType);
+    }, [displayNet, currentIncomeDisplayType, currentExpenseDisplayType])
 
     const handleDisplayNetChange = (value) => {
         setDisplayNet(value);
