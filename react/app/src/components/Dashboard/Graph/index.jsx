@@ -2,7 +2,8 @@ import {ResponsiveLine} from '@nivo/line'
 import React from 'react'
 import style from './style.module.css'
 
-export const NetGraph = ({data}) => {
+export const Graph = ({data}) => {
+    console.log(data);
     return (
         <div className={style.container}>
             <h1>Net: ${data.net}</h1>
@@ -12,7 +13,7 @@ export const NetGraph = ({data}) => {
                 xScale={{ type: 'point' }}
                 yScale={{
                     type: 'linear',
-                    min: '0',
+                    min: Math.min(data.minValue, 0),
                     max: 'auto',
                     stacked: false,
                     reverse: false
@@ -38,6 +39,7 @@ export const NetGraph = ({data}) => {
                     legendPosition: 'middle',
                     truncateTickAt: 0
                 }}
+                colors={{scheme: 'paired'}}
                 pointSize={10}
                 pointColor={{ theme: 'background' }}
                 pointBorderWidth={2}
@@ -76,114 +78,3 @@ export const NetGraph = ({data}) => {
         </div>
     )
 }
-
-const fakeData = [
-    {
-      "id": "expense",
-      "color": "hsl(278, 70%, 50%)",
-      "data": [
-        {
-          "x": "2024-05-15",
-          "y": 41
-        },
-        {
-          "x": "2024-05-16",
-          "y": 191
-        },
-        {
-          "x": "2024-05-17",
-          "y": 247
-        },
-        {
-          "x": "2024-05-18",
-          "y": 93
-        },
-        {
-          "x": "2024-05-19",
-          "y": 79
-        },
-        {
-          "x": "2024-05-20",
-          "y": 161
-        },
-        {
-          "x": "2024-05-21",
-          "y": 70
-        },
-        {
-          "x": "2024-05-22",
-          "y": 55
-        },
-        {
-          "x": "2024-05-23",
-          "y": 201
-        },
-        {
-          "x": "2024-05-24",
-          "y": 107
-        },
-        {
-          "x": "2024-05-25",
-          "y": 89
-        },
-        {
-          "x": "2024-05-26",
-          "y": 260
-        }
-      ]
-    },
-    {
-        "id": "income",
-        "color": "hsl(278, 70%, 50%)",
-        "data": [
-          {
-            "x": "2024-05-15",
-            "y": 288
-          },
-          {
-            "x": "2024-05-16",
-            "y": 288
-          },
-          {
-            "x": "2024-05-17",
-            "y": 288
-          },
-          {
-            "x": "2024-05-18",
-            "y": 288
-          },
-          {
-            "x": "2024-05-19",
-            "y": 288
-          },
-          {
-            "x": "2024-05-20",
-            "y": 288
-          },
-          {
-            "x": "2024-05-21",
-            "y": 288
-          },
-          {
-            "x": "2024-05-22",
-            "y": 288
-          },
-          {
-            "x": "2024-05-23",
-            "y": 288
-          },
-          {
-            "x": "2024-05-24",
-            "y": 288
-          },
-          {
-            "x": "2024-05-25",
-            "y": 288
-          },
-          {
-            "x": "2024-05-26",
-            "y": 288
-          }
-        ]
-      },
-  ]

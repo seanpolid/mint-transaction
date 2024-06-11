@@ -11,7 +11,7 @@ export const ToggleButtonWithLabel = ({id, name, text, value, onChange, wrapped}
     }
 
     useEffect(() => {
-        onChange(currentValue);
+        onChange({target: {name, text, value: currentValue}});
     }, [currentValue]);
     
     return (

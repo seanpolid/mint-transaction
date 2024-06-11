@@ -49,13 +49,10 @@
 
 .display fieldset > div {
     display: flex;
-    gap: 1.5em;
+    gap: 0.5em;
 }
 
 .display .net {
     display: flex;
     justify-content: space-between;
-}
-
-.display .net :last-child {
 }

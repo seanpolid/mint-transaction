@@ -1,6 +1,5 @@
-export function processNetData(data, startDate, endDate) {
+export function processNetData(data, startDate, endDate, options) {
     const processedData = {};
-
     for (const transaction of data) {
         const type = transaction.category.type.name;
 
@@ -33,9 +32,41 @@ export function processNetData(data, startDate, endDate) {
         }
     }
 
+    if (options.displayNet && processedData.Expense && processedData.Income) {
+        const expense = processedData.Expense;
+        const income = processedData.Income;
+
+        const expenseDates = Object.keys(expense).sort();
+        const incomeDates = Object.keys(income).sort();
+
+        let expensePointer = 0;
+        let incomePointer = 0;
+        const incomeDatesLength = incomeDates.length;
+        const expenseDatesLength = expenseDates.length;
+
+        const netData = [];
+        while (incomePointer < incomeDatesLength && expensePointer < expenseDatesLength) {
+            const expenseDate = expenseDates[expensePointer];
+            const incomeDate = incomeDates[incomePointer];
+            if (expenseDate === incomeDate) {
+                netData[expenseDate] = income[incomeDate] - expense[expenseDate];
+                expensePointer += 1;
+                incomePointer += 1;
+            } else if (expenseDate < incomeDate) {
+                expensePointer = expensePointer += 1;
+            } else {
+                incomePointer = incomePointer += 1;
+            }
+        }
+
+        processedData['Net'] = netData;
+    }   
+
+
     return {
-        seriesData: getSeriesData(processedData),
-        net: getNet(processedData)
+        seriesData: getSeriesData(processedData, options),
+        net: getNet(processedData),
+        minValue: getMinValue(processedData)
     };
 }
 
@@ -58,11 +89,14 @@ function getDateString(date) {
     return dateString.split('T')[0];
 }
 
-function getSeriesData(processedData) {
+function getSeriesData(processedData, options) {
     const seriesData = [];
-    const colors = ["hsl(278, 70%, 50%)", "hsl(50, 70%, 50%)"];
+    const colors = ["hsl(278, 70%, 50%)", "hsl(50, 70%, 50%)", "hsl(100, 70%, 50%)"];
     let index = 0;
-    for (const type in  processedData) {
+    for (const type in processedData) {
+        console.log('options', options);
+        if (options[`${type.toLowerCase()}DisplayType`] === 'None') continue;
+
         const processedDataList = [];
         for (const [date, amount] of Object.entries(processedData[type])) {
             processedDataList.push({x: date, y: amount});
@@ -71,7 +105,7 @@ function getSeriesData(processedData) {
 
         const finalDataObject = {};
         finalDataObject['id'] = type;
-        finalDataObject['color'] = colors[index++];
+        //finalDataObject['color'] = colors[index++];
         finalDataObject['data'] = sortedDataList;
         seriesData.push(finalDataObject);
     }
@@ -102,3 +136,15 @@ function moneyRound(amount) {
     return amount / 100;
 }
 
+function getMinValue(processedData) {
+    let minValue = Number.MAX_VALUE;
+    for (const dateValues of Object.values(processedData)) {
+        for (const value of Object.values(dateValues)) {
+            if (value < minValue) {
+                minValue = value;
+            }
+        }
+    }
+    
+    return minValue;
+}

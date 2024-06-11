@@ -1,6 +1,6 @@
 import DataContext from "../../stores/DataContext";
 import InputWithLabel from "../InputWithLabel";
-import { NetGraph } from "./NetGraph";
+import { Graph } from "./Graph";
 import RadioButtonWithLabel from "../RadioButtonWithLabel";
 import style from './style.module.css'
 import { useContext, useEffect, useMemo, useState } from "react"
@@ -12,14 +12,22 @@ const DEFAULT_END_DATE = new Date();
 const DEFAULT_START_DATE = new Date();
 DEFAULT_START_DATE.setDate(DEFAULT_END_DATE.getDate() - 7);
 
+const DISPLAY_TYPE_OPTIONS = ['Line', 'Bar', 'None'];
+
+const DEFAULT_OPTIONS = {
+    startDate: DEFAULT_START_DATE,
+    endDate: DEFAULT_END_DATE,
+    displayNet: false,
+    incomeDisplayType: DISPLAY_TYPE_OPTIONS[0],
+    expenseDisplayType: DISPLAY_TYPE_OPTIONS[0]
+}
+
 const Dashboard = () => {
     const dc = useContext(DataContext);
-    const [currentGraph, setCurrentGraph] = useState('1');
-    const [startDate, setStartDate] = useState(DEFAULT_START_DATE);
-    const [endDate, setEndDate] = useState(DEFAULT_END_DATE);
+    const [options, setOptions] = useState(DEFAULT_OPTIONS);
     
-    const startDateString = getDateString(startDate);
-    const endDateString = getDateString(endDate);
+    const startDateString = getDateString(options.startDate);
+    const endDateString = getDateString(options.endDate);
 
     const filteredTransactions = useMemo(() => {
         return dc.transactions.filter(transaction => {
@@ -37,74 +45,38 @@ const Dashboard = () => {
 
             return false;
         })
-    }, [dc.transactions, startDate, endDate]);
+    }, [dc.transactions, options.startDate, options.endDate]);
     
     const handleOptionsChange = (event) => {
-        const target = event.target;
-        const attributeName = target.name;
-        const value = target.value;
+        let {name, value} = event.target;
 
-        switch (attributeName) {
-            case 'type':
-                setCurrentGraph(value);
-                break;
-            case 'startDate':
-                setStartDate(new Date(value));
-                break;
-            case 'endDate':
-                setEndDate(new Date(value));
-                break;
-            default:
-                break;
+        if (name === 'startDate' || name === 'endDate') {
+            value = new Date(value);
         }
+        
+        setOptions(prevOptions => ({
+            ...prevOptions,
+            [name]: value
+        }))
     }
 
     return (
         <div className={style.container}>
             <section>
-                <Graph currentGraph={currentGraph} data={filteredTransactions} startDate={startDateString} endDate={endDateString}/>
+                <Graph 
+                    data={processNetData(filteredTransactions, startDateString, endDateString, options)} 
+                />  
             </section>
 
             <Options 
-                startDate={startDate}
-                endDate={endDate}
+                options={options}
                 onChange={handleOptionsChange}
             />
         </div>
     )
 }
 
-const Graph = ({data, startDate, endDate}) => {
-    return (
-        <NetGraph 
-            data={processNetData(data, startDate, endDate)} 
-        />
-    );
-}
-
-const displayTypeOptions = ['Line', 'Bar'];
-
-const Options = ({startDate, endDate, onChange}) => {
-    const [displayNet, setDisplayNet] = useState(false);
-    const [currentIncomeDisplayType, setCurrentIncomeDisplayType] = useState(displayTypeOptions[0]);
-    const [currentExpenseDisplayType, setCurrentExpenseDisplayType] = useState(displayTypeOptions[0]);
-
-    useEffect(() => {
-        console.log(displayNet, currentIncomeDisplayType, currentExpenseDisplayType);
-    }, [displayNet, currentIncomeDisplayType, currentExpenseDisplayType])
-
-    const handleDisplayNetChange = (value) => {
-        setDisplayNet(value);
-    }
-
-    const handleIncomeDisplayTypeChange = (value) => {
-        setCurrentIncomeDisplayType(value);
-    }
-
-    const handleExpenseDisplayTypeChange = (value) => {
-        setCurrentExpenseDisplayType(value);
-    }
-
+const Options = ({options, onChange}) => {
     return (
         <section className={style.options}>
             <div className={style.range}>
@@ -115,8 +87,8 @@ const Options = ({startDate, endDate, onChange}) => {
                         name='startDate'
                         text='Start Date:'
                         type='date'
-                        max={getDateString(endDate)}
-                        value={getDateString(startDate)}
+                        max={getDateString(options.endDate)}
+                        value={getDateString(options.startDate)}
                         onChange={onChange}
                     />
                 </div>
@@ -127,7 +99,7 @@ const Options = ({startDate, endDate, onChange}) => {
                         text='End Date:'
                         type='date'
                         max={getDateString(new Date())}
-                        value={getDateString(endDate)}
+                        value={getDateString(options.endDate)}
                         onChange={onChange}
                     />
                 </div>
@@ -136,22 +108,24 @@ const Options = ({startDate, endDate, onChange}) => {
                 <h1>Display</h1>
                 <div className={style.net}>
                     <ToggleButtonWithLabel 
-                        id='net'
-                        name='net'
+                        id='displayNet'
+                        name='displayNet'
                         text='Net:'
-                        onChange={handleDisplayNetChange}
-                        value={displayNet}
+                        onChange={onChange}
+                        value={options.displayNet}
                     />
                 </div>
                 <fieldset>
                     <legend>Income:</legend>
                     <div>
-                        {displayTypeOptions.map(displayType => (
+                        {DISPLAY_TYPE_OPTIONS.map(displayType => (
                             <RadioButtonWithLabel 
-                                name='income'
+                                key={`${displayType} income`}
+                                name='incomeDisplayType'
+                                value={displayType}
                                 text={displayType}
-                                checked={displayType === currentIncomeDisplayType}
-                                onChange={() => handleIncomeDisplayTypeChange(displayType)}
+                                checked={displayType === options.incomeDisplayType}
+                                onChange={onChange}
                                 wrapped
                             />
                         ))}
@@ -160,12 +134,14 @@ const Options = ({startDate, endDate, onChange}) => {
                 <fieldset>
                     <legend>Expense:</legend>
                     <div>
-                        {displayTypeOptions.map(displayType => (
+                        {DISPLAY_TYPE_OPTIONS.map(displayType => (
                             <RadioButtonWithLabel 
-                                name='expense'
+                                key={`${displayType} expense`}
+                                name='expenseDisplayType'
+                                value={displayType}
                                 text={displayType}
-                                checked={displayType === currentExpenseDisplayType}
-                                onChange={() => handleExpenseDisplayTypeChange(displayType)}
+                                checked={displayType === options.expenseDisplayType}
+                                onChange={onChange}
                                 wrapped
                             />
                         ))}
