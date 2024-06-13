@@ -2,14 +2,24 @@ import {ResponsiveLine} from '@nivo/line'
 import React from 'react'
 import style from './style.module.css'
 
-export const Graph = ({data}) => {
-    console.log(data);
+export const Graph = ({data, options}) => {
+    const totalNet = data.net + data.projectedNet; 
+
+    const rightMargin = options.projectIncome ? 140 : 110;
+
     return (
         <div className={style.container}>
-            <h1>Net: ${data.net}</h1>
+            <h1>
+                Net: ${data.totalNet}{' '}
+                {options.projectIncome ? (
+                    <>
+                      (${data.projectedNet})
+                    </> 
+                ): null}
+            </h1>
             <ResponsiveLine
                 data={data.seriesData}
-                margin={{ top: 10, right: 105, bottom: 90, left: 75 }}
+                margin={{ top: 10, right: rightMargin, bottom: 90, left: 75 }}
                 xScale={{ type: 'point' }}
                 yScale={{
                     type: 'linear',

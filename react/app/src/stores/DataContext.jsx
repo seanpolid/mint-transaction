@@ -10,7 +10,9 @@ const DataContext = createContext({
     setTransactions: () => {},
 
     forecasts: [],
-    setForecasts: () => {}
+    setForecasts: () => {},
+
+    averageDailyIncome: 0
 })
 
 export default DataContext

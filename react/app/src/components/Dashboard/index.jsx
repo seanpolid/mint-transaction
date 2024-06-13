@@ -3,7 +3,7 @@ import InputWithLabel from "../InputWithLabel";
 import { Graph } from "./Graph";
 import RadioButtonWithLabel from "../RadioButtonWithLabel";
 import style from './style.module.css'
-import { useContext, useEffect, useMemo, useState } from "react"
+import { useContext, useMemo, useState } from "react"
 import { processNetData } from "./helpers";
 import { ToggleButtonWithLabel } from "../ToggleButtonWithLabel";
 
@@ -19,7 +19,8 @@ const DEFAULT_OPTIONS = {
     endDate: DEFAULT_END_DATE,
     displayNet: false,
     incomeDisplayType: DISPLAY_TYPE_OPTIONS[0],
-    expenseDisplayType: DISPLAY_TYPE_OPTIONS[0]
+    projectIncome: false,
+    expenseDisplayType: DISPLAY_TYPE_OPTIONS[0],
 }
 
 const Dashboard = () => {
@@ -60,11 +61,20 @@ const Dashboard = () => {
         }))
     }
 
+    const args = {
+        data: filteredTransactions,
+        startDate: startDateString,
+        endDate: endDateString,
+        options: options,
+        averageDailyIncome: dc.averageDailyIncome
+    }
+
     return (
         <div className={style.container}>
             <section>
                 <Graph 
-                    data={processNetData(filteredTransactions, startDateString, endDateString, options)} 
+                    data={processNetData(args)} 
+                    options={options}
                 />  
             </section>
 
@@ -131,6 +141,17 @@ const Options = ({options, onChange}) => {
                         ))}
                     </div>
                 </fieldset>
+                {options.incomeDisplayType !== 'None' ? (
+                        <div className={style.projectIncome}>
+                             <ToggleButtonWithLabel 
+                                id='projectIncome'
+                                name='projectIncome'
+                                text='Project:'
+                                onChange={onChange}
+                                value={options.projectIncome}
+                            />
+                        </div>
+                    ) : null}
                 <fieldset>
                     <legend>Expense:</legend>
                     <div>

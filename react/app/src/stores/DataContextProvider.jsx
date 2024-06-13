@@ -15,6 +15,7 @@ const DataContextProvider = ({children}) => {
     const [categories, setCategories] = useState([]);
     const [types, setTypes] = useState([]);
     const [transactions, setTransactions] = useState([]);
+    const [averageDailyIncome, setAverageDailyIncome] = useState(0);
     const [forecasts, setForecasts] = useState([]);
     const sc = useContext(StatusContext);
 
@@ -29,6 +30,7 @@ const DataContextProvider = ({children}) => {
             setTransactions(loadedTransactions);
             setTypes(loadedTypes);
             setCategories(loadedCategories);
+            setAverageDailyIncome(getAverageDailyIncome(loadedTransactions));
 
             sc.decrementLoadingData();
         }
@@ -50,7 +52,9 @@ const DataContextProvider = ({children}) => {
         setTransactions: setTransactions,
 
         forecasts: forecasts,
-        setForecasts: setForecasts
+        setForecasts: setForecasts,
+
+        averageDailyIncome: averageDailyIncome
     }
 
     return (
@@ -94,6 +98,28 @@ async function getCategories() {
     }
 
     return categories;
+}
+
+function getAverageDailyIncome(transactions) {
+    const incomes = transactions.filter(transaction => transaction.category.type.name === 'Income');
+
+    let numDays = 0;
+    let total = 0;
+    for (const income of incomes) {
+        if (income.startDate && income.endDate) {
+            numDays += getDifferenceInDays(income.startDate, income.endDate);
+            total += income.amount;
+        }
+    }
+
+    return total / numDays;
+}
+
+function getDifferenceInDays(dateString1, dateString2) {
+    const differenceInTime = new Date(dateString2).getTime() - new Date(dateString1).getTime() + (24 * 3600 * 1000);
+    const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+    
+    return differenceInDays;
 }
 
 export default DataContextProvider
