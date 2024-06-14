@@ -31,7 +31,7 @@ const App = () => {
         }
     }, []);
 
-    const handleClick = (event) => {
+    const handleClick = (event: React.ChangeEvent<HTMLElement>) => {
         const target = event.target;
         const type = target.getAttribute('data-type');
         const page = target.getAttribute('data-page');
