@@ -1,0 +1,6 @@
+.container {
+    display: grid;
+    grid-template-columns: 1fr 20em;
+    height: 100vh;
+    width: calc(100vw - var(--primary-nav-width));
+}

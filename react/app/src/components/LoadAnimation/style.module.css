@@ -1,0 +1,38 @@
+.loadAnimation {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    text-align: center;
+    grid-column: 2/4;
+}
+
+.loadAnimation > div {
+    position: relative;
+    width: 25vw;
+}
+
+.loadAnimation p {
+    margin: -2.75em 0 0.25em 0;
+    text-align: left;
+    width: fit-content;
+}
+
+.loadAnimation .loadBar {
+    animation: loading 7s forwards;
+    background: rgb(169, 190, 199);
+    border-radius: 5px;
+    height: 5px;
+    width: 0;
+}
+
+@keyframes loading {
+    0% {
+        width: 0;
+    }
+
+    100% {
+        width: 100%;
+    }
+}

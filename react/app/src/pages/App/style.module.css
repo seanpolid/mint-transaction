@@ -1,0 +1,53 @@
+.secondaryNav {
+    height: var(--secondary-nav-height);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.secondaryNav ul {
+    display: flex;
+    justify-content: center;
+    gap: 20%;
+    margin: 0em;
+    padding: 0em;
+    list-style: none;
+    font-size: 18px;
+    box-sizing: border-box;
+}
+
+.secondaryNav ul li {
+    background: var(--primary-color);
+    padding: 5px 10px;
+    border-radius: 10px;
+}
+
+.secondaryNav ul a {
+    text-decoration: none;
+    color: black;
+    padding: 5px 10px;
+    border-radius: 10px;
+}
+
+.secondaryNav ul a:hover {
+    background: rgb(232, 229, 229);
+}
+
+.secondaryNav .active {
+    background: rgb(232, 229, 229);
+}
+
+.networkError {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    grid-column: 2/4;
+}
+
+.networkError h1 {
+    margin-top: -1.5em;
+    color: rgb(0, 0, 0);
+    font-size: 24px;
+    font-weight: 400;
+}

@@ -1,0 +1,25 @@
+.transaction td {
+    border-bottom: 1px solid gray;
+    padding: 0.4em 0 0.4em 1em;
+    box-sizing: border-box;
+}
+
+.transaction td:first-child {
+    display: flex;
+    flex-direction: column;
+}
+
+.transaction .category {
+    font-size: 14px;
+}
+
+.transaction .date {
+    margin-top: 1em;
+    font-size: 14px;
+}
+
+.transaction .amount {
+    text-align: right;
+    padding-right: 1.5em;
+    font-size: 18px;
+}

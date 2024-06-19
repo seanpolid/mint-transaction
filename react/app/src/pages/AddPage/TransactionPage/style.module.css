@@ -1,0 +1,43 @@
+@media screen {
+    .transactionContainer {
+        padding: 2em 1.5em 2em 3em;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+        gap: 2em;
+    }
+    
+    .transactionContainer ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2.5em;
+    }
+    
+    .transactionContainer ul p {
+        margin-bottom: 0.5em;
+    }
+
+    .transactionContainer .options {
+        display: flex;
+        gap: 2em;
+    }
+
+    .transactionContainer .options button {
+        padding: 10px 35px;
+        border: 0;
+        border-radius: 5px;
+        font-size: 18px;
+        color: black;
+        cursor: pointer;
+        background: rgb(232, 229, 229);
+    }
+
+    .transactionContainer .options button:hover {
+        background: rgb(217, 214, 214);
+        transition: 0.5s;
+    }
+}
