@@ -7,7 +7,7 @@ export type SeriesData = {
 	id: string;
 	data: {
 		x: string;
-		y: number;
+		y: number | null;
 	}[];
 };
 

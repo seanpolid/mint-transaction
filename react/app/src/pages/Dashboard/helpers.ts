@@ -16,7 +16,7 @@ type Args = {
 };
 
 type ProcessedTypeData = {
-	[date: string]: number;
+	[date: string]: number | null;
 };
 
 type ProcessedData = {
@@ -26,7 +26,8 @@ type ProcessedData = {
 export function processData(args: Args): Data {
 	const { data, startDate, endDate, options, averageDailyIncome } = args;
 
-	const processedData: ProcessedData = {};
+	const processedData: ProcessedData = initializeProcessedData(startDate, endDate, options);
+	
 	for (const transaction of data) {
 		if (!transaction.category || !transaction.amount || !transaction.startDate)
 			continue;
@@ -52,7 +53,7 @@ export function processData(args: Args): Data {
 				if (!processedData[type][date]) {
 					processedData[type][date] = amountPerDay;
 				} else {
-					processedData[type][date] += amountPerDay;
+					processedData[type][date]! += amountPerDay;
 				}
 			}
 		} else {
@@ -60,7 +61,7 @@ export function processData(args: Args): Data {
 			if (!processedData[type][date]) {
 				processedData[type][date] = transaction.amount;
 			} else {
-				processedData[type][date] += transaction.amount;
+				processedData[type][date]! += transaction.amount;
 			}
 		}
 	}
@@ -69,29 +70,19 @@ export function processData(args: Args): Data {
 		const expense = processedData.Expense;
 		const income = processedData.Income;
 
-		const expenseDates = Object.keys(expense).sort();
-		const incomeDates = Object.keys(income).sort();
-
-		let expensePointer = 0;
-		let incomePointer = 0;
-		const incomeDatesLength = incomeDates.length;
-		const expenseDatesLength = expenseDates.length;
 
 		const netData: ProcessedTypeData = {};
-		while (
-			incomePointer < incomeDatesLength &&
-			expensePointer < expenseDatesLength
-		) {
-			const expenseDate = expenseDates[expensePointer];
-			const incomeDate = incomeDates[incomePointer];
-			if (expenseDate === incomeDate) {
-				netData[expenseDate] = income[incomeDate] - expense[expenseDate];
-				expensePointer += 1;
-				incomePointer += 1;
-			} else if (expenseDate < incomeDate) {
-				expensePointer = expensePointer += 1;
-			} else {
-				incomePointer = incomePointer += 1;
+		for (const [date, _] of Object.entries(income)) {
+			netData[date] = null;
+			
+			if (!income[date]) continue;
+
+			if (income[date] && expense[date]) {
+				const incomeAmount = income[date] as number;
+				const expenseAmount = expense[date] as number;
+				netData[date] = incomeAmount - expenseAmount;
+			} else if (income[date]) {
+				netData[date] = income[date];
 			}
 		}
 
@@ -127,6 +118,51 @@ export function processData(args: Args): Data {
 		totalNet: totalNet,
 		minValue: getMinValue(processedData),
 	};
+}
+
+function initializeProcessedData(startDateString: string, endDateString: string, options: Options): ProcessedData {
+	const processedData: ProcessedData = {};
+	
+	const currentDate = new Date(startDateString);
+	let currentDateString = getDateString(currentDate);
+	while (currentDateString <= endDateString) {
+		if (options.incomeDisplayType !== 'None') {
+			if (!processedData['Income']) {
+				processedData['Income'] = {};
+			}
+
+			processedData['Income'][currentDateString] = null;
+		}
+
+		if (options.expenseDisplayType !== 'None') {
+			if (!processedData['Expense']) {
+				processedData['Expense'] = {};
+			}
+
+			processedData['Expense'][currentDateString] = null;
+		}
+
+		if (options.displayNet) {
+			if (!processedData['Net']) {
+				processedData['Net'] = {};
+			}
+
+			processedData['Net'][currentDateString] = null;
+		}
+
+		if (options.projectIncome) {
+			if (!processedData['Projected Income']) {
+				processedData['Projected Income'] = {};
+			}
+
+			processedData['Projected Income'][currentDateString] = null;
+		}
+
+		currentDate.setDate(currentDate.getDate() + 1);
+		currentDateString = getDateString(currentDate);
+	}
+
+	return processedData;
 }
 
 function getRangeOfDates(startDate: string, endDate: string) {
@@ -176,11 +212,14 @@ function getNet(processedData: ProcessedData) {
 	if (processedData["Income"]) {
 		const expenseSeries = processedData["Expense"];
 		const incomeSeries = processedData["Income"];
-
+		
 		for (const date in incomeSeries) {
-			net += incomeSeries[date];
-			if (expenseSeries && expenseSeries[date]) {
-				net -= expenseSeries[date];
+			if (!incomeSeries[date]) continue;
+			
+			net += incomeSeries[date] as number;
+
+			if (expenseSeries[date]) {
+				net -= expenseSeries[date] as number;
 			}
 		}
 	}
@@ -196,9 +235,12 @@ function getProjectedNet(processedData: ProcessedData) {
 		const projectedIncomeSeries = processedData["Projected Income"];
 
 		for (const date in projectedIncomeSeries) {
-			projectedNet += projectedIncomeSeries[date];
-			if (expenseSeries && expenseSeries[date]) {
-				projectedNet -= expenseSeries[date];
+			if (projectedIncomeSeries[date]) {
+				projectedNet += projectedIncomeSeries[date] as number;
+			}
+
+			if (expenseSeries[date]) {
+				projectedNet -= expenseSeries[date] as number;
 			}
 		}
 	}
@@ -216,7 +258,7 @@ function getMinValue(processedData: ProcessedData) {
 	let minValue = Number.MAX_VALUE;
 	for (const dateValues of Object.values(processedData)) {
 		for (const value of Object.values(dateValues)) {
-			if (value < minValue) {
+			if (value && value < minValue) {
 				minValue = value;
 			}
 		}
@@ -224,3 +266,4 @@ function getMinValue(processedData: ProcessedData) {
 
 	return minValue;
 }
+
