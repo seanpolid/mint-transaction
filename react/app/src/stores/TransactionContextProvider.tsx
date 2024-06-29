@@ -6,7 +6,7 @@ import { Endpoint } from "../enums";
 import { mapper } from "../utils/mapper";
 import { TransactionDTO } from "../dtos";
 import { Category, Transaction, Type } from "../models";
-import { TransactionContext } from "./TransactionContext";
+import { TransactionContext, Context } from "./TransactionContext";
 import { TransactionKeyValuePair } from "./TransactionContext";
 import { DataContext } from "./DataContext";
 
@@ -159,7 +159,7 @@ export const TransactionContextProvider = (props: Props) => {
 		return true;
 	}, [newTransactions, dc.types]);
 
-	const data = {
+	const data: Context = {
 		selectedTransaction: selectedTransaction,
 		setSelectedTransaction: setSelectedTransaction,
 		deleteSelectedTransaction: deleteSelectedTransaction,

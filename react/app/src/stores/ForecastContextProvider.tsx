@@ -1,7 +1,7 @@
 import { ReactNode, useState } from "react";
 
 import { Forecast } from "../models";
-import { ForecastContext } from "./ForecastContext";
+import { ForecastContext, Context } from "./ForecastContext";
 
 type Props = {
 	children: ReactNode;
@@ -17,7 +17,7 @@ export const ForecastContextProvider = (props: Props) => {
 		setSelectedForecast(forecast);
 	};
 
-	const data = {
+	const data: Context = {
 		selectedForecast,
 		setSelectedForecast: handleSetSelectedForecast,
 

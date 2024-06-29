@@ -1,5 +1,5 @@
 import { Transaction } from "../../models";
-import { Options } from "./index";
+import { Options } from "../../stores/DashboardContext";
 import { Data, SeriesData } from "./Graph";
 
 export function getDateString(date: Date): string {

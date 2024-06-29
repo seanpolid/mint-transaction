@@ -6,8 +6,8 @@ import {
 	ToggleButtonWithLabel,
 } from "../../../components";
 import { Event } from "../../../components/ToggleButtonWithLabel";
+import { Options as OptionsType, DISPLAY_TYPE_OPTIONS } from "../../../stores/DashboardContext";
 import { getDateString } from "../helpers";
-import { Options as OptionsType, DISPLAY_TYPE_OPTIONS } from "..";
 
 import style from "./style.module.css";
 

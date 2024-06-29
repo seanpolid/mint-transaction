@@ -5,7 +5,7 @@ import { Transaction, Type, Category, Forecast } from "../models";
 import { getData } from "../services/ApiService";
 import { Endpoint } from "../enums";
 import { mapper } from "../utils/mapper";
-import { DataContext } from "./DataContext";
+import { DataContext, Context } from "./DataContext";
 
 type Props = {
 	children: ReactNode;
@@ -80,7 +80,7 @@ export const DataContextProvider = (props: Props) => {
 		setForecasts(forecasts);
 	};
 
-	const data = {
+	const data: Context = {
 		hasNetworkError,
 		isLoadingData,
 

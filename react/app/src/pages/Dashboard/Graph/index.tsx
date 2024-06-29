@@ -1,4 +1,4 @@
-import { Options } from "..";
+import { Options } from "../../../stores/DashboardContext";
 import { LineGraph } from "../LineGraph";
 
 import style from "./style.module.css";
