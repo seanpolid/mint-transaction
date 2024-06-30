@@ -3,36 +3,36 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 25px;
     text-align: center;
     grid-column: 2/4;
+    margin-top: -2.5em;
 }
 
-.loadAnimation > div {
+.outerCircle {
+    border: 8px solid rgba(128, 128, 128, 0.093);
+    width: 5em;
+    height: 5em;
+    border-radius: 100%;
     position: relative;
-    width: 25vw;
+    animation: infinite 1.5s linear rotate;
 }
 
-.loadAnimation p {
-    margin: -2.75em 0 0.25em 0;
-    text-align: left;
-    width: fit-content;
-}
-
-.loadAnimation .loadBar {
-    animation: loading 7s forwards;
-    background: rgb(169, 190, 199);
-    border-radius: 5px;
-    height: 5px;
-    width: 0;
-}
-
-@keyframes loading {
+@keyframes rotate {
     0% {
-        width: 0;
+        transform: rotate(0);
     }
 
     100% {
-        width: 100%;
+        transform: rotate(360deg);
     }
+}
+
+.ball {
+    width: 8px;
+    height: 8px;
+    border-radius: 100%;
+    background: rgb(5, 157, 245);
+    position: absolute;
+    display: block;
+    top: 5px;
 }
