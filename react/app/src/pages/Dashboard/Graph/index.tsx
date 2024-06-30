@@ -1,4 +1,3 @@
-import { Options } from "../../../stores/DashboardContext";
 import { LineGraph } from "../LineGraph";
 
 import style from "./style.module.css";
@@ -17,11 +16,12 @@ export type Data = {
 	projectedNet: number;
 	totalNet: number;
 	minValue: number;
+	maxValue: number;
+	tickValues: string[]
 };
 
 type Props = {
 	data: Data;
-	options: Options;
 };
 
 type Margin = {
@@ -32,11 +32,11 @@ type Margin = {
 };
 
 export const Graph = (props: Props) => {
-	const { data, options } = props;
+	const { data } = props;
 
 	const margin: Margin = {
 		top: 10,
-		right: options.projectIncome ? 140 : 110,
+		right: 140,
 		bottom: 90,
 		left: 75,
 	};
@@ -45,13 +45,15 @@ export const Graph = (props: Props) => {
 		<div className={style.container}>
 			<h1>
 				Net: ${data.totalNet}{" "}
-				{options.projectIncome ? <>(${data.projectedNet})</> : null}
+				{data.projectedNet > 0 ? <>(${data.projectedNet})</> : null}
 			</h1>
 
 			<LineGraph
 				seriesData={data.seriesData}
 				margin={margin}
 				minValue={data.minValue}
+				maxValue={data.maxValue}
+				tickValues={data.tickValues}
 			/>
 		</div>
 	);

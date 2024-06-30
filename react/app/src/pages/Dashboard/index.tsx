@@ -70,7 +70,7 @@ export const Dashboard = () => {
 	return (
 		<div className={style.container}>
 			<section>
-				<Graph data={processData(args)} options={options} />
+				<Graph data={processData(args)} />
 			</section>
 
 			<Options options={options} onChange={handleOptionsChange} />

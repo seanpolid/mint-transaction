@@ -26,32 +26,7 @@
     align-items: center;
 }
 
-.display fieldset {
+.range .net {
     display: flex;
     justify-content: space-between;
-    padding: 5px 0;
-    border: 0;
-    margin: 0;
-}
-
-.display fieldset legend {
-    float: left;
-    margin: 0;
-    padding: 0;
-}
-
-.display fieldset > div {
-    display: flex;
-    gap: 0.5em;
-}
-
-.display .net {
-    display: flex;
-    justify-content: space-between;
-}
-
-.projectIncome {
-    display: flex;
-    justify-content: space-between;
-    padding: 0 2em;
 }

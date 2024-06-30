@@ -2,11 +2,6 @@ import { Transaction } from "../../models";
 import { Options } from "../../stores/DashboardContext";
 import { Data, SeriesData } from "./Graph";
 
-export function getDateString(date: Date): string {
-	const string = date.toISOString();
-	return string.split("T")[0];
-}
-
 type Args = {
 	data: Transaction[];
 	startDate: string;
@@ -19,23 +14,48 @@ type ProcessedTypeData = {
 	[date: string]: number | null;
 };
 
-type ProcessedData = {
+type DataProcessedByType = {
 	[type: string]: ProcessedTypeData;
 };
 
 export function processData(args: Args): Data {
 	const { data, startDate, endDate, options, averageDailyIncome } = args;
 
-	const processedData: ProcessedData = initializeProcessedData(startDate, endDate, options);
-	
+	const dataProcessedByType: DataProcessedByType = processDataByType(data, startDate, endDate, options);
+
+	projectIncome(dataProcessedByType, startDate, endDate, averageDailyIncome);
+
+	if (options.displayNet) {
+		calculateNet(dataProcessedByType);
+	}
+		
+	const net = getNet(dataProcessedByType);
+	const projectedNet = getProjectedNet(dataProcessedByType);
+	const totalNet = moneyRound(net + projectedNet);
+	const {minValue, maxValue} = getExtremes(dataProcessedByType);
+
+	return {
+		seriesData: getSeriesData(dataProcessedByType, options),
+		net: net,
+		projectedNet: projectedNet,
+		totalNet: totalNet,
+		minValue: minValue,
+		maxValue: maxValue,
+		tickValues: getTickValues(startDate, endDate)
+	};
+}
+
+function processDataByType(data: Transaction[], startDate: string, endDate: string, options: Options) {
+	const dataProcessedByType: DataProcessedByType = initializeDataProcessedByType(startDate, endDate, options);
+
 	for (const transaction of data) {
 		if (!transaction.category || !transaction.amount || !transaction.startDate)
 			continue;
 
 		const type = transaction.category.type.name;
 
-		if (!processedData[type]) {
-			processedData[type] = {};
+		if (!dataProcessedByType[type]) {
+			dataProcessedByType[type] = {};
 		}
 
 		if (transaction.startDate && transaction.endDate) {
@@ -50,119 +70,65 @@ export function processData(args: Args): Data {
 					continue;
 				}
 
-				if (!processedData[type][date]) {
-					processedData[type][date] = amountPerDay;
+				if (!dataProcessedByType[type][date]) {
+					dataProcessedByType[type][date] = amountPerDay;
 				} else {
-					processedData[type][date]! += amountPerDay;
+					dataProcessedByType[type][date]! += amountPerDay;
 				}
 			}
 		} else {
 			const date = transaction.startDate;
-			if (!processedData[type][date]) {
-				processedData[type][date] = transaction.amount;
+			if (!dataProcessedByType[type][date]) {
+				dataProcessedByType[type][date] = transaction.amount;
 			} else {
-				processedData[type][date]! += transaction.amount;
+				dataProcessedByType[type][date]! += transaction.amount;
 			}
 		}
 	}
 
-	if (options.displayNet && processedData.Expense && processedData.Income) {
-		const expense = processedData.Expense;
-		const income = processedData.Income;
-
-
-		const netData: ProcessedTypeData = {};
-		for (const [date, _] of Object.entries(income)) {
-			netData[date] = null;
-			
-			if (!income[date]) continue;
-
-			if (income[date] && expense[date]) {
-				const incomeAmount = income[date] as number;
-				const expenseAmount = expense[date] as number;
-				netData[date] = incomeAmount - expenseAmount;
-			} else if (income[date]) {
-				netData[date] = income[date];
-			}
-		}
-
-		processedData["Net"] = netData;
-	}
-
-	if (options.projectIncome) {
-		const income = processedData["Income"];
-		const projectedIncome: ProcessedTypeData = {};
-
-		let currentDate = new Date(startDate);
-		let currentDateString = getDateString(currentDate);
-		while (currentDateString <= endDate) {
-			if (!income || !income[currentDateString]) {
-				projectedIncome[currentDateString] = averageDailyIncome;
-			}
-
-			currentDate.setDate(currentDate.getDate() + 1);
-			currentDateString = getDateString(currentDate);
-		}
-
-		processedData["Projected Income"] = projectedIncome;
-	}
-
-	const net = getNet(processedData);
-	const projectedNet = getProjectedNet(processedData);
-	const totalNet = moneyRound(net + projectedNet);
-
-	return {
-		seriesData: getSeriesData(processedData, options),
-		net: net,
-		projectedNet: projectedNet,
-		totalNet: totalNet,
-		minValue: getMinValue(processedData),
-	};
+	return dataProcessedByType;
 }
 
-function initializeProcessedData(startDateString: string, endDateString: string, options: Options): ProcessedData {
-	const processedData: ProcessedData = {};
+function initializeDataProcessedByType(startDateString: string, endDateString: string, options: Options): DataProcessedByType {
+	const dataProcessedByType: DataProcessedByType = {};
 	
 	const currentDate = new Date(startDateString);
 	let currentDateString = getDateString(currentDate);
 	while (currentDateString <= endDateString) {
-		if (options.incomeDisplayType !== 'None') {
-			if (!processedData['Income']) {
-				processedData['Income'] = {};
-			}
-
-			processedData['Income'][currentDateString] = null;
+		if (!dataProcessedByType['Income']) {
+			dataProcessedByType['Income'] = {};
 		}
 
-		if (options.expenseDisplayType !== 'None') {
-			if (!processedData['Expense']) {
-				processedData['Expense'] = {};
-			}
-
-			processedData['Expense'][currentDateString] = null;
+		if (!dataProcessedByType['Expense']) {
+			dataProcessedByType['Expense'] = {};
 		}
+
+		if (!dataProcessedByType['Projected Income']) {
+			dataProcessedByType['Projected Income'] = {};
+		}
+
+		dataProcessedByType['Income'][currentDateString] = null;
+		dataProcessedByType['Expense'][currentDateString] = null;
+		dataProcessedByType['Projected Income'][currentDateString] = null;
 
 		if (options.displayNet) {
-			if (!processedData['Net']) {
-				processedData['Net'] = {};
+			if (!dataProcessedByType['Net']) {
+				dataProcessedByType['Net'] = {};
 			}
 
-			processedData['Net'][currentDateString] = null;
-		}
-
-		if (options.projectIncome) {
-			if (!processedData['Projected Income']) {
-				processedData['Projected Income'] = {};
-			}
-
-			processedData['Projected Income'][currentDateString] = null;
+			dataProcessedByType['Net'][currentDateString] = null;
 		}
 
 		currentDate.setDate(currentDate.getDate() + 1);
 		currentDateString = getDateString(currentDate);
 	}
 
-	return processedData;
+	return dataProcessedByType;
+}
+
+export function getDateString(date: Date): string {
+	const string = date.toISOString();
+	return string.split("T")[0];
 }
 
 function getRangeOfDates(startDate: string, endDate: string) {
@@ -179,22 +145,66 @@ function getRangeOfDates(startDate: string, endDate: string) {
 	return rangeOfDates;
 }
 
+function calculateNet(dataProcessedByType: DataProcessedByType) {
+	const expense = dataProcessedByType.Expense;
+	const income = dataProcessedByType.Income;
+
+	const netData: ProcessedTypeData = {};
+	for (const [date, _] of Object.entries(income)) {
+		netData[date] = null;
+		
+		if (!income[date]) continue;
+
+		if (income[date] && expense[date]) {
+			const incomeAmount = income[date] as number;
+			const expenseAmount = expense[date] as number;
+			netData[date] = incomeAmount - expenseAmount;
+		} else if (income[date]) {
+			netData[date] = income[date];
+		}
+	}
+
+	dataProcessedByType["Net"] = netData;
+
+	return dataProcessedByType;
+}
+
+function projectIncome(dataProcessedByType: DataProcessedByType, startDate: string, endDate: string, averageDailyIncome: number) {
+	const income = dataProcessedByType["Income"];
+	const projectedIncome: ProcessedTypeData = {};
+
+	let currentDate = new Date(startDate);
+	let currentDateString = getDateString(currentDate);
+	while (currentDateString <= endDate) {
+		if (!income || !income[currentDateString]) {
+			projectedIncome[currentDateString] = averageDailyIncome;
+		}
+
+		currentDate.setDate(currentDate.getDate() + 1);
+		currentDateString = getDateString(currentDate);
+	}
+
+	dataProcessedByType["Projected Income"] = projectedIncome;
+
+	return dataProcessedByType;
+}
+
 function getSeriesData(
-	processedData: ProcessedData,
+	dataProcessedByType: DataProcessedByType,
 	options: Options
 ): SeriesData[] {
 	const seriesData: SeriesData[] = [];
-	for (const type in processedData) {
+	for (const type in dataProcessedByType) {
 		const displayType = `${type.toLowerCase()}DisplayType` as
 			| "incomeDisplayType"
 			| "expenseDisplayType";
 		if (options[displayType] === "None") continue;
 
-		const processedDataList = [];
-		for (const [date, amount] of Object.entries(processedData[type])) {
-			processedDataList.push({ x: date, y: amount });
+		const dataProcessedByTypeList = [];
+		for (const [date, amount] of Object.entries(dataProcessedByType[type])) {
+			dataProcessedByTypeList.push({ x: date, y: amount });
 		}
-		const sortedDataList = processedDataList.sort((d1, d2) =>
+		const sortedDataList = dataProcessedByTypeList.sort((d1, d2) =>
 			d1.x.localeCompare(d2.x)
 		);
 
@@ -207,11 +217,11 @@ function getSeriesData(
 	return seriesData;
 }
 
-function getNet(processedData: ProcessedData) {
+function getNet(dataProcessedByType: DataProcessedByType) {
 	let net = 0;
-	if (processedData["Income"]) {
-		const expenseSeries = processedData["Expense"];
-		const incomeSeries = processedData["Income"];
+	if (dataProcessedByType["Income"]) {
+		const expenseSeries = dataProcessedByType["Expense"];
+		const incomeSeries = dataProcessedByType["Income"];
 		
 		for (const date in incomeSeries) {
 			if (!incomeSeries[date]) continue;
@@ -227,12 +237,12 @@ function getNet(processedData: ProcessedData) {
 	return moneyRound(net);
 }
 
-function getProjectedNet(processedData: ProcessedData) {
+function getProjectedNet(dataProcessedByType: DataProcessedByType) {
 	let projectedNet = 0;
 
-	if (processedData["Projected Income"]) {
-		const expenseSeries = processedData["Expense"];
-		const projectedIncomeSeries = processedData["Projected Income"];
+	if (dataProcessedByType["Projected Income"]) {
+		const expenseSeries = dataProcessedByType["Expense"];
+		const projectedIncomeSeries = dataProcessedByType["Projected Income"];
 
 		for (const date in projectedIncomeSeries) {
 			if (projectedIncomeSeries[date]) {
@@ -254,16 +264,35 @@ function moneyRound(amount: number) {
 	return amount / 100;
 }
 
-function getMinValue(processedData: ProcessedData) {
+function getExtremes(dataProcessedByType: DataProcessedByType) {
 	let minValue = Number.MAX_VALUE;
-	for (const dateValues of Object.values(processedData)) {
+	let maxValue = Number.MIN_VALUE;
+	for (const dateValues of Object.values(dataProcessedByType)) {
 		for (const value of Object.values(dateValues)) {
-			if (value && value < minValue) {
-				minValue = value;
+			if (value) {
+				if (value < minValue) {
+					minValue = value;
+				}
+				if (value > maxValue) {
+					maxValue = value;
+				}
 			}
 		}
 	}
 
-	return minValue;
+	return {minValue, maxValue};
 }
 
+function getTickValues(startDate: string, endDate: string) {
+	const dates = getRangeOfDates(startDate, endDate);
+
+	const tickValues = [];
+	const numDates = dates.length;
+	const numValuesToSkip = numDates > 30 ? 2 : 1;
+
+	for (let i = 0; i < numDates; i += numValuesToSkip) {
+		tickValues.push(dates[i]);
+	}
+
+	return tickValues;
+}

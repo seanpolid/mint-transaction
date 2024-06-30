@@ -2,11 +2,10 @@ import { ChangeEvent } from "react";
 
 import {
 	InputWithLabel,
-	RadioButtonWithLabel,
 	ToggleButtonWithLabel,
 } from "../../../components";
 import { Event } from "../../../components/ToggleButtonWithLabel";
-import { Options as OptionsType, DISPLAY_TYPE_OPTIONS } from "../../../stores/DashboardContext";
+import { Options as OptionsType } from "../../../stores/DashboardContext";
 import { getDateString } from "../helpers";
 
 import style from "./style.module.css";
@@ -22,7 +21,7 @@ export const Options = (props: Props) => {
 	return (
 		<section className={style.options}>
 			<div className={style.range}>
-				<h1>Range</h1>
+				<h1>Options</h1>
 				<div>
 					<InputWithLabel
 						id="startDate"
@@ -44,63 +43,15 @@ export const Options = (props: Props) => {
 						onChange={onChange}
 					/>
 				</div>
-			</div>
-			<div className={style.display}>
-				<h1>Display</h1>
 				<div className={style.net}>
 					<ToggleButtonWithLabel
 						id="displayNet"
 						name="displayNet"
-						text="Net:"
+						text="Display Net:"
 						onChange={onChange}
 						value={options.displayNet}
 					/>
 				</div>
-				<fieldset>
-					<legend>Income:</legend>
-					<div>
-						{DISPLAY_TYPE_OPTIONS.map((displayType) => (
-							<RadioButtonWithLabel
-								key={`${displayType} income`}
-								id={`${displayType} income`}
-								name="incomeDisplayType"
-								value={displayType}
-								text={displayType}
-								checked={displayType === options.incomeDisplayType}
-								onChange={onChange}
-								wrapped
-							/>
-						))}
-					</div>
-				</fieldset>
-				{options.incomeDisplayType !== "None" ? (
-					<div className={style.projectIncome}>
-						<ToggleButtonWithLabel
-							id="projectIncome"
-							name="projectIncome"
-							text="Project:"
-							onChange={onChange}
-							value={options.projectIncome}
-						/>
-					</div>
-				) : null}
-				<fieldset>
-					<legend>Expense:</legend>
-					<div>
-						{DISPLAY_TYPE_OPTIONS.map((displayType) => (
-							<RadioButtonWithLabel
-								key={`${displayType} expense`}
-								id={`${displayType} income`}
-								name="expenseDisplayType"
-								value={displayType}
-								text={displayType}
-								checked={displayType === options.expenseDisplayType}
-								onChange={onChange}
-								wrapped
-							/>
-						))}
-					</div>
-				</fieldset>
 			</div>
 		</section>
 	);

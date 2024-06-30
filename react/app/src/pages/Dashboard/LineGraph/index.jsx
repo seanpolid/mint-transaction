@@ -1,6 +1,6 @@
 import { ResponsiveLine } from "@nivo/line";
 
-export const LineGraph = ({ seriesData, margin, minValue }) => {
+export const LineGraph = ({ seriesData, margin, minValue, maxValue, tickValues }) => {
 	return (
 		<ResponsiveLine
 			data={seriesData}
@@ -14,6 +14,7 @@ export const LineGraph = ({ seriesData, margin, minValue }) => {
 			yScale={{
 				type: "linear",
 				min: Math.min(minValue, 0),
+				max: maxValue,
 				max: "auto",
 				stacked: false,
 				reverse: false,
@@ -25,6 +26,7 @@ export const LineGraph = ({ seriesData, margin, minValue }) => {
 				tickSize: 5,
 				tickPadding: 5,
 				tickRotation: -45,
+				tickValues: tickValues,
 				legend: "Date",
 				legendOffset: 70,
 				legendPosition: "middle",
